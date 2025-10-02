@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import type { Vakcinacija } from "../../models/Vakcinacija";
 import {
   Paper,
   Table,
@@ -10,18 +8,16 @@ import {
   TableRow,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useFetchPacijentVakcineQuery } from "./pacijentApi";
 
 export default function PrikazVakcinacija() {
-  const [vakcinacije, setVakcinacije] = useState<Vakcinacija[]>([]);
   const { id } = useParams<{ id: string }>();
 
-  useEffect(() => {
-    if (id) {
-      fetch(`https://localhost:5001/api/vakcinacije/${id}`)
-        .then((response) => response.json())
-        .then((data) => setVakcinacije(data));
-    }
-  }, [id]);
+  const { data: vakcinacije, isLoading } = useFetchPacijentVakcineQuery(
+    id ? +id : 0
+  );
+
+  if (isLoading || !vakcinacije) return <div>Loading...</div>;
 
   return (
     <TableContainer component={Paper}>

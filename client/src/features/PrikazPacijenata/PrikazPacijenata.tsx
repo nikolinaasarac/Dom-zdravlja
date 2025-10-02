@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
-import type { Pacijent } from "../../models/Pacijent";
-import { Button,  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { Link } from "react-router-dom";
+import { useFetchPacijentiQuery } from "./pacijentApi";
 
 export default function PrikazPacijenata() {
-   const [pacijenti, setPacijenti] = useState<Pacijent[]>([]);
-    useEffect(() => {
-    fetch('https://localhost:5001/api/pacijenti')
-      .then(response => response.json())
-      .then(data => setPacijenti(data))
-  }, [])
-    
+  const { data: pacijenti, isLoading } = useFetchPacijentiQuery();
 
-    return (
-      <TableContainer component={Paper}>
+  if (isLoading || !pacijenti) return <div>Loading...</div>;
+
+  return (
+    <TableContainer component={Paper}>
       <Table sx={{ "& td, & th": { fontSize: "1rem" } }}>
         <TableHead>
           <TableRow>
@@ -36,8 +40,12 @@ export default function PrikazPacijenata() {
               <TableCell>{pacijent.adresa}</TableCell>
               <TableCell>{pacijent.telefon}</TableCell>
               <TableCell>
-                <Button component={Link} to={(`/pacijenti/${pacijent.id}/vakcine`)}
-                >Prikazi detalje</Button>
+                <Button
+                  component={Link}
+                  to={`/pacijenti/${pacijent.id}/vakcine`}
+                >
+                  Prikazi detalje
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -45,5 +53,4 @@ export default function PrikazPacijenata() {
       </Table>
     </TableContainer>
   );
-    
 }
