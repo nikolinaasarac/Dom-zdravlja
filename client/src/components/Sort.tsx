@@ -12,7 +12,7 @@ export default function Sort() {
       variant="outlined"
       size="small"
       select
-      SelectProps={{ native: true }}
+      slotProps={{ select: { native: true } }}
       sx={{ width: 200 }}
       value={orderBy} // controlled input
       onChange={(e) => dispatch(setOrderBy(e.target.value))}
