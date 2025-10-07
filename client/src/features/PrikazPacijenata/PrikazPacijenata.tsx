@@ -7,8 +7,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  TextField,
+  TableRow
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useFetchPacijentiQuery } from "./pacijentApi";
@@ -22,8 +21,6 @@ export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
   const dispatch = useAppDispatch();
   const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
-
-  const dispatch = useAppDispatch();
 
   if (isLoading || !pacijenti) return <div>Loading...</div>;
 

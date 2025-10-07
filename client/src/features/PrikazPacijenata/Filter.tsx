@@ -1,9 +1,10 @@
 import { TextField } from "@mui/material";
 import { setPol } from "./pacijentSlice";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 export default function Filter() {
-  const dispatch=useAppDispatch()
+  const dispatch = useAppDispatch();
+  const { pol } = useAppSelector((state) => state.pacijent);
 
   return (
     <TextField
@@ -13,11 +14,12 @@ export default function Filter() {
       select
       SelectProps={{ native: true }}
       sx={{ width: 200 }}
-      onChange={e => dispatch(setPol(e.target.value))}
+      value={pol} // controlled input
+      onChange={(e) => dispatch(setPol(e.target.value))}
     >
       <option value=""></option>
       <option value="Muški">Muški</option>
       <option value="Ženski">Ženski</option>
     </TextField>
-  )
+  );
 }
