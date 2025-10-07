@@ -1,5 +1,6 @@
 using API.Data;
 using API.Entities;
+using API.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,13 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<Pacijent>>> GetPacijenti()
+        public async Task<ActionResult<List<Pacijent>>> GetPacijenti(string? orderBy)
         {
-            return await context.Pacijenti.ToListAsync();
+            var query = context.Pacijenti
+            .Sort(orderBy)
+            .AsQueryable();
+
+            return await query.ToListAsync();
         }
 
         [HttpGet("{id}")]
