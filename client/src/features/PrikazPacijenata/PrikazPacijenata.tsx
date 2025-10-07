@@ -16,11 +16,14 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import { resetParams } from "./pacijentSlice";
 import Filter from "./Filter";
 import Sort from "./Sort";
+import Search from "./Search";
 
 export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
   const dispatch = useAppDispatch();
   const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
+
+  const dispatch = useAppDispatch();
 
   if (isLoading || !pacijenti) return <div>Loading...</div>;
 
@@ -37,21 +40,19 @@ export default function PrikazPacijenata() {
             justifyContent: "space-between",
           }}
         >
-          <TextField
-            label="Pretraži pacijente"
-            variant="outlined"
-            size="small"
-            sx={{ flex: 1 }}
-          />
+          <Search />
 
           <Filter />
           <Sort />
 
 
-          <Button variant="contained" color="primary"
-          onClick={() => dispatch(resetParams())}
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => dispatch(resetParams())}
           >
-            Primijeni filtere
+            Resetuj parametre
           </Button>
         </Paper>
       </Grid>
@@ -59,7 +60,9 @@ export default function PrikazPacijenata() {
       {/* Donji dio - tabela */}
       <Grid size={12}>
         <TableContainer component={Paper}>
-          <Table sx={{ "& td, & th": { fontSize: "1rem" } }}>
+          <Table
+            sx={{ tableLayout: "fixed", "& td, & th": { fontSize: "1rem" } }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Ime</TableCell>
