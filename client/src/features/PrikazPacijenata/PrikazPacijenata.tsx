@@ -12,10 +12,14 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useFetchPacijentiQuery } from "./pacijentApi";
-import { useAppSelector } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { resetParams } from "./pacijentSlice";
+import Filter from "./Filter";
+import Sort from "./Sort";
 
 export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
+  const dispatch = useAppDispatch();
   const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
 
   if (isLoading || !pacijenti) return <div>Loading...</div>;
@@ -40,33 +44,13 @@ export default function PrikazPacijenata() {
             sx={{ flex: 1 }}
           />
 
-          <TextField
-            label="Filter po polu"
-            variant="outlined"
-            size="small"
-            select
-            SelectProps={{ native: true }}
-            sx={{ width: 200 }}
-          >
-            <option value=""></option>
-            <option value="Muški">Muški</option>
-            <option value="Ženski">Ženski</option>
-          </TextField>
+          <Filter />
+          <Sort />
 
-            <TextField
-            label="Filter po polu"
-            variant="outlined"
-            size="small"
-            select
-            SelectProps={{ native: true }}
-            sx={{ width: 200 }}
-          >
-            <option value=""></option>
-            <option value="Muški">Muški</option>
-            <option value="Ženski">Ženski</option>
-          </TextField>
 
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary"
+          onClick={() => dispatch(resetParams())}
+          >
             Primijeni filtere
           </Button>
         </Paper>
