@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
-import { setPol } from "./pacijentSlice";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { setPol } from "../features/PrikazPacijenata/pacijentSlice";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
 export default function Filter() {
   const dispatch = useAppDispatch();

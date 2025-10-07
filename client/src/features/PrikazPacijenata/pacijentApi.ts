@@ -3,18 +3,24 @@ import { customBaseQuery } from "../../app/api/baseApi";
 import type { Pacijent } from "../../models/Pacijent";
 import type { Vakcinacija } from "../../models/Vakcinacija";
 import type { PacijentParams } from "../../models/PacijentParams";
+import type { Pagination } from "../../models/pagination";
 
 export const pacijentApi = createApi({
   reducerPath: "pacijentApi",
   baseQuery: customBaseQuery,
   endpoints: (builder) => ({
-    fetchPacijenti: builder.query<Pacijent[], PacijentParams>({
+    fetchPacijenti: builder.query<{pacijenti: Pacijent[], pagination: Pagination}, PacijentParams>({
       query: (pacijentParams) => {
         return {
           url: "pacijenti",
           params: pacijentParams
         }
       },
+      transformResponse: (pacijenti: Pacijent[], meta) => {
+        const paginationHeader = meta?.response?.headers.get('Pagination');
+        const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
+        return{pacijenti, pagination}
+      }
     }),
     fetchPacijentVakcine: builder.query<Vakcinacija[], number>({
       query: (pacijentId) => `vakcinacije/${pacijentId}`,

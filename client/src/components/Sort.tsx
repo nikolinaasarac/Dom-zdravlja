@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
-import { setOrderBy } from "./pacijentSlice";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { setOrderBy } from "../features/PrikazPacijenata/pacijentSlice";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
 export default function Sort() {
   const dispatch = useAppDispatch();
