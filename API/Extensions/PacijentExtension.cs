@@ -35,6 +35,10 @@ public static class PacijentExtension
     if (string.IsNullOrEmpty(searchTerm)) return query;
     var lowerCaseSearchTerm = searchTerm.ToLower();
 
-    return query.Where(x => x.Ime.ToLower().Contains(lowerCaseSearchTerm) || x.Prezime.ToLower().Contains(lowerCaseSearchTerm));
+    return query.Where(x =>
+    (x.Ime + " " + x.Prezime).ToLower().Contains(lowerCaseSearchTerm) ||
+    (x.Prezime + " " + x.Ime).ToLower().Contains(lowerCaseSearchTerm)
+);
+
   }
 }

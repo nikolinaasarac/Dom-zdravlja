@@ -12,7 +12,7 @@ export default function Filter() {
       variant="outlined"
       size="small"
       select
-      SelectProps={{ native: true }}
+      slotProps={{ select: { native: true } }}
       sx={{ width: 200 }}
       value={pol} // controlled input
       onChange={(e) => dispatch(setPol(e.target.value))}
