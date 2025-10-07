@@ -12,11 +12,15 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useFetchPacijentiQuery } from "./pacijentApi";
-import { useAppSelector } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import Search from "./Search";
+import { resetParams } from "./pacijentSlice";
 
 export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
   const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
+
+  const dispatch = useAppDispatch();
 
   if (isLoading || !pacijenti) return <div>Loading...</div>;
 
@@ -33,12 +37,7 @@ export default function PrikazPacijenata() {
             justifyContent: "space-between",
           }}
         >
-          <TextField
-            label="Pretraži pacijente"
-            variant="outlined"
-            size="small"
-            sx={{ flex: 1 }}
-          />
+          <Search />
 
           <TextField
             label="Filter po polu"
@@ -53,7 +52,7 @@ export default function PrikazPacijenata() {
             <option value="Ženski">Ženski</option>
           </TextField>
 
-            <TextField
+          <TextField
             label="Filter po polu"
             variant="outlined"
             size="small"
@@ -66,8 +65,12 @@ export default function PrikazPacijenata() {
             <option value="Ženski">Ženski</option>
           </TextField>
 
-          <Button variant="contained" color="primary">
-            Primijeni filtere
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => dispatch(resetParams())}
+          >
+            Resetuj parametre
           </Button>
         </Paper>
       </Grid>
@@ -75,7 +78,9 @@ export default function PrikazPacijenata() {
       {/* Donji dio - tabela */}
       <Grid size={12}>
         <TableContainer component={Paper}>
-          <Table sx={{ "& td, & th": { fontSize: "1rem" } }}>
+          <Table
+            sx={{ tableLayout: "fixed", "& td, & th": { fontSize: "1rem" } }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Ime</TableCell>
