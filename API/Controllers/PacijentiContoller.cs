@@ -12,11 +12,15 @@ namespace API.Controllers
     public class PacijentiController(DomZdravljaContext context) : ControllerBase
     {
 
-        [HttpGet]
-        public async Task<ActionResult<List<Pacijent>>> GetPacijenti(string? pol)
+        
+     
+  [HttpGet]
+   public async Task<ActionResult<List<Pacijent>>> GetPacijenti(string? orderBy, string? pol)
         {
-
-            var query = context.Pacijenti.Filter(pol).AsQueryable();
+            var query = context.Pacijenti
+            .Sort(orderBy)
+            .Filter(pol)
+            .AsQueryable();
             return await query.ToListAsync();
         }
 
