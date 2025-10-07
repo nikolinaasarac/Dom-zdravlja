@@ -15,11 +15,12 @@ namespace API.Controllers
         
      
   [HttpGet]
-   public async Task<ActionResult<List<Pacijent>>> GetPacijenti(string? orderBy, string? pol)
+   public async Task<ActionResult<List<Pacijent>>> GetPacijenti(string? orderBy, string? pol, string? searchTerm)
         {
             var query = context.Pacijenti
             .Sort(orderBy)
             .Filter(pol)
+            .Search(searchTerm)
             .AsQueryable();
             return await query.ToListAsync();
         }
