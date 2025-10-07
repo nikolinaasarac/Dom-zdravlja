@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/store";
 import { TextField } from "@mui/material";
-import { setSearchTerm } from "./pacijentSlice";
+import { setSearchTerm } from "../features/PrikazPacijenata/pacijentSlice";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
 export default function Search() {
   const { searchTerm } = useAppSelector((state) => state.pacijent);
