@@ -1,6 +1,7 @@
 using API.Data;
 using API.Entities;
 using API.Extensions;
+using API.RequestHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,20 @@ namespace API.Controllers
         
      
   [HttpGet]
-   public async Task<ActionResult<List<Pacijent>>> GetPacijenti(string? orderBy, string? pol, string? searchTerm)
+   public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery]Params pacijentiParams)
         {
             var query = context.Pacijenti
-            .Sort(orderBy)
-            .Filter(pol)
-            .Search(searchTerm)
+            .Sort(pacijentiParams.OrderBy)
+            .Filter(pacijentiParams.Pol)
+            .Search(pacijentiParams.SearchTerm)
             .AsQueryable();
-            return await query.ToListAsync();
+
+             var products = await PagedList<Pacijent>.ToPagedList(query, pacijentiParams.PageNumber,
+            pacijentiParams.PageSize);
+
+            //Response.AddPaginationHeader(products.Metadata);
+
+            return products;
         }
 
         [HttpGet("{id}")]
