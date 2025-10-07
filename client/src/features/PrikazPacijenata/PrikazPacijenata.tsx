@@ -2,20 +2,16 @@ import {
   Button,
   Grid,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
+  Typography
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import { useFetchPacijentiQuery } from "./pacijentApi";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import { resetParams } from "./pacijentSlice";
-import Filter from "./Filter";
-import Sort from "./Sort";
-import Search from "./Search";
+import { resetParams, setPageNumber } from "./pacijentSlice";
+import Filter from "../../components/Filter";
+import Sort from "../../components/Sort";
+import AppPagination from "../../components/AppPagination";
+import TabelaPacijenata from "../../components/TabelaPacijenata";
+import Search from "../../components/Search";
 
 export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
@@ -56,44 +52,20 @@ export default function PrikazPacijenata() {
 
       {/* Donji dio - tabela */}
       <Grid size={12}>
-        <TableContainer component={Paper}>
-          <Table
-            sx={{ tableLayout: "fixed", "& td, & th": { fontSize: "1rem" } }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Ime</TableCell>
-                <TableCell>Prezime</TableCell>
-                <TableCell>Datum rođenja</TableCell>
-                <TableCell>Pol</TableCell>
-                <TableCell>Adresa</TableCell>
-                <TableCell>Telefon</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pacijenti.map((pacijent) => (
-                <TableRow key={pacijent.id}>
-                  <TableCell>{pacijent.ime}</TableCell>
-                  <TableCell>{pacijent.prezime}</TableCell>
-                  <TableCell>{pacijent.datumRodjenja}</TableCell>
-                  <TableCell>{pacijent.pol}</TableCell>
-                  <TableCell>{pacijent.adresa}</TableCell>
-                  <TableCell>{pacijent.telefon}</TableCell>
-                  <TableCell>
-                    <Button
-                      component={Link}
-                      to={`/pacijenti/${pacijent.id}/vakcine`}
-                      variant="outlined"
-                    >
-                      Prikaži detalje
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
+          <>
+            <TabelaPacijenata />
+            <AppPagination
+              metadata={pacijenti.pagination}
+              onPageChange={(page: number) => {
+                dispatch(setPageNumber(page))
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }}
+            />
+          </>
+        ) : (
+          <Typography variant="h5">Nema rezultata.</Typography>
+        )}
       </Grid>
     </Grid>
   );

@@ -20,7 +20,7 @@ export default function PrikazVakcinacija() {
   if (isLoading || !vakcinacije) return <div>Loading...</div>;
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} >
       <Table sx={{ "& td, & th": { fontSize: "1rem" } }}>
         <TableHead>
           <TableRow>

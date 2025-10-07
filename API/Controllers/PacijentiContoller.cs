@@ -24,12 +24,12 @@ namespace API.Controllers
             .Search(pacijentiParams.SearchTerm)
             .AsQueryable();
 
-             var products = await PagedList<Pacijent>.ToPagedList(query, pacijentiParams.PageNumber,
+             var pacijenti = await PagedList<Pacijent>.ToPagedList(query, pacijentiParams.PageNumber,
             pacijentiParams.PageSize);
 
-            //Response.AddPaginationHeader(products.Metadata);
+            Response.AddPaginationHeader(pacijenti.Metadata);
 
-            return products;
+            return pacijenti;
         }
 
         [HttpGet("{id}")]
