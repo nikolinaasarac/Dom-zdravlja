@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { setTokens } from "./authSlice";
+import { setTokens, setUserId } from "./authSlice";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store/store";
@@ -17,7 +17,14 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const response = await authApi.login({ username, password });
-      dispatch(setTokens(response.data));
+      const { accessToken, refreshToken, userId } = response.data; // <-- izdvajamo userId
+
+    dispatch(setTokens({ accessToken, refreshToken }));
+    
+    if (userId) {
+      dispatch(setUserId(userId));
+    }
+
 
       // Ako je login uspješan, preusmjeri na početnu stranu
       navigate("/homepage", { replace: true });

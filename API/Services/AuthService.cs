@@ -35,7 +35,8 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
     return new TokenResponseDto
     {
       AccessToken = CreateToken(user),
-      RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
+      RefreshToken = await GenerateAndSaveRefreshTokenAsync(user),
+      UserId = user.Id.ToString()
     };
   }
 
@@ -93,7 +94,7 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
   {
     var refreshToken = GenerateRefreshToken();
     user.RefreshToken = refreshToken;
-    user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+    user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(10);
     await context.SaveChangesAsync();
     return refreshToken;
   }
@@ -116,7 +117,7 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         issuer: configuration.GetValue<string>("AppSettings:Issuer"),
         audience: configuration.GetValue<string>("AppSettings:Audience"),
         claims: claims,
-        expires: DateTime.UtcNow.AddDays(1),
+        expires: DateTime.UtcNow.AddSeconds(15),
         signingCredentials: creds
     );
 

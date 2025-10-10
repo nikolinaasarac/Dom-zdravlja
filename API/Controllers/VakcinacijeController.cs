@@ -1,5 +1,6 @@
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,7 @@ namespace API.Controllers
         }
 
         // Vrati sve vakcine za jednog pacijenta
+        [Authorize]
         [HttpGet("{pacijentId}")]
         public async Task<ActionResult<List<VakcinacijaDto>>> GetVakcineZaPacijenta(int pacijentId)
         {
