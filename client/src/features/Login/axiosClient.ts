@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setTokens, logout } from "./authSlice";
+import { setTokens, setUserId, logout } from "./authSlice";
 import { store } from "../../store/store";
 import type { TokenResponseDto } from "./types";
 
@@ -16,29 +16,28 @@ const subscribeTokenRefresh = (cb: (token: string) => void) => {
 };
 
 const onRefreshed = (token: string) => {
-  refreshSubscribers.map((cb) => cb(token));
+  refreshSubscribers.forEach((cb) => cb(token));
   refreshSubscribers = [];
 };
 
-// Dodaj Authorization header ako postoji
+// Request interceptor – dodaje Authorization header
 api.interceptors.request.use((config) => {
   const token = store.getState().auth.accessToken;
+  console.log("Interceptor token:", token);
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// Osvježavanje tokena kad istekne
+// Response interceptor – refresh token kad dobijemo 401
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Ako token istekao
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        // Čekaj dok refresh ne završi
         return new Promise((resolve) => {
           subscribeTokenRefresh((token: string) => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
@@ -54,13 +53,20 @@ api.interceptors.response.use(
         const state = store.getState().auth;
         const { refreshToken, userId } = state;
 
-        const response = await axios.post<TokenResponseDto>(
-          "https://localhost:5001/api/login/refresh-token",
-          { refreshToken, userId }
-        );
+        // Koristi API instancu, ne direktni axios.post
+        const response = await api.post<TokenResponseDto>("/login/refresh-token", {
+          refreshToken,
+          userId,
+        });
 
         const newTokens = response.data;
+
+        // Postavi i access/refresh token i userId
         store.dispatch(setTokens(newTokens));
+        if (newTokens.userId) {
+          store.dispatch(setUserId(newTokens.userId));
+        }
+
         isRefreshing = false;
         onRefreshed(newTokens.accessToken);
 

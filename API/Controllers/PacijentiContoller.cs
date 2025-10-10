@@ -2,6 +2,7 @@ using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.RequestHelpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace API.Controllers
     {
 
         
-     
+    [Authorize]
   [HttpGet]
    public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery]Params pacijentiParams)
         {
