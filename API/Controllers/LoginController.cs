@@ -41,11 +41,12 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpGet]
-        public IActionResult AuthenticatedOnlyEndpoint()
-        {
-            return Ok("You are authenticated!");
+    [Authorize]
+    [HttpGet]
+    public IActionResult AuthenticatedOnlyEndpoint()
+    {
+      return Ok("You are authenticated!");
+            
         }
 
         [Authorize(Roles = "Admin")]
