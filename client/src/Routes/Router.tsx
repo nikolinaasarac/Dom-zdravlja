@@ -4,6 +4,7 @@ import PacijentDetalji from "../features/PrikazPacijenata/PacijentDetalji";
 import PrikazPacijenata from "../features/PrikazPacijenata/PrikazPacijenata";
 import PrikazVakcinacija from "../features/PrikazPacijenata/PrikazVakcina";
 import HomePage from "../features/PocetnaStrana/HomePage";
+import LoginPage from "../features/Login/LoginPage";
 
 export const router = createBrowserRouter(
   [
@@ -11,7 +12,8 @@ export const router = createBrowserRouter(
       path: "/",
       element: <App />,
       children: [
-        { path: "/", element: <HomePage /> },
+        { path: "/", element: <LoginPage /> },
+        { path: "/homepage", element: <HomePage /> },
         { path: "/pacijenti", element: <PrikazPacijenata /> },
         { path: "/pacijenti/:id", element: <PacijentDetalji /> },
         { path: "/vakcine", element: <PrikazVakcinacija /> },

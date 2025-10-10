@@ -2,11 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { pacijentApi } from "../features/PrikazPacijenata/pacijentApi";
 import { pacijentSlice } from "../features/PrikazPacijenata/pacijentSlice";
+import { authSlice } from "../features/Login/authSlice";
+
 
 export const store = configureStore({
   reducer: {
     [pacijentApi.reducerPath]: pacijentApi.reducer,
-    pacijent : pacijentSlice.reducer
+    pacijent : pacijentSlice.reducer,
+     auth: authSlice.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(pacijentApi.middleware),
