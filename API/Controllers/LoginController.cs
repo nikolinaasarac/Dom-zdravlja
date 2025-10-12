@@ -27,26 +27,58 @@ namespace API.Controllers
             var result = await authService.LoginAsync(request);
             if (result is null)
                 return BadRequest("Invalid username or password.");
+            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // ako koristiš HTTPS
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
 
-            return Ok(result);
+            // ⚠️ Ne vraćaj refresh token klijentu
+            return Ok(new TokenResponseDto
+            {
+                AccessToken = result.AccessToken,
+                RefreshToken = "", // prazno jer se ne koristi na frontu
+                UserId = result.UserId
+            });
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
+        public async Task<ActionResult<TokenResponseDto>> RefreshToken()
         {
-            var result = await authService.RefreshTokensAsync(request);
-            if (result is null || result.AccessToken is null || result.RefreshToken is null)
+            // ✅ Uzimamo refresh token iz cookie-a
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+                return Unauthorized("No refresh token found.");
+
+            var result = await authService.RefreshTokensAsync(refreshToken);
+            if (result is null)
                 return Unauthorized("Invalid refresh token.");
 
-            return Ok(result);
+            // ✅ Osveži cookie sa novim tokenom
+            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
+
+            return Ok(new TokenResponseDto
+            {
+                AccessToken = result.AccessToken,
+                RefreshToken = "",
+                UserId = result.UserId
+            });
         }
 
-    [Authorize]
-    [HttpGet]
-    public IActionResult AuthenticatedOnlyEndpoint()
-    {
-      return Ok("You are authenticated!");
-            
+        [Authorize]
+        [HttpGet]
+        public IActionResult AuthenticatedOnlyEndpoint()
+        {
+            return Ok("You are authenticated!");
+
         }
 
         [Authorize(Roles = "Admin")]

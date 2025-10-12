@@ -1,37 +1,33 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { TokenResponseDto } from "./types";
 
 interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
-  userId: string | null;
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  } | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
-  accessToken: null,
-  refreshToken: null,
-  userId: null,
+  user: null,
+  isAuthenticated: false,
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setTokens: (state, action: PayloadAction<TokenResponseDto>) => {
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      // userId možeš dobiti iz access tokena ako želiš decode-ovati
-    },
-    setUserId: (state, action: PayloadAction<string>) => {
-      state.userId = action.payload;
+    setUser: (state, action: PayloadAction<AuthState["user"]>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
     },
     logout: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.userId = null;
+      state.user = null;
+      state.isAuthenticated = false;
     },
   },
 });
 
-export const { setTokens, setUserId, logout } = authSlice.actions;
+export const { setUser, logout } = authSlice.actions;
 export default authSlice.reducer;
