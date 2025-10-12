@@ -4,7 +4,7 @@ import type { PacijentParams } from "../../models/PacijentParams";
 const initialState: PacijentParams = {
   pageNumber: 1,
   pageSize: 8,
-  pol: [],
+  pol: '',
   searchTerm: '',
   orderBy: 'prezime'
 }

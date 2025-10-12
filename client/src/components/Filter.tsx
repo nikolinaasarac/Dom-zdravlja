@@ -14,7 +14,7 @@ export default function Filter() {
       select
       slotProps={{ select: { native: true } }}
       sx={{ width: 200 }}
-      value={pol} // controlled input
+      value={pol || ""} // controlled input
       onChange={(e) => dispatch(setPol(e.target.value))}
     >
       <option value=""></option>

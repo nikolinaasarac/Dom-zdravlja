@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { setTokens, setUserId } from "./authSlice";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store/store";
+import { setAccessToken } from "./tokenStore"; // tokenStore runtime memorija
+import { setUser, logout } from "./authSlice"; // ako koristiš user info u Reduxu
 import { authApi } from "./authApi";
 
 export default function LoginPage() {
@@ -15,21 +16,34 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
     try {
+      // 🔹 Login request
       const response = await authApi.login({ username, password });
-      const { accessToken, refreshToken, userId } = response.data; // <-- izdvajamo userId
 
-    dispatch(setTokens({ accessToken, refreshToken }));
-    
-    if (userId) {
-      dispatch(setUserId(userId));
-    }
+      // Backend vraća TokenResponseDto
+      const { accessToken, userId } = response.data;
+      console.log(accessToken);
 
+      // 🔹 Sačuvaj samo access token (u runtime memoriji)
+      setAccessToken(accessToken);
 
-      // Ako je login uspješan, preusmjeri na početnu stranu
+      // 🔹 (Opcionalno) sačuvaj user info u Redux ako želiš prikazati username itd.
+      if (userId) {
+        dispatch(setUser({
+          id: userId,
+          email: "",
+          role: ""
+        }));
+      }
+
+      // 🔹 Navigacija poslije uspješnog logina
       navigate("/homepage", { replace: true });
-    } catch {
-      setError("Invalid credentials");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Neispravni podaci za prijavu.");
+      dispatch(logout());
     }
   };
 
@@ -44,6 +58,7 @@ export default function LoginPage() {
       <Typography variant="h4" mb={3}>
         Login
       </Typography>
+
       <Box
         component="form"
         onSubmit={handleLogin}
@@ -53,14 +68,14 @@ export default function LoginPage() {
         width={300}
       >
         <TextField
-          label="Username"
+          label="Korisničko ime"
           variant="outlined"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
         <TextField
-          label="Password"
+          label="Lozinka"
           type="password"
           variant="outlined"
           value={password}
@@ -68,9 +83,10 @@ export default function LoginPage() {
           required
         />
         <Button type="submit" variant="contained" color="primary">
-          Login
+          Prijavi se
         </Button>
       </Box>
+
       {error && (
         <Typography color="error" mt={2}>
           {error}
