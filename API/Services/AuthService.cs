@@ -61,26 +61,23 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         return user;
     }
 
-    public async Task<TokenResponseDto?> RefreshTokensAsync(string refreshToken)
+   public async Task<TokenResponseDto?> RefreshTokensAsync(string refreshToken)
+{
+    var token = await context.RefreshTokens
+        .Include(rt => rt.Korisnik)
+        .FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.Revoked);
+
+    if (token is null || token.ExpiresAt <= DateTime.UtcNow)
+        return null;
+
+    // NE opozivamo stari token i NE generišemo novi
+    return new TokenResponseDto
     {
-        var token = await context.RefreshTokens
-            .Include(rt => rt.Korisnik)
-            .FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.Revoked);
-
-        if (token is null || token.ExpiresAt <= DateTime.UtcNow)
-            return null;
-
-        token.Revoked = true;
-
-        var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(token.Korisnik);
-
-        return new TokenResponseDto
-        {
-            AccessToken = CreateToken(token.Korisnik),
-            RefreshToken = newRefreshToken,
-            UserId = token.KorisnikId.ToString()
-        };
-    }
+        AccessToken = CreateToken(token.Korisnik),
+        RefreshToken = token.Token, // isti token
+        UserId = token.KorisnikId.ToString()
+    };
+}
 
     private string GenerateRefreshToken()
     {
