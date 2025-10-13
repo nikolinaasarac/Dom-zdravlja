@@ -9,4 +9,5 @@ public interface IAuthService
     Task<Korisnik?> RegisterAsync(UserDto request);
     Task<TokenResponseDto?> LoginAsync(UserDto request);
     Task<TokenResponseDto?> RefreshTokensAsync(string request);
+    Task<bool> LogoutAsync(string refreshToken);
 }

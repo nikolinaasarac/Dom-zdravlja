@@ -14,82 +14,98 @@ namespace API.Services;
 
 public class AuthService(DomZdravljaContext context, IConfiguration configuration) : IAuthService
 {
-  public async Task<TokenResponseDto?> LoginAsync(UserDto request)
-  {
-    var user = await context.Korisnici.FirstOrDefaultAsync(u => u.Username == request.Username);
-    if (user is null)
+    public async Task<TokenResponseDto?> LoginAsync(UserDto request)
     {
-      return null;
-    }
-    if (new PasswordHasher<Korisnik>().VerifyHashedPassword(user, user.PasswordHash, request.Password)
-        == PasswordVerificationResult.Failed)
-    {
-      return null;
-    }
+        var user = await context.Korisnici.FirstOrDefaultAsync(u => u.Username == request.Username);
+        if (user is null)
+        {
+            return null;
+        }
+        if (new PasswordHasher<Korisnik>().VerifyHashedPassword(user, user.PasswordHash, request.Password)
+            == PasswordVerificationResult.Failed)
+        {
+            return null;
+        }
 
-    return await CreateTokenResponse(user);
-  }
-
-  private async Task<TokenResponseDto> CreateTokenResponse(Korisnik user)
-  {
-    return new TokenResponseDto
-    {
-      AccessToken = CreateToken(user),
-      RefreshToken = await GenerateAndSaveRefreshTokenAsync(user),
-      UserId = user.Id.ToString()
-    };
-  }
-
-  public async Task<Korisnik?> RegisterAsync(UserDto request)
-  {
-    if (await context.Korisnici.AnyAsync(u => u.Username == request.Username))
-    {
-      return null;
+        return await CreateTokenResponse(user);
     }
 
-    var user = new Korisnik();
-    var hashedPassword = new PasswordHasher<Korisnik>()
-        .HashPassword(user, request.Password);
+    private async Task<TokenResponseDto> CreateTokenResponse(Korisnik user)
+    {
+        return new TokenResponseDto
+        {
+            AccessToken = CreateToken(user),
+            RefreshToken = await GenerateAndSaveRefreshTokenAsync(user),
+            UserId = user.Id.ToString()
+        };
+    }
 
-    user.Username = request.Username;
-    user.PasswordHash = hashedPassword;
-    user.Role = "Admin";
+    public async Task<Korisnik?> RegisterAsync(UserDto request)
+    {
+        if (await context.Korisnici.AnyAsync(u => u.Username == request.Username))
+        {
+            return null;
+        }
 
-    context.Korisnici.Add(user);
-    await context.SaveChangesAsync();
+        var user = new Korisnik();
+        var hashedPassword = new PasswordHasher<Korisnik>()
+            .HashPassword(user, request.Password);
 
-    return user;
-  }
+        user.Username = request.Username;
+        user.PasswordHash = hashedPassword;
+        user.Role = "Pacijent";
 
-  public async Task<TokenResponseDto?> RefreshTokensAsync(string refreshToken)
-{
-    var user = await context.Korisnici
-        .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiryTime > DateTime.UtcNow);
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
 
-    if (user is null)
-        return null;
+        return user;
+    }
 
-    return await CreateTokenResponse(user);
-}
+    public async Task<TokenResponseDto?> RefreshTokensAsync(string refreshToken)
+    {
+        var token = await context.RefreshTokens
+            .Include(rt => rt.Korisnik)
+            .FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.Revoked);
 
+        if (token is null || token.ExpiresAt <= DateTime.UtcNow)
+            return null;
 
+        token.Revoked = true;
 
-  private string GenerateRefreshToken()
-  {
-    var randomNumber = new byte[32];
-    using var rng = RandomNumberGenerator.Create();
-    rng.GetBytes(randomNumber);
-    return Convert.ToBase64String(randomNumber);
-  }
+        var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(token.Korisnik);
 
-  private async Task<string> GenerateAndSaveRefreshTokenAsync(Korisnik user)
-  {
-    var refreshToken = GenerateRefreshToken();
-    user.RefreshToken = refreshToken;
-    user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(10);
-    await context.SaveChangesAsync();
-    return refreshToken;
-  }
+        return new TokenResponseDto
+        {
+            AccessToken = CreateToken(token.Korisnik),
+            RefreshToken = newRefreshToken,
+            UserId = token.KorisnikId.ToString()
+        };
+    }
+
+    private string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    private async Task<string> GenerateAndSaveRefreshTokenAsync(Korisnik user)
+    {
+        var refreshToken = GenerateRefreshToken();
+
+        var token = new RefreshToken
+        {
+            KorisnikId = user.Id,
+            Token = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddDays(7)
+        };
+
+        context.RefreshTokens.Add(token);
+        await context.SaveChangesAsync();
+
+        return refreshToken;
+    }
 
   private string CreateToken(Korisnik user)
   {
@@ -115,5 +131,19 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
 
     return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
   }
+    
+    public async Task<bool> LogoutAsync(string refreshToken)
+{
+    var token = await context.RefreshTokens
+        .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
+
+    if (token is null)
+        return false;
+
+    token.Revoked = true;
+    await context.SaveChangesAsync();
+
+    return true;
+}
 
 }

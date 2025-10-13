@@ -9,7 +9,9 @@ interface LoginCredentials {
 }
 
 export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<{ data: TokenResponseDto }> => {
+  login: async (
+    credentials: LoginCredentials
+  ): Promise<{ data: TokenResponseDto }> => {
     const result = await customBaseQuery(
       { url: "login/login", method: "POST", body: credentials } as FetchArgs,
       {} as BaseQueryApi,
@@ -35,5 +37,14 @@ export const authApi = {
     }
 
     return { data: result.data as TokenResponseDto };
+  },
+  logout: async (): Promise<void> => {
+    const result = await customBaseQuery(
+      { url: "login/logout", method: "POST" } as FetchArgs,
+      {} as BaseQueryApi,
+      {}
+    );
+
+    if ("error" in result) throw new Error("Logout failed");
   },
 };

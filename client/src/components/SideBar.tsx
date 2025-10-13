@@ -1,4 +1,11 @@
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -15,15 +22,15 @@ export default function Sidebar() {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" }
+        "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
       }}
     >
       <List>
         <ListItem disablePadding>
-          <ListItemButton component={Link} to="/">
+          <ListItemButton component={Link} to="/pacijenti">
             <ListItemIcon>
               <svg width="24" height="24" viewBox="0 0 24 24">
-                <path d="M19 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H19v-2z"/>
+                <path d="M19 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H19v-2z" />
               </svg>
             </ListItemIcon>
             <ListItemText primary="Svi pacijenti" />

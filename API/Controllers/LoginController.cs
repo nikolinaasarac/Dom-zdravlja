@@ -56,6 +56,7 @@ namespace API.Controllers
             if (result is null)
                 return Unauthorized("Invalid refresh token.");
 
+            Console.WriteLine("RefreshToken endpoint - new access token: " + result.AccessToken);
             // ✅ Osveži cookie sa novim tokenom
             Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
             {
@@ -72,6 +73,30 @@ namespace API.Controllers
                 UserId = result.UserId
             });
         }
+        
+        [HttpPost("logout")]
+public async Task<IActionResult> Logout()
+{
+    var refreshToken = Request.Cookies["refreshToken"];
+    if (string.IsNullOrEmpty(refreshToken))
+        return BadRequest("No refresh token found.");
+
+    var success = await authService.LogoutAsync(refreshToken);
+    if (!success)
+        return NotFound("Refresh token not found.");
+
+    // 🔹 Obriši cookie
+    Response.Cookies.Delete("refreshToken", new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = SameSiteMode.Strict
+    });
+
+    return Ok(new { message = "Logged out successfully." }
+);
+}
+
 
         [Authorize]
         [HttpGet]
