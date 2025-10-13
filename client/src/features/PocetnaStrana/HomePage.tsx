@@ -1,6 +1,11 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Button, Box } from "@mui/material";
 import "../../styles.css";
 import Kartica from "./Kartica";
+import { useNavigate } from "react-router-dom";
+import { authApi } from "../../features/Login/authApi";
+import { useAppDispatch } from "../../store/store";
+import { logout as logoutRedux } from "../../features/Login/authSlice";
+import { setAccessToken } from "../../features/Login/tokenStore";
 
 const opcije = [
   {
@@ -36,17 +41,45 @@ const opcije = [
 ];
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = async () => {
+    try {
+      setAccessToken(null); // ukloni runtime access token
+      dispatch(logoutRedux()); // očisti Redux auth state
+      navigate("/", { replace: true }); // preusmjeri na login
+      await authApi.logout(); // poziv backend logout
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <div className="homepage">
-      <Typography
-        variant="h2"
-        sx={{
-          color: "white",
-          mb: 5,
-        }}
+      {/* Header sa Logout dugmetom */}
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={5}
+        width="90%"
+        mx="auto"
       >
-        Dobro došli!
-      </Typography>
+        <Typography variant="h2" sx={{ color: "white" }}>
+          Dobro došli!
+        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleLogout}
+          sx={{ height: 40 }}
+        >
+          Logout
+        </Button>
+      </Box>
+
+      {/* Grid sa opcijama */}
       <Grid
         container
         spacing={1}
