@@ -11,14 +11,37 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DomZdravljaContext))]
-    [Migration("20250925083224_KreirajVakcinacije")]
-    partial class KreirajVakcinacije
+    [Migration("20251019143018_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+
+            modelBuilder.Entity("API.Entities.Korisnik", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Korisnici");
+                });
 
             modelBuilder.Entity("API.Entities.Pacijent", b =>
                 {
@@ -34,6 +57,10 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MaticniBroj")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -54,6 +81,32 @@ namespace API.Data.Migrations
                     b.ToTable("Pacijenti");
                 });
 
+            modelBuilder.Entity("API.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("KorisnikId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("API.Entities.Vakcinacija", b =>
                 {
                     b.Property<int>("Id")
@@ -67,7 +120,6 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Napomena")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NazivVakcine")
@@ -84,6 +136,17 @@ namespace API.Data.Migrations
                     b.ToTable("Vakcinacije");
                 });
 
+            modelBuilder.Entity("API.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("API.Entities.Korisnik", "Korisnik")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("KorisnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Korisnik");
+                });
+
             modelBuilder.Entity("API.Entities.Vakcinacija", b =>
                 {
                     b.HasOne("API.Entities.Pacijent", "Pacijent")
@@ -93,6 +156,11 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Pacijent");
+                });
+
+            modelBuilder.Entity("API.Entities.Korisnik", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("API.Entities.Pacijent", b =>

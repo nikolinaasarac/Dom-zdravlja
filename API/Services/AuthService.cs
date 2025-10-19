@@ -53,7 +53,7 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
 
         user.Username = request.Username;
         user.PasswordHash = hashedPassword;
-        user.Role = "Pacijent";
+        user.Role = "Admin";
 
         context.Korisnici.Add(user);
         await context.SaveChangesAsync();
@@ -122,7 +122,7 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         issuer: configuration.GetValue<string>("AppSettings:Issuer"),
         audience: configuration.GetValue<string>("AppSettings:Audience"),
         claims: claims,
-        expires: DateTime.UtcNow.AddSeconds(15),
+        expires: DateTime.UtcNow.AddHours(1),
         signingCredentials: creds
     );
 

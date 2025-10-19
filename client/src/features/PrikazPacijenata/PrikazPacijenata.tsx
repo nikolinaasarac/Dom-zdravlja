@@ -22,6 +22,18 @@ export default function PrikazPacijenata() {
 
   return (
     <Grid container spacing={2}>
+      {/* NOVO: Dugme za dodavanje pacijenta */}
+      <Grid size={12}>
+        <Button
+          variant="contained"
+          color="success"
+          sx={{ mb: 2 }}
+          onClick={() => alert("Otvoriti formu za dodavanje pacijenta")}
+        >
+          + Dodaj novog pacijenta
+        </Button>
+      </Grid>
+
       {/* Gornji dio - pretraga i filteri */}
       <Grid size={12}>
         <Paper
@@ -34,11 +46,8 @@ export default function PrikazPacijenata() {
           }}
         >
           <Search />
-
           <Filter />
           <Sort />
-
-
 
           <Button
             variant="contained"
@@ -58,8 +67,8 @@ export default function PrikazPacijenata() {
             <AppPagination
               metadata={pacijenti.pagination}
               onPageChange={(page: number) => {
-                dispatch(setPageNumber(page))
-                window.scrollTo({ top: 0, behavior: 'smooth' })
+                dispatch(setPageNumber(page));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             />
           </>

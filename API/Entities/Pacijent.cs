@@ -9,6 +9,7 @@ public class Pacijent
   public required string Pol { get; set; }
   public required string Adresa { get; set; }
   public required string Telefon { get; set; }
+  public required string MaticniBroj { get; set; }
 
   public ICollection<Vakcinacija>? Vakcinacije { get; set; }
 }
