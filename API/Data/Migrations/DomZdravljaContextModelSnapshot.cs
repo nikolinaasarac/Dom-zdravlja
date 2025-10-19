@@ -57,6 +57,10 @@ namespace API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MaticniBroj")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Pol")
                         .IsRequired()
                         .HasColumnType("TEXT");

@@ -25,10 +25,10 @@ public class DbInitializer
       // 1️⃣ Dodaj pacijente
       var pacijenti = new List<Pacijent>
         {
-            new Pacijent { Ime = "Marko", Prezime = "Petrović", DatumRodjenja = new DateOnly(1990,5,12), Pol="Muški", Adresa="Ulica Kralja Petra I 45, Banja Luka", Telefon="+38765123456" },
-            new Pacijent { Ime = "Jelena", Prezime = "Nikolić", DatumRodjenja = new DateOnly(1985,11,3), Pol="Ženski", Adresa="Cara Dušana 22, Istočno Sarajevo", Telefon="+38765456789" },
-            new Pacijent { Ime = "Milan", Prezime = "Jovanović", DatumRodjenja = new DateOnly(2000,2,28), Pol="Muški", Adresa="Njegoševa 10, Trebinje", Telefon="+38765222333" },
-            new Pacijent { Ime = "Ana", Prezime = "Kovačević", DatumRodjenja = new DateOnly(1997,7,19), Pol="Ženski", Adresa="Meše Selimovića 5, Bijeljina", Telefon="+38765987654" }
+            new Pacijent { Ime = "Marko", Prezime = "Petrović", DatumRodjenja = new DateOnly(1990,5,12), Pol="Muški", Adresa="Ulica Kralja Petra I 45, Banja Luka", Telefon="+38765123456", MaticniBroj="1205990123456" },
+            new Pacijent { Ime = "Jelena", Prezime = "Nikolić", DatumRodjenja = new DateOnly(1985,11,3), Pol="Ženski", Adresa="Cara Dušana 22, Istočno Sarajevo", Telefon="+38765456789", MaticniBroj="0311985654321" },
+            new Pacijent { Ime = "Milan", Prezime = "Jovanović", DatumRodjenja = new DateOnly(2000,2,28), Pol="Muški", Adresa="Njegoševa 10, Trebinje", Telefon="+38765222333", MaticniBroj="2802000123456" },
+            new Pacijent { Ime = "Ana", Prezime = "Kovačević", DatumRodjenja = new DateOnly(1997,7,19), Pol="Ženski", Adresa="Meše Selimovića 5, Bijeljina", Telefon="+38765987654", MaticniBroj="1907997654321" }
         };
       context.Pacijenti.AddRange(pacijenti);
       context.SaveChanges(); // ✅ Id-jevi su sada generisani

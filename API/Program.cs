@@ -3,7 +3,9 @@ using API.Data;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials(); // za cookie-based refresh token
     });
 });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // 🔹 JWT autentikacija
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
