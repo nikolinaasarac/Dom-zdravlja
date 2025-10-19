@@ -1,4 +1,4 @@
-/*import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -6,19 +6,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 
 import AppTextInput from "../../components/AppTextInput";
-import { type CreatePacijentSchema, createPacijentSchema } from "../../lib/schemas/createPacijentSchema";
+import {
+  type CreatePacijentSchema,
+  createPacijentSchema,
+} from "../../lib/schemas/createPacijentSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-type Pacijent = {
-  id?: number;
-  ime: string;
-  prezime: string;
-  datumRodjenja: Date;
-  pol: string;
-  adresa: string;
-  telefon: string;
-  maticniBroj: string;
-};
+import {
+  useCreatePacijentMutation,
+  useUpdatePacijentMutation,
+} from "./adminApi";
+import type { Pacijent } from "../../models/Pacijent";
 
 type Props = {
   setEditMode: (value: boolean) => void;
@@ -27,8 +24,19 @@ type Props = {
   setSelectedPacijent: (value: Pacijent | null) => void;
 };
 
-export default function PacijentForm({ setEditMode, pacijent, refetch, setSelectedPacijent }: Props) {
-  const { control, handleSubmit, reset, setError, formState: { isSubmitting } } = useForm<CreatePacijentSchema>({
+export default function PacijentForm({
+  setEditMode,
+  pacijent,
+  refetch,
+  setSelectedPacijent,
+}: Props) {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    //setError,
+    formState: { isSubmitting },
+  } = useForm<CreatePacijentSchema>({
     mode: "onTouched",
     resolver: zodResolver(createPacijentSchema),
     defaultValues: {
@@ -39,29 +47,44 @@ export default function PacijentForm({ setEditMode, pacijent, refetch, setSelect
       adresa: "",
       telefon: "",
       maticniBroj: "",
-    }
+    },
   });
 
   const [createPacijent] = useCreatePacijentMutation();
   const [updatePacijent] = useUpdatePacijentMutation();
 
   useEffect(() => {
-    if (pacijent) reset(pacijent);
+    if (pacijent) {
+      reset({
+        ...pacijent,
+        datumRodjenja: pacijent.datumRodjenja, // već je string u formatu "YYYY-MM-DD"
+      });
+    }
   }, [pacijent, reset]);
+
+  /*const createFormData = (items: FieldValues) => {
+    const formData = new FormData();
+
+    for (const key in items) {
+      formData.append(key, items[key]);
+    }
+
+    return formData;
+  };*/
 
   const onSubmit = async (data: CreatePacijentSchema) => {
     try {
-      if (pacijent) await updatePacijent({ id: pacijent.id, data }).unwrap();
-      else await createPacijent(data).unwrap();
+      if (pacijent && pacijent.id !== undefined) {
+        await updatePacijent({ id: pacijent.id, data }).unwrap();
+      } else {
+        await createPacijent(data).unwrap();
+      }
 
       setEditMode(false);
       setSelectedPacijent(null);
       refetch();
     } catch (error) {
       console.error(error);
-      handleApiError<CreatePacijentSchema>(error, setError, [
-        "ime", "prezime", "datumRodjenja", "pol", "adresa", "telefon", "maticniBroj"
-      ]);
     }
   };
 
@@ -80,7 +103,7 @@ export default function PacijentForm({ setEditMode, pacijent, refetch, setSelect
             <AppTextInput control={control} name="prezime" label="Prezime" />
           </Grid>
 
-          <Grid item ={6}>
+          <Grid size={6}>
             <Controller
               name="datumRodjenja"
               control={control}
@@ -89,9 +112,11 @@ export default function PacijentForm({ setEditMode, pacijent, refetch, setSelect
                   <DatePicker
                     label="Datum rođenja"
                     value={field.value ? dayjs(field.value) : null}
-                    onChange={(date: Dayjs | null) => field.onChange(date?.toDate())}
+                    onChange={(date: Dayjs | null) =>
+                      field.onChange(date ? date.format("YYYY-MM-DD") : "")
+                    }
                     maxDate={dayjs()}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
+                    slotProps={{ textField: { fullWidth: true } }}
                   />
                 </LocalizationProvider>
               )}
@@ -108,19 +133,37 @@ export default function PacijentForm({ setEditMode, pacijent, refetch, setSelect
             <AppTextInput control={control} name="telefon" label="Telefon" />
           </Grid>
           <Grid size={6}>
-            <AppTextInput control={control} name="maticniBroj" label="Matični broj" />
+            <AppTextInput
+              control={control}
+              name="maticniBroj"
+              label="Matični broj"
+            />
           </Grid>
         </Grid>
-xs
-        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mt: 3 }}>
-          <Button onClick={() => setEditMode(false)} variant="contained" color="inherit">
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ mt: 3 }}
+        >
+          <Button
+            onClick={() => setEditMode(false)}
+            variant="contained"
+            color="inherit"
+          >
             Otkaži
           </Button>
-          <Button loading={isSubmitting} variant="contained" color="success" type="submit">
+          <Button
+            loading={isSubmitting}
+            variant="contained"
+            color="success"
+            type="submit"
+          >
             Sačuvaj
           </Button>
         </Box>
       </form>
     </Box>
   );
-}*/
+}
