@@ -1,9 +1,4 @@
-import {
-  Button,
-  Grid,
-  Paper,
-  Typography
-} from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { useFetchPacijentiQuery } from "./pacijentApi";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { resetParams, setPageNumber } from "./pacijentSlice";
@@ -12,11 +7,54 @@ import Sort from "../../components/Sort";
 import AppPagination from "../../components/AppPagination";
 import TabelaPacijenata from "../../components/TabelaPacijenata";
 import Search from "../../components/Search";
+import { useState } from "react";
+import type { Pacijent } from "../../models/Pacijent";
+import { useDeletePacijentMutation } from "../admin/adminApi";
+import PacijentForm from "../admin/PacijentForm";
 
 export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
+
+  const {
+    data: pacijenti,
+    isLoading,
+    refetch,
+  } = useFetchPacijentiQuery(pacijentParams);
   const dispatch = useAppDispatch();
-  const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedPacijent, setSelectedPacijent] = useState<Pacijent | null>(
+    null
+  );
+  const [deletePacijent] = useDeletePacijentMutation();
+
+  const handleSelectPacijent = (pacijent: Pacijent) => {
+    setSelectedPacijent(pacijent);
+    setEditMode(true);
+  };
+
+  const handleDeletePacijent = async (id: number) => {
+    const confirmDelete = window.confirm(
+      "Jeste li sigurni da želite obrisati ovog pacijenta?"
+    );
+    if (!confirmDelete) return; // Ako korisnik klikne "Cancel", prekida se
+
+    try {
+      await deletePacijent(id);
+      refetch(); // ponovo učitava pacijente posle brisanja
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (editMode)
+    return (
+      <PacijentForm
+        setEditMode={setEditMode}
+        pacijent={selectedPacijent}
+        refetch={refetch}
+        setSelectedPacijent={setSelectedPacijent}
+      ></PacijentForm>
+    );
 
   if (isLoading || !pacijenti) return <div>Loading...</div>;
 
@@ -28,7 +66,7 @@ export default function PrikazPacijenata() {
           variant="contained"
           color="success"
           sx={{ mb: 2 }}
-          onClick={() => alert("Otvoriti formu za dodavanje pacijenta")}
+          onClick={() => setEditMode(true)}
         >
           + Dodaj novog pacijenta
         </Button>
@@ -63,12 +101,15 @@ export default function PrikazPacijenata() {
       <Grid size={12}>
         {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
           <>
-            <TabelaPacijenata />
+            <TabelaPacijenata
+              handleSelectPacijent={handleSelectPacijent}
+              handleDeletePacijent={handleDeletePacijent}
+            />
             <AppPagination
               metadata={pacijenti.pagination}
               onPageChange={(page: number) => {
                 dispatch(setPageNumber(page));
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             />
           </>

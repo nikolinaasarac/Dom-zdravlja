@@ -3,16 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { pacijentApi } from "../features/PrikazPacijenata/pacijentApi";
 import { pacijentSlice } from "../features/PrikazPacijenata/pacijentSlice";
 import { authSlice } from "../features/Login/authSlice";
-
+import { adminApi } from "../features/admin/adminApi";
 
 export const store = configureStore({
   reducer: {
     [pacijentApi.reducerPath]: pacijentApi.reducer,
-    pacijent : pacijentSlice.reducer,
-     auth: authSlice.reducer
+    pacijent: pacijentSlice.reducer,
+    auth: authSlice.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pacijentApi.middleware),
+    getDefaultMiddleware().concat(pacijentApi.middleware, adminApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
