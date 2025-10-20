@@ -25,8 +25,11 @@ export const pacijentApi = createApi({
     fetchPacijentVakcine: builder.query<Vakcinacija[], number>({
       query: (pacijentId) => `vakcinacije/${pacijentId}`,
     }),
+    fetchPacijentById: builder.query<Pacijent, number>({
+      query: (id) => `pacijenti/${id}`,
+    })
   }),
 });
 
-export const { useFetchPacijentVakcineQuery, useFetchPacijentiQuery } =
+export const { useFetchPacijentVakcineQuery, useFetchPacijentiQuery, useFetchPacijentByIdQuery } =
   pacijentApi;

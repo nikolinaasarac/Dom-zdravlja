@@ -26,6 +26,7 @@ export default function Sidebar() {
       }}
     >
       <List>
+        {/* Povratak na sve pacijente */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to="/pacijenti">
             <ListItemIcon>
@@ -37,6 +38,19 @@ export default function Sidebar() {
           </ListItemButton>
         </ListItem>
 
+        {/* 🔹 Lični podaci */}
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to={`/pacijenti/${id}`}>
+            <ListItemIcon>
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+              </svg>
+            </ListItemIcon>
+            <ListItemText primary="Lični podaci" />
+          </ListItemButton>
+        </ListItem>
+
+        {/* Vakcinacije */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to={`/pacijenti/${id}/vakcine`}>
             <ListItemIcon>
@@ -48,6 +62,7 @@ export default function Sidebar() {
           </ListItemButton>
         </ListItem>
 
+        {/* Pregledi */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to={`/pacijenti/${id}/pregledi`}>
             <ListItemIcon>
@@ -59,6 +74,7 @@ export default function Sidebar() {
           </ListItemButton>
         </ListItem>
 
+        {/* Karton */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to={`/pacijenti/${id}/karton`}>
             <ListItemIcon>

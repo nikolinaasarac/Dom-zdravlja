@@ -16,10 +16,10 @@ namespace API.Controllers
     public class PacijentiController(DomZdravljaContext context, IMapper mapper) : ControllerBase
     {
 
-        
-    [Authorize]
-  [HttpGet]
-   public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery]Params pacijentiParams)
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery] Params pacijentiParams)
         {
             var query = context.Pacijenti
             .Sort(pacijentiParams.OrderBy)
@@ -27,8 +27,8 @@ namespace API.Controllers
             .Search(pacijentiParams.SearchTerm)
             .AsQueryable();
 
-             var pacijenti = await PagedList<Pacijent>.ToPagedList(query, pacijentiParams.PageNumber,
-            pacijentiParams.PageSize);
+            var pacijenti = await PagedList<Pacijent>.ToPagedList(query, pacijentiParams.PageNumber,
+           pacijentiParams.PageSize);
 
             Response.AddPaginationHeader(pacijenti.Metadata);
 
@@ -36,11 +36,25 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pacijent>> GetPacijent(int id)
+        public async Task<ActionResult<pacijentDto>> GetPacijent(int id)
         {
-            var pacijent = await context.Pacijenti.FindAsync(id);
+            var pacijent = await context.Pacijenti
+        .Where(p => p.Id == id)
+        .Select(p => new pacijentDto
+        {
+            Ime = p.Ime,
+            Prezime = p.Prezime,
+            DatumRodjenja = p.DatumRodjenja,
+            Pol = p.Pol,
+            Adresa = p.Adresa,
+            Telefon = p.Telefon,
+            MaticniBroj = p.MaticniBroj
+        })
+        .FirstOrDefaultAsync();
 
-            if (pacijent == null) return NotFound();
+            if (pacijent == null)
+                return NotFound();
+
             return pacijent;
         }
 

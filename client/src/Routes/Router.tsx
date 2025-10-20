@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../components/App";
-import PacijentDetalji from "../features/PrikazPacijenata/PacijentDetalji";
 import PrikazPacijenata from "../features/PrikazPacijenata/PrikazPacijenata";
 import PrikazVakcinacija from "../features/PrikazPacijenata/PrikazVakcina";
 import HomePage from "../features/PocetnaStrana/HomePage";
 import LoginPage from "../features/Login/LoginPage";
+import PacijentPodaci from "../features/PrikazPacijenata/pacijentPodaci";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -16,7 +16,7 @@ export const router = createBrowserRouter(
         { path: "/", element: <LoginPage /> },
         { path: "/homepage", element: <HomePage /> },
         { path: "/pacijenti", element: <PrikazPacijenata /> },
-        { path: "/pacijenti/:id", element: <PacijentDetalji /> },
+        { path: "/pacijenti/:id", element: <PacijentPodaci /> },
         { path: "/vakcine", element: <PrikazVakcinacija /> },
         { path: "/pacijenti/:id/vakcine", element: <PrikazVakcinacija /> },
         /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
