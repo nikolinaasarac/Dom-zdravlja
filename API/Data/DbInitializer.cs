@@ -34,8 +34,9 @@ public class DbInitializer
       context.SaveChanges(); // ✅ Id-jevi su sada generisani
     }
 
-        // 2️⃣ Seed vakcinacije
-    if(!context.Vakcinacije.Any()) {
+    // 2️⃣ Seed vakcinacije
+    if (!context.Vakcinacije.Any())
+    {
       var vakcinacije = new List<Vakcinacija>
         {
             new Vakcinacija { PacijentId = 1, NazivVakcine="COVID-19", DatumPrimanja=new DateOnly(2021,3,15), Doza=1, Napomena="Bez komplikacija" },
@@ -44,9 +45,68 @@ public class DbInitializer
             new Vakcinacija { PacijentId = 3, NazivVakcine="Hepatitis B", DatumPrimanja=new DateOnly(2018,6,20), Doza=1 },
             new Vakcinacija { PacijentId = 4, NazivVakcine="COVID-19", DatumPrimanja=new DateOnly(2021,5,10), Doza=1, Napomena="Blaga reakcija" }
         };
-        context.Vakcinacije.AddRange(vakcinacije);
-        context.SaveChanges();
+      context.Vakcinacije.AddRange(vakcinacije);
+      context.SaveChanges();
     }
+    
+    if (!context.Doktori.Any())
+        {
+            var doktori = new List<Doktor>
+            {
+                new Doktor { Ime = "Petar", Prezime = "Ilić", Specijalizacija = "Opšta praksa", BrojLicence = "L12345", Telefon = "+38765111222", Email = "petar.ilic@domzdravlja.ba", Adresa = "Kralja Tomislava 1, Banja Luka" },
+                new Doktor { Ime = "Marina", Prezime = "Savić", Specijalizacija = "Pediatrija", BrojLicence = "L67890", Telefon = "+38765333444", Email = "marina.savic@domzdravlja.ba", Adresa = "Vojvode Radomira Putnika 3, Bijeljina" },
+                new Doktor { Ime = "Nenad", Prezime = "Jokić", Specijalizacija = "Kardiologija", BrojLicence = "L24680", Telefon = "+38765455666", Email = "nenad.jokic@domzdravlja.ba", Adresa = "Karađorđeva 12, Trebinje" }
+            };
+            context.Doktori.AddRange(doktori);
+            context.SaveChanges();
+        }
+
+        // 4️⃣ Pregledi
+        if (!context.Pregledi.Any())
+        {
+            var pregledi = new List<Pregled>
+            {
+                new Pregled
+                {
+                    PacijentId = 1,
+                    DoktorId = 1,
+                    DatumPregleda = new DateTime(2025, 10, 1, 9, 30, 0),
+                    VrstaPregleda = "Kontrolni",
+                    OpisSimptoma = "Glavobolja i umor",
+                    Dijagnoza = "Blaga hipertenzija",
+                    Terapija = "Preporučena dijeta i praćenje pritiska",
+                    Napomena = "Kontrola za 2 nedelje",
+                    Status = "obavljen"
+                },
+                new Pregled
+                {
+                    PacijentId = 2,
+                    DoktorId = 2,
+                    DatumPregleda = new DateTime(2025, 9, 25, 11, 0, 0),
+                    VrstaPregleda = "Pediatrijski",
+                    OpisSimptoma = "Kašalj i povišena temperatura",
+                    Dijagnoza = "Virusna infekcija",
+                    Terapija = "Paracetamol i mirovanje",
+                    Napomena = "Ponovna kontrola po potrebi",
+                    Status = "obavljen"
+                },
+                new Pregled
+                {
+                    PacijentId = 3,
+                    DoktorId = 3,
+                    DatumPregleda = new DateTime(2025, 10, 3, 14, 15, 0),
+                    VrstaPregleda = "Specijalistički",
+                    OpisSimptoma = "Bol u grudima",
+                    Dijagnoza = "Angina pectoris",
+                    Terapija = "Aspirin i pregled EKG-a",
+                    Napomena = "Dalje praćenje kod kardiologa",
+                    Status = "zakazan"
+                }
+            };
+
+            context.Pregledi.AddRange(pregledi);
+            context.SaveChanges();
+        }
 }
 }
 
