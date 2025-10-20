@@ -33,13 +33,8 @@ export const pacijentApi = createApi({
     }),
     fetchPacijentById: builder.query<Pacijent, number>({
       query: (id) => `pacijenti/${id}`,
-    })
-  }),
-});
-
-export const { useFetchPacijentVakcineQuery, useFetchPacijentiQuery, useFetchPacijentByIdQuery } =
-  pacijentApi;
-    fetchPacijentPregledi: builder.query<Pregled[], number>({
+    }),
+        fetchPacijentPregledi: builder.query<Pregled[], number>({
       query: (pacijentId) => `pregledi/${pacijentId}`,
     }),
   }),
@@ -49,4 +44,5 @@ export const {
   useFetchPacijentVakcineQuery,
   useFetchPacijentiQuery,
   useFetchPacijentPreglediQuery,
+  useFetchPacijentByIdQuery
 } = pacijentApi;
