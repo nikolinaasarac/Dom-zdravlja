@@ -1,13 +1,14 @@
 import {
-  TableContainer,
-  Paper,
+  Box,
+  Typography,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
+  Paper,
   Button,
-  Box,
 } from "@mui/material";
 import { Delete, Edit, Search } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -27,26 +28,54 @@ export default function TabelaPacijenata({
   const pacijentParams = useAppSelector((state) => state.pacijent);
   const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
 
-  if (isLoading || !pacijenti) return <div>Loading...</div>;
+  if (isLoading || !pacijenti)
+    return <Typography align="center">Učitavanje...</Typography>;
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ tableLayout: "fixed", "& td, & th": { fontSize: "1rem" } }}>
+    <TableContainer
+      component={Paper}
+      sx={{ background: "transparent", boxShadow: "none" }}
+    >
+      <Table sx={{ borderSpacing: "0 12px", borderCollapse: "separate" }}>
         <TableHead>
           <TableRow>
-            <TableCell>Ime</TableCell>
-            <TableCell>Prezime</TableCell>
-            <TableCell>Datum rođenja</TableCell>
-            <TableCell>Matični broj</TableCell>
-            <TableCell>Pol</TableCell>
-            <TableCell>Adresa</TableCell>
-            <TableCell>Telefon</TableCell>
-            <TableCell></TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Ime</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Prezime</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Datum rođenja</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Matični broj</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Pol</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Adresa</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Telefon</TableCell>
+            <TableCell align="center" sx={{ fontWeight: "bold" }}>
+              Akcije
+            </TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
           {pacijenti.pacijenti.map((pacijent) => (
-            <TableRow key={pacijent.id}>
+            <TableRow
+              key={pacijent.id}
+              sx={{
+                transition: "transform 0.4s ease, box-shadow 0.4s ease",
+                backgroundColor: "#fff",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                borderRadius: "12px",
+                "& td:first-of-type": {
+                  borderTopLeftRadius: 12,
+                  borderBottomLeftRadius: 12,
+                },
+                "& td:last-of-type": {
+                  borderTopRightRadius: 12,
+                  borderBottomRightRadius: 12,
+                },
+
+                "&:hover": {
+                  transform: "scale(1.01)", // manje zumiranje
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)", // suptilniji shadow
+                },
+              }}
+            >
               <TableCell>{pacijent.ime}</TableCell>
               <TableCell>{pacijent.prezime}</TableCell>
               <TableCell>{pacijent.datumRodjenja}</TableCell>
@@ -55,30 +84,38 @@ export default function TabelaPacijenata({
               <TableCell>{pacijent.adresa}</TableCell>
               <TableCell>{pacijent.telefon}</TableCell>
               <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    p: 0,
-                  }}
-                >
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
                   <Button
                     component={Link}
                     to={`/pacijenti/${pacijent.id}`}
-                    startIcon={<Search />}
                     size="small"
-                  />
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<Search />}
+                    sx={{ borderRadius: 2, textTransform: "none" }}
+                  >
+                    Pregled
+                  </Button>
                   <Button
                     onClick={() => handleSelectPacijent(pacijent)}
-                    startIcon={<Edit />}
                     size="small"
-                  />
+                    variant="outlined"
+                    color="success"
+                    startIcon={<Edit />}
+                    sx={{ borderRadius: 2, textTransform: "none" }}
+                  >
+                    Uredi
+                  </Button>
                   <Button
                     onClick={() => handleDeletePacijent(pacijent.id)}
-                    startIcon={<Delete />}
-                    color="error"
                     size="small"
-                  />
+                    variant="outlined"
+                    color="error"
+                    startIcon={<Delete />}
+                    sx={{ borderRadius: 2, textTransform: "none" }}
+                  >
+                    Obriši
+                  </Button>
                 </Box>
               </TableCell>
             </TableRow>

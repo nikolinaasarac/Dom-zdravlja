@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Button, Paper, Box, Typography } from "@mui/material";
 import { useFetchPacijentiQuery } from "./pacijentApi";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { resetParams, setPageNumber } from "./pacijentSlice";
@@ -6,15 +6,16 @@ import Filter from "../../components/Filter";
 import Sort from "../../components/Sort";
 import AppPagination from "../../components/AppPagination";
 import TabelaPacijenata from "../../components/TabelaPacijenata";
-import Search from "../../components/Search";
 import { useState } from "react";
 import type { Pacijent } from "../../models/Pacijent";
 import { useDeletePacijentMutation } from "../admin/adminApi";
 import PacijentForm from "../admin/PacijentForm";
+import AddIcon from "@mui/icons-material/Add";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import Search from "../../components/Search";
 
 export default function PrikazPacijenata() {
   const pacijentParams = useAppSelector((state) => state.pacijent);
-
   const {
     data: pacijenti,
     isLoading,
@@ -36,11 +37,11 @@ export default function PrikazPacijenata() {
     const confirmDelete = window.confirm(
       "Jeste li sigurni da želite obrisati ovog pacijenta?"
     );
-    if (!confirmDelete) return; // Ako korisnik klikne "Cancel", prekida se
+    if (!confirmDelete) return;
 
     try {
       await deletePacijent(id);
-      refetch(); // ponovo učitava pacijente posle brisanja
+      refetch();
     } catch (error) {
       console.log(error);
     }
@@ -53,58 +54,91 @@ export default function PrikazPacijenata() {
         pacijent={selectedPacijent}
         refetch={refetch}
         setSelectedPacijent={setSelectedPacijent}
-      ></PacijentForm>
+      />
     );
 
   if (isLoading || !pacijenti) return <div>Loading...</div>;
 
   return (
-    <Grid container spacing={2}>
-      {/* NOVO: Dugme za dodavanje pacijenta */}
-      <Grid size={12}>
-        <Button
-          variant="contained"
-          color="success"
-          sx={{ mb: 2 }}
-          onClick={() => setEditMode(true)}
-        >
-          + Dodaj novog pacijenta
-        </Button>
-      </Grid>
-
-      {/* Gornji dio - pretraga i filteri */}
-      <Grid size={12}>
-        <Paper
+    <Box
+      sx={{
+        backgroundColor: "#f3f5f9",
+        p: 3,
+        borderRadius: 3,
+      }}
+    >
+      {/* Gornji bar: pretraga + filteri + dugmad */}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2.5,
+          mb: 3,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderRadius: 3,
+          backgroundColor: "white",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
+        {/* ✅ Moderno Search polje */}
+        <Search />
+        {/* Desna strana: filteri + dugmad */}
+        <Box
           sx={{
-            p: 2,
             display: "flex",
+            gap: 1.5,
+            flexWrap: "wrap",
             alignItems: "center",
-            gap: 2,
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
           }}
         >
-          <Search />
           <Filter />
           <Sort />
-
+          <Button
+            variant="outlined"
+            color="inherit"
+            startIcon={<RestartAltIcon />}
+            onClick={() => dispatch(resetParams())}
+            sx={{
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 500,
+              backgroundColor: "#fafafa",
+              "&:hover": { backgroundColor: "#f0f0f0" },
+            }}
+          >
+            Resetuj
+          </Button>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => dispatch(resetParams())}
+            startIcon={<AddIcon />}
+            sx={{
+              borderRadius: 2,
+              px: 3,
+              boxShadow: "none",
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+            onClick={() => setEditMode(true)}
           >
-            Resetuj parametre
+            Novi pacijent
           </Button>
-        </Paper>
-      </Grid>
+        </Box>
+      </Paper>
 
-      {/* Donji dio - tabela */}
-      <Grid size={12}>
-        {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
-          <>
-            <TabelaPacijenata
-              handleSelectPacijent={handleSelectPacijent}
-              handleDeletePacijent={handleDeletePacijent}
-            />
+      {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
+        <>
+          {/* Tabela */}
+          <TabelaPacijenata
+            handleSelectPacijent={handleSelectPacijent}
+            handleDeletePacijent={handleDeletePacijent}
+          />
+
+          <Box sx={{ mt: 3 }}>
             <AppPagination
               metadata={pacijenti.pagination}
               onPageChange={(page: number) => {
@@ -112,11 +146,11 @@ export default function PrikazPacijenata() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             />
-          </>
-        ) : (
-          <Typography variant="h5">Nema rezultata.</Typography>
-        )}
-      </Grid>
-    </Grid>
+          </Box>
+        </>
+      ) : (
+        <Typography variant="h5">Nema rezultata.</Typography>
+      )}
+    </Box>
   );
 }
