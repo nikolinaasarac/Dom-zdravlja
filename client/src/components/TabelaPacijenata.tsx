@@ -64,7 +64,7 @@ export default function TabelaPacijenata({
                 >
                   <Button
                     component={Link}
-                    to={`/pacijenti/${pacijent.id}/vakcine`}
+                    to={`/pacijenti/${pacijent.id}`}
                     startIcon={<Search />}
                     size="small"
                   />
