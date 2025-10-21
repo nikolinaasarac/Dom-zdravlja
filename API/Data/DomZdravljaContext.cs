@@ -12,5 +12,6 @@ public class DomZdravljaContext(DbContextOptions options) : DbContext(options)
   public required DbSet<RefreshToken> RefreshTokens { get; set; }
   public required DbSet<Doktor> Doktori { get; set; }
   public required DbSet<Pregled> Pregledi { get; set; }
+  public required DbSet<Uputnica> Uputnice { get; set; }
 
 }
