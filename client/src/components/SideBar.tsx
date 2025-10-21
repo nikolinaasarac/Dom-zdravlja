@@ -76,7 +76,7 @@ export default function Sidebar() {
 
         {/* Karton */}
         <ListItem disablePadding>
-          <ListItemButton component={Link} to={`/pacijenti/${id}/karton`}>
+          <ListItemButton component={Link} to={`/pacijenti/${id}/uputnice`}>
             <ListItemIcon>
               <svg width="24" height="24" viewBox="0 0 24 24">
                 <path d="M6 2h9l5 5v15c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm9 5V3.5L18.5 7H15z" />

@@ -6,6 +6,8 @@ import HomePage from "../features/PocetnaStrana/HomePage";
 import LoginPage from "../features/Login/LoginPage";
 import PacijentPodaci from "../features/PrikazPacijenata/pacijentPodaci";
 import PrikazPregleda from "../features/PrikazPacijenata/PrikazPregleda";
+import TabelaUputnica from "../features/PrikazPacijenata/PrikazUputnica";
+import UputnicaForm from "../features/PrikazPacijenata/UputnicaForm";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -21,6 +23,9 @@ export const router = createBrowserRouter(
         { path: "/vakcine", element: <PrikazVakcinacija /> },
         { path: "/pacijenti/:id/vakcine", element: <PrikazVakcinacija /> },
         { path: "/pregledi/:id", element: <PrikazPregleda /> },
+        { path: "/pacijenti/:id/uputnice", element: <TabelaUputnica /> },
+        { path: "/pacijenti/:id/uputnice/dodaj", element: <UputnicaForm /> },
+
         /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
           throw new Error("Function not implemented.");
         } } pacijent={null} refetch={function (): void {

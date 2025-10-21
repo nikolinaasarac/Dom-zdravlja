@@ -5,6 +5,7 @@ import type { Vakcinacija } from "../../models/Vakcinacija";
 import type { PacijentParams } from "../../models/PacijentParams";
 import type { Pagination } from "../../models/pagination";
 import type { Pregled } from "../../models/Pregled";
+import type { Uputnica, UputnicaDto } from "../../models/Uputnica";
 
 export const pacijentApi = createApi({
   reducerPath: "pacijentApi",
@@ -34,8 +35,19 @@ export const pacijentApi = createApi({
     fetchPacijentById: builder.query<Pacijent, number>({
       query: (id) => `pacijenti/${id}`,
     }),
-        fetchPacijentPregledi: builder.query<Pregled[], number>({
+    fetchPacijentPregledi: builder.query<Pregled[], number>({
       query: (pacijentId) => `pregledi/${pacijentId}`,
+    }),
+    fetchUputnice: builder.query<Uputnica[], number | void>({
+      query: (id) => `uputnice/${id}`,
+    }),
+
+    createUputnica: builder.mutation<Uputnica, { pacijentId: number; data: UputnicaDto }>({
+      query: ({ pacijentId, data }) => ({
+        url: `uputnice/${pacijentId}`,
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });
@@ -44,5 +56,7 @@ export const {
   useFetchPacijentVakcineQuery,
   useFetchPacijentiQuery,
   useFetchPacijentPreglediQuery,
-  useFetchPacijentByIdQuery
+  useFetchPacijentByIdQuery,
+  useCreateUputnicaMutation,
+  useFetchUputniceQuery
 } = pacijentApi;
