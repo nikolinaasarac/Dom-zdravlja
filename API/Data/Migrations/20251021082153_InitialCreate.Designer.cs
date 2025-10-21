@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DomZdravljaContext))]
-    [Migration("20251020075930_AddPreglediDoktori")]
-    partial class AddPreglediDoktori
+    [Migration("20251021082153_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,12 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("DoktorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PacijentId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -78,6 +84,10 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoktorId");
+
+                    b.HasIndex("PacijentId");
 
                     b.ToTable("Korisnici");
                 });
@@ -217,6 +227,21 @@ namespace API.Data.Migrations
                     b.HasIndex("PacijentId");
 
                     b.ToTable("Vakcinacije");
+                });
+
+            modelBuilder.Entity("API.Entities.Korisnik", b =>
+                {
+                    b.HasOne("API.Entities.Doktor", "Doktor")
+                        .WithMany()
+                        .HasForeignKey("DoktorId");
+
+                    b.HasOne("API.Entities.Pacijent", "Pacijent")
+                        .WithMany()
+                        .HasForeignKey("PacijentId");
+
+                    b.Navigation("Doktor");
+
+                    b.Navigation("Pacijent");
                 });
 
             modelBuilder.Entity("API.Entities.Pregled", b =>
