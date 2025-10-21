@@ -62,6 +62,12 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("DoktorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PacijentId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -75,6 +81,10 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoktorId");
+
+                    b.HasIndex("PacijentId");
 
                     b.ToTable("Korisnici");
                 });
@@ -214,6 +224,21 @@ namespace API.Data.Migrations
                     b.HasIndex("PacijentId");
 
                     b.ToTable("Vakcinacije");
+                });
+
+            modelBuilder.Entity("API.Entities.Korisnik", b =>
+                {
+                    b.HasOne("API.Entities.Doktor", "Doktor")
+                        .WithMany()
+                        .HasForeignKey("DoktorId");
+
+                    b.HasOne("API.Entities.Pacijent", "Pacijent")
+                        .WithMany()
+                        .HasForeignKey("PacijentId");
+
+                    b.Navigation("Doktor");
+
+                    b.Navigation("Pacijent");
                 });
 
             modelBuilder.Entity("API.Entities.Pregled", b =>
