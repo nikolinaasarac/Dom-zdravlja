@@ -1,40 +1,18 @@
-using API.Data;
 using API.DTO;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace API.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class PreglediController(DomZdravljaContext context) : ControllerBase
+namespace API.Controllers
 {
-    [HttpGet("{pacijentId}")]
-    public async Task<ActionResult<List<PregledDto>>> GetPregledi(int pacijentId)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PreglediController(IPregledService pregledService) : ControllerBase
     {
-        var pregledi = await context.Pregledi
-            .Where(v => v.PacijentId == pacijentId)
-            .Include(p => p.Pacijent)
-            .Include(p => p.Doktor)
-            .Select(p => new PregledDto
-            {
-                Id = p.Id,
-                DatumPregleda = p.DatumPregleda,
-                VrstaPregleda = p.VrstaPregleda,
-                OpisSimptoma = p.OpisSimptoma,
-                Dijagnoza = p.Dijagnoza,
-                Terapija = p.Terapija,
-                Napomena = p.Napomena,
-                Status = p.Status,
-
-                PacijentIme = p.Pacijent.Ime,
-                PacijentPrezime = p.Pacijent.Prezime,
-
-                DoktorIme = p.Doktor.Ime,
-                DoktorPrezime = p.Doktor.Prezime
-            })
-            .ToListAsync();
-
-        return pregledi;
+        [HttpGet("{pacijentId}")]
+        public async Task<ActionResult<List<PregledDto>>> GetPregledi(int pacijentId)
+        {
+            var pregledi = await pregledService.GetPreglediByPacijentIdAsync(pacijentId);
+            return Ok(pregledi);
+        }
     }
 }
