@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store/store";
-import { setAccessToken } from "./tokenStore"; // tokenStore runtime memorija
-import { setUser, logout } from "./authSlice"; // ako koristiš user info u Reduxu
+import { setAccessToken } from "./tokenStore";
+import { setUser, logout } from "./authSlice";
 import { authApi } from "./authApi";
 
 export default function LoginPage() {
@@ -19,26 +19,14 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // 🔹 Login request
       const response = await authApi.login({ username, password });
-
-      // Backend vraća TokenResponseDto
       const { accessToken, userId } = response.data;
-      console.log(accessToken);
-
-      // 🔹 Sačuvaj samo access token (u runtime memoriji)
       setAccessToken(accessToken);
 
-      // 🔹 (Opcionalno) sačuvaj user info u Redux ako želiš prikazati username itd.
       if (userId) {
-        dispatch(setUser({
-          id: userId,
-          email: "",
-          role: ""
-        }));
+        dispatch(setUser({ id: userId, email: "", role: "" }));
       }
 
-      // 🔹 Navigacija poslije uspješnog logina
       navigate("/homepage", { replace: true });
     } catch (err) {
       console.error("Login error:", err);
@@ -49,49 +37,118 @@ export default function LoginPage() {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
+      sx={{
+        minHeight: "100vh",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Poppins', sans-serif",
+      }}
     >
-      <Typography variant="h4" mb={3}>
-        Login
-      </Typography>
-
       <Box
         component="form"
         onSubmit={handleLogin}
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        width={300}
+        sx={{
+          width: 360,
+          p: 4,
+          borderRadius: 4,
+          background: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
+        <Typography
+          variant="h4"
+          sx={{ mb: 1, color: "#fff", fontWeight: 600, letterSpacing: 1 }}
+        >
+          Login
+        </Typography>
+        <Typography sx={{ mb: 3, color: "#ddd", fontSize: 14 }}>
+          Dobrodošli nazad! Prijavite se na svoj nalog.
+        </Typography>
+
         <TextField
           label="Korisničko ime"
           variant="outlined"
+          fullWidth
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
+          sx={{
+            mb: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.25)",
+              color: "#fff",
+              "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+              "&:hover fieldset": { borderColor: "#90caf9" },
+              "&.Mui-focused fieldset": { borderColor: "#42a5f5" },
+            },
+            "& .MuiInputLabel-root": { color: "#ddd" },
+          }}
         />
         <TextField
           label="Lozinka"
           type="password"
           variant="outlined"
+          fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          sx={{
+            mb: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.25)",
+              color: "#fff",
+              "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+              "&:hover fieldset": { borderColor: "#90caf9" },
+              "&.Mui-focused fieldset": { borderColor: "#42a5f5" },
+            },
+            "& .MuiInputLabel-root": { color: "#ddd" },
+          }}
         />
-        <Button type="submit" variant="contained" color="primary">
+
+
+
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+            borderRadius: "12px",
+            background: "linear-gradient(90deg, #43cea2, #185a9d)",
+            textTransform: "none",
+            fontWeight: 600,
+            py: 1.2,
+            fontSize: "1rem",
+            "&:hover": { background: "linear-gradient(90deg, #3bb78f, #184e8d)" },
+          }}
+        >
           Prijavi se
         </Button>
-      </Box>
 
-      {error && (
-        <Typography color="error" mt={2}>
-          {error}
+        {error && (
+          <Typography color="error" mt={2}>
+            {error}
+          </Typography>
+        )}
+
+        <Typography sx={{ mt: 3, color: "#eee", fontSize: 14 }}>
+          Nemaš nalog?{" "}
+          <Box
+            component="span"
+            sx={{ color: "#90caf9", cursor: "pointer", fontWeight: 500 }}
+          >
+            Registruj se
+          </Box>
         </Typography>
-      )}
+      </Box>
     </Box>
   );
 }
