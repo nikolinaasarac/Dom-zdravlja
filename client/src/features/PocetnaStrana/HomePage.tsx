@@ -1,23 +1,12 @@
-import { useState } from "react";
+
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
   Box,
-  Button,
+  Typography
 } from "@mui/material";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../store/store";
-import { logout as logoutRedux } from "../../features/Login/authSlice";
-import { setAccessToken } from "../../features/Login/tokenStore";
-import { authApi } from "../../features/Login/authApi";
 import Carousel from "react-material-ui-carousel";
 import Kartica from "./Kartica";
 import "../../styles.css";
+import NavBar from "../../components/NavBar";
 
 const opcije = [
   {
@@ -68,54 +57,11 @@ const sliderItems = [
 ];
 
 export default function HomePage() {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
-
-  const handleLogout = async () => {
-    try {
-      setAccessToken(null);
-      dispatch(logoutRedux());
-      navigate("/", { replace: true });
-      await authApi.logout();
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
 
   return (
     <div className="homepage">
       {/* Navbar */}
-      <AppBar position="fixed" sx={{ backgroundColor: "rgba(21,101,192,0.9)", backdropFilter: "blur(4px)", zIndex: 2 }}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>Dom Zdravlja App</Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            {opcije.map((opcija, i) => (
-              <Button key={i} color="inherit" onClick={() => navigate(opcija.putanja)}>
-                {opcija.naziv}
-              </Button>
-            ))}
-            <IconButton color="inherit" onClick={handleMenu}>
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            >
-              <MenuItem onClick={() => navigate("/homepage")}>Moj nalog</MenuItem>
-              <MenuItem onClick={handleLogout}>Odjavi se</MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
+        <NavBar opcije={opcije} />
 
       {/* Carousel */}
       <Box sx={{ mt: 8, width: "100%" }}>

@@ -50,6 +50,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDoktorService, DoktorService>();
+builder.Services.AddScoped<IPacijentService, PacijentService>();
+builder.Services.AddScoped<IPregledService, PregledService>();
+builder.Services.AddScoped<IUputnicaService, UputnicaService>();
+builder.Services.AddScoped<IVakcinacijaService, VakcinacijaService>();
+
 
 var app = builder.Build();
 QuestPDF.Settings.License = LicenseType.Community;
