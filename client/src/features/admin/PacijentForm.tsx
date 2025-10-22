@@ -16,6 +16,7 @@ import {
   useUpdatePacijentMutation,
 } from "./adminApi";
 import type { Pacijent } from "../../models/Pacijent";
+import AppSelect from "../../components/AppSelect";
 
 type Props = {
   setEditMode: (value: boolean) => void;
@@ -43,7 +44,7 @@ export default function PacijentForm({
       ime: "",
       prezime: "",
       datumRodjenja: "",
-      pol: "",
+      pol: undefined,
       adresa: "",
       telefon: "",
       maticniBroj: "",
@@ -57,10 +58,15 @@ export default function PacijentForm({
     if (pacijent) {
       reset({
         ...pacijent,
-        datumRodjenja: pacijent.datumRodjenja, // već je string u formatu "YYYY-MM-DD"
+        pol:
+          pacijent.pol === "Muški" || pacijent.pol === "Ženski"
+            ? pacijent.pol
+            : undefined,
+        datumRodjenja: pacijent.datumRodjenja,
       });
     }
   }, [pacijent, reset]);
+
 
   /*const createFormData = (items: FieldValues) => {
     const formData = new FormData();
@@ -107,24 +113,40 @@ export default function PacijentForm({
             <Controller
               name="datumRodjenja"
               control={control}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Datum rođenja"
                     value={field.value ? dayjs(field.value) : null}
                     onChange={(date: Dayjs | null) =>
-                      field.onChange(date ? date.format("YYYY-MM-DD") : "")
+                      field.onChange(date ? date.format("YYYY-MM-DD") : null)
                     }
                     maxDate={dayjs()}
-                    slotProps={{ textField: { fullWidth: true } }}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!fieldState.error,
+                        helperText: fieldState.error?.message,
+                      },
+                    }}
                   />
                 </LocalizationProvider>
               )}
             />
+
           </Grid>
 
           <Grid size={6}>
-            <AppTextInput control={control} name="pol" label="Pol" />
+            <AppSelect
+              control={control}
+              name="pol"
+              label="Pol"
+              options={[
+                { value: "Muški", label: "Muški" },
+                { value: "Ženski", label: "Ženski" },
+              ]}
+            />
+
           </Grid>
           <Grid size={12}>
             <AppTextInput control={control} name="adresa" label="Adresa" />
