@@ -10,22 +10,22 @@ import NavBar from "../../components/NavBar";
 
 const opcije = [
   {
+    naziv: "Početna strana",
+    opis: "",
+    putanja: "/homepage",
+    slika: "",
+  },
+  {
     naziv: "Pacijenti",
     opis: "Prikaži i upravljaj pacijentima",
     putanja: "/pacijenti",
     slika: `./../../../images/pacijent.png`,
   },
   {
-    naziv: "Pregledi",
-    opis: "Pregledaj evidenciju vakcinacija",
+    naziv: "Svi pregledi",
+    opis: "Pregledaj evidenciju svih pregleda",
     putanja: "/pregledi",
     slika: `./../../../images/pregled.png`,
-  },
-  {
-    naziv: "Zakaži pregled",
-    opis: "Pregledaj evidenciju vakcinacija",
-    putanja: "/",
-    slika: `./../../../images/zakaziPregled.png`,
   },
   {
     naziv: "Moj nalog",

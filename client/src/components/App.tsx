@@ -1,33 +1,35 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./SideBar";
 import { Box } from "@mui/material";
 import NavBar from "./NavBar";
 
 // Opcije za Navbar
 const opcije = [
-  { naziv: "Pacijenti", putanja: "/pacijenti" },
-  { naziv: "Pregledi", putanja: "/pregledi" },
-  { naziv: "Zakaži pregled", putanja: "/" },
+  { naziv: "Početna strana", putanja: "/homepage" },
+    { naziv: "Pacijenti", putanja: "/pacijenti" },
+  { naziv: "Svi pregledi", putanja: "/pregledi" },
   { naziv: "Moj nalog", putanja: "/moj-nalog" },
 ];
 
 function App() {
+  const location = useLocation();
+
+  // Ne prikazuj Navbar i Sidebar na login stranici
+  const isLoginPage = location.pathname === "/";
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {/* Navbar iznad svega */}
-      <NavBar opcije={opcije} />
+      {!isLoginPage && <NavBar opcije={opcije} />}
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
-        {/* Sidebar sa leve strane */}
-        <Sidebar />
+        {!isLoginPage && <Sidebar />}
 
-        {/* Glavni sadržaj */}
         <Box
           component="main"
           sx={{
             flexGrow: 1,
             p: 3,
-            mt: "64px", // visina Navbar-a da sadržaj ne bude ispod
+            mt: !isLoginPage ? "64px" : 0, // pomak za Navbar samo ako nije login
             overflowY: "auto",
           }}
         >
