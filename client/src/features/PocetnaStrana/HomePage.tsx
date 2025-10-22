@@ -110,7 +110,7 @@ export default function HomePage() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
-              <MenuItem onClick={() => navigate("/moj-nalog")}>Moj nalog</MenuItem>
+              <MenuItem onClick={() => navigate("/homepage")}>Moj nalog</MenuItem>
               <MenuItem onClick={handleLogout}>Odjavi se</MenuItem>
             </Menu>
           </Box>

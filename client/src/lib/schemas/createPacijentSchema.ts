@@ -11,19 +11,37 @@ export const createPacijentSchema = z.object({
     .nonempty("Prezime je obavezno.")
     .max(50, "Prezime može imati najviše 50 karaktera."),
 
-datumRodjenja: z
-  .string()
-  .nonempty("Datum rođenja je obavezan.")
-  .refine((val) => {
-    const d = new Date(val);
-    return !isNaN(d.getTime()) && d <= new Date();
-  }, "Datum rođenja ne može biti u budućnosti."),
+  datumRodjenja: z
+    .string()
+    .nullable()
+    .superRefine((val, ctx) => {
+      if (!val) {
+        ctx.addIssue({
+          code: "custom", // umesto ZodIssueCode.custom
+          message: "Datum rođenja je obavezan.",
+        });
+        return;
+      }
 
+      const date = new Date(val);
+      if (isNaN(date.getTime())) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Datum rođenja nije validan.",
+        });
+        return;
+      }
+
+      if (date > new Date()) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Datum rođenja ne može biti u budućnosti.",
+        });
+      }
+    }),
 
   pol: z
-    .string()
-    .nonempty("Pol je obavezan.")
-    .max(20, "Pol može imati najviše 20 karaktera."),
+    .enum(["Muški", "Ženski"], { message: "Izaberite pol." }),
 
   adresa: z
     .string()
