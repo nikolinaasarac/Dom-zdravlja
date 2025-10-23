@@ -162,11 +162,16 @@ namespace API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ZahtjevZaPregledId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoktorId");
 
                     b.HasIndex("PacijentId");
+
+                    b.HasIndex("ZahtjevZaPregledId");
 
                     b.ToTable("Pregledi");
                 });
@@ -262,6 +267,38 @@ namespace API.Data.Migrations
                     b.ToTable("Vakcinacije");
                 });
 
+            modelBuilder.Entity("ZahtjevZaPregled", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DatumZahtjeva")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DoktorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Opis")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PacijentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoktorId");
+
+                    b.HasIndex("PacijentId");
+
+                    b.ToTable("ZahtjeviZaPregled");
+                });
+
             modelBuilder.Entity("API.Entities.Korisnik", b =>
                 {
                     b.HasOne("API.Entities.Doktor", "Doktor")
@@ -286,14 +323,22 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("API.Entities.Pacijent", "Pacijent")
-                        .WithMany()
+                        .WithMany("Pregledi")
                         .HasForeignKey("PacijentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ZahtjevZaPregled", "ZahtjevZaPregled")
+                        .WithMany()
+                        .HasForeignKey("ZahtjevZaPregledId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Doktor");
 
                     b.Navigation("Pacijent");
+
+                    b.Navigation("ZahtjevZaPregled");
                 });
 
             modelBuilder.Entity("API.Entities.RefreshToken", b =>
@@ -337,9 +382,30 @@ namespace API.Data.Migrations
                     b.Navigation("Pacijent");
                 });
 
+            modelBuilder.Entity("ZahtjevZaPregled", b =>
+                {
+                    b.HasOne("API.Entities.Doktor", "Doktor")
+                        .WithMany("ZahtjeviZaPregled")
+                        .HasForeignKey("DoktorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Pacijent", "Pacijent")
+                        .WithMany("ZahtjeviZaPregled")
+                        .HasForeignKey("PacijentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doktor");
+
+                    b.Navigation("Pacijent");
+                });
+
             modelBuilder.Entity("API.Entities.Doktor", b =>
                 {
                     b.Navigation("Pregledi");
+
+                    b.Navigation("ZahtjeviZaPregled");
                 });
 
             modelBuilder.Entity("API.Entities.Korisnik", b =>
@@ -349,7 +415,11 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Pacijent", b =>
                 {
+                    b.Navigation("Pregledi");
+
                     b.Navigation("Vakcinacije");
+
+                    b.Navigation("ZahtjeviZaPregled");
                 });
 #pragma warning restore 612, 618
         }

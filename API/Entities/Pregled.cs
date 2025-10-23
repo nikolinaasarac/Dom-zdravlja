@@ -25,4 +25,7 @@ public class Pregled
 
     public int DoktorId { get; set; }
     public Doktor Doktor { get; set; } = null!;
+    public int ZahtjevZaPregledId { get; set; }
+    public ZahtjevZaPregled ZahtjevZaPregled { get; set; } = null!;
+
 }
