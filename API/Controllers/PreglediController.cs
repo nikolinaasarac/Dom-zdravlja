@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.Data;
 using API.DTO;
 using API.Entities;
@@ -18,13 +19,29 @@ namespace API.Controllers
             return Ok(pregledi);
         }
 
-        [HttpGet("doktor/{doktorId}")]
-        public async Task<List<PregledDto>> GetPreglediZaDoktoraAsync(int doktorId)
+        [HttpGet("doktor/pregledi")]
+        public async Task<IActionResult> GetPreglediZaPrijavljenogDoktora()
         {
-            return await context.Pregledi
+            // 1. Dohvati korisnički ID iz JWT tokena
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim is null) return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim);
+
+            // 2. Dohvati korisnika i njegovog doktora
+            var korisnik = await context.Korisnici
+                .Include(u => u.Doktor)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (korisnik?.Doktor == null)
+                return BadRequest("Prijavljeni korisnik nije doktor.");
+
+            var doktorId = korisnik.Doktor.Id;
+
+            // 3. Dohvati preglede za doktora
+            var pregledi = await context.Pregledi
                 .Where(p => p.DoktorId == doktorId)
                 .Include(p => p.Pacijent)
-                .Include(p => p.Doktor)
                 .Select(p => new PregledDto
                 {
                     Id = p.Id,
@@ -39,10 +56,12 @@ namespace API.Controllers
                     PacijentIme = p.Pacijent.Ime,
                     PacijentPrezime = p.Pacijent.Prezime,
 
-                    DoktorIme = p.Doktor.Ime,
-                    DoktorPrezime = p.Doktor.Prezime
+                    DoktorIme = korisnik.Doktor.Ime,
+                    DoktorPrezime = korisnik.Doktor.Prezime
                 })
                 .ToListAsync();
+
+            return Ok(pregledi);
         }
 
         [HttpPut("obradi/{id}")]
