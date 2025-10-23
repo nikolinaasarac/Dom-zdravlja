@@ -12,4 +12,6 @@ public class Pacijent
   public required string MaticniBroj { get; set; }
 
   public ICollection<Vakcinacija>? Vakcinacije { get; set; }
+  public ICollection<Pregled>? Pregledi { get; set; }
+  public ICollection<ZahtjevZaPregled>? ZahtjeviZaPregled { get; set; }
 }

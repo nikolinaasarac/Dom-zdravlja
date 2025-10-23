@@ -13,5 +13,7 @@ public class DomZdravljaContext(DbContextOptions options) : DbContext(options)
   public required DbSet<Doktor> Doktori { get; set; }
   public required DbSet<Pregled> Pregledi { get; set; }
   public required DbSet<Uputnica> Uputnice { get; set; }
+  public required DbSet<ZahtjevZaPregled> ZahtjeviZaPregled { get; set; }
+
 
 }
