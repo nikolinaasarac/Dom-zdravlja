@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -6,26 +7,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-  [ApiController]
   [Route("api/[controller]")]
+  [ApiController]
+
   public class ZahtjevZaPregledController(DomZdravljaContext context) : ControllerBase
   {
 
     // POST: api/ZahtjevZaPregled
     [HttpPost]
-    public async Task<IActionResult> KreirajZahtjev(KreirajZahtjevDto dto)
+    public async Task<IActionResult> KreirajZahtjev([FromBody] KreirajZahtjevDto dto)
     {
-      var pacijent = await context.Pacijenti.FindAsync(dto.PacijentId);
+      // 1️⃣ Dohvati ID prijavljenog korisnika iz JWT tokena
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (userIdClaim == null)
+        return Unauthorized("Nije moguće prepoznati korisnika.");
+
+      var userId = Guid.Parse(userIdClaim);
+
+      // 2️⃣ Nađi korisnika i povezanog pacijenta
+      var korisnik = await context.Korisnici
+          .Include(k => k.Pacijent)
+          .FirstOrDefaultAsync(k => k.Id == userId);
+
+      if (korisnik?.Pacijent == null)
+        return BadRequest("Prijavljeni korisnik nije pacijent.");
+
+      var pacijent = korisnik.Pacijent;
+
+      // 3️⃣ Nađi izabranog doktora
       var doktor = await context.Doktori.FindAsync(dto.DoktorId);
+      if (doktor == null)
+        return BadRequest("Neispravan ID doktora.");
 
-      if (pacijent == null || doktor == null)
-        return BadRequest("Neispravan ID pacijenta ili doktora.");
-
+      // 4️⃣ Kreiraj novi zahtjev
       var zahtjev = new ZahtjevZaPregled
       {
-        PacijentId = dto.PacijentId,
+        PacijentId = pacijent.Id,
         Pacijent = pacijent,
-        DoktorId = dto.DoktorId,
+        DoktorId = doktor.Id,
         Doktor = doktor,
         Opis = dto.Opis,
         Status = "Na čekanju",
@@ -35,6 +54,7 @@ namespace API.Controllers
       context.ZahtjeviZaPregled.Add(zahtjev);
       await context.SaveChangesAsync();
 
+      // 5️⃣ Vrati DTO rezultat
       var result = new ZahtjevZaPregledDto
       {
         Id = zahtjev.Id,
@@ -51,13 +71,27 @@ namespace API.Controllers
     }
 
 
-    [HttpGet("doktor/{doktorId}")]
-    public async Task<List<ZahtjevZaPregledDto>> GetZahtjeviZaDoktora(int doktorId)
+
+    // GET: api/ZahtjevZaPregled/doktor
+    [HttpGet("doktor")]
+    public async Task<ActionResult<List<ZahtjevZaPregledDto>>> GetZahtjeviZaDoktora()
     {
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (userIdClaim == null) return Unauthorized();
+
+      var userId = Guid.Parse(userIdClaim);
+
+      var korisnik = await context.Korisnici
+          .Include(k => k.Doktor)
+          .FirstOrDefaultAsync(k => k.Id == userId);
+
+      if (korisnik?.Doktor == null)
+        return BadRequest("Prijavljeni korisnik nije doktor.");
+
       var zahtjevi = await context.ZahtjeviZaPregled
           .Include(z => z.Pacijent)
           .Include(z => z.Doktor)
-          .Where(z => z.DoktorId == doktorId)
+          .Where(z => z.DoktorId == korisnik.Doktor.Id)
           .Select(z => new ZahtjevZaPregledDto
           {
             Id = z.Id,
@@ -71,8 +105,103 @@ namespace API.Controllers
           })
           .ToListAsync();
 
-      return zahtjevi;
+      return Ok(zahtjevi);
     }
+
+    [HttpGet("pacijent")]
+    public async Task<ActionResult<List<ZahtjevZaPregledDto>>> GetZahtjeviZaPacijenta()
+    {
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (userIdClaim == null) return Unauthorized();
+
+      var userId = Guid.Parse(userIdClaim);
+
+      var korisnik = await context.Korisnici
+          .Include(k => k.Pacijent)
+          .FirstOrDefaultAsync(k => k.Id == userId);
+
+      if (korisnik?.Pacijent == null)
+        return BadRequest("Prijavljeni korisnik nije pacijent.");
+
+      var zahtjevi = await context.ZahtjeviZaPregled
+          .Include(z => z.Pacijent)
+          .Include(z => z.Doktor)
+          .Where(z => z.PacijentId == korisnik.Pacijent.Id)
+          .Select(z => new ZahtjevZaPregledDto
+          {
+            Id = z.Id,
+            DatumZahtjeva = z.DatumZahtjeva,
+            Opis = z.Opis,
+            Status = z.Status,
+            PacijentIme = z.Pacijent.Ime,
+            PacijentPrezime = z.Pacijent.Prezime,
+            DoktorIme = z.Doktor.Ime,
+            DoktorPrezime = z.Doktor.Prezime
+          })
+          .ToListAsync();
+
+      return Ok(zahtjevi);
+    }
+
+    [HttpGet("moji-zahtjevi")]
+    public async Task<IActionResult> GetMojiZahtjevi()
+    {
+      // 1️⃣ Dohvati ID prijavljenog korisnika iz JWT tokena
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (userIdClaim is null)
+        return Unauthorized("Nije moguće prepoznati korisnika.");
+
+      var userId = Guid.Parse(userIdClaim);
+
+      // 2️⃣ Učitaj korisnika zajedno sa doktorom i pacijentom
+      var korisnik = await context.Korisnici
+          .Include(k => k.Doktor)
+          .Include(k => k.Pacijent)
+          .FirstOrDefaultAsync(k => k.Id == userId);
+
+      if (korisnik == null)
+        return Unauthorized("Korisnik nije pronađen.");
+
+      // 3️⃣ Odredi filter za zahtjeve prema ulozi
+      IQueryable<ZahtjevZaPregled> zahtjeviQuery = context.ZahtjeviZaPregled
+          .Include(z => z.Pacijent)
+          .Include(z => z.Doktor);
+
+      if (korisnik.Doktor != null)
+      {
+        // Prijavljen doktor → zahtjevi koji su njemu upućeni
+        zahtjeviQuery = zahtjeviQuery.Where(z => z.DoktorId == korisnik.Doktor.Id);
+      }
+      else if (korisnik.Pacijent != null)
+      {
+        // Prijavljen pacijent → zahtjevi koje je on poslao
+        zahtjeviQuery = zahtjeviQuery.Where(z => z.PacijentId == korisnik.Pacijent.Id);
+      }
+      else
+      {
+        return BadRequest("Korisnik nema ulogu doktora niti pacijenta.");
+      }
+
+      // 4️⃣ Mapiranje na DTO
+      var zahtjevi = await zahtjeviQuery
+          .Select(z => new ZahtjevZaPregledDto
+          {
+            Id = z.Id,
+            DatumZahtjeva = z.DatumZahtjeva,
+            Opis = z.Opis,
+            Status = z.Status,
+            PacijentIme = z.Pacijent.Ime,
+            PacijentPrezime = z.Pacijent.Prezime,
+            DoktorIme = z.Doktor.Ime,
+            DoktorPrezime = z.Doktor.Prezime
+          })
+          .ToListAsync();
+
+      return Ok(zahtjevi);
+    }
+
+
+
 
 
     // PUT: api/ZahtjevZaPregled/odobri/10
@@ -104,7 +233,7 @@ namespace API.Controllers
       context.Pregledi.Add(pregled);
       await context.SaveChangesAsync();
 
-      return Ok(new { message = "Zahtjev prihvaćen i pregled zakazan."});
+      return Ok(new { message = "Zahtjev prihvaćen i pregled zakazan." });
     }
 
     // PUT: api/ZahtjevZaPregled/odbij/10
@@ -118,6 +247,28 @@ namespace API.Controllers
       await context.SaveChangesAsync();
 
       return Ok(new { message = "Zahtjev odbijen." });
+    }
+
+    [HttpGet]
+    public async Task<List<ZahtjevZaPregledDto>> GetAllZahtjevi()
+    {
+      var zahtjevi = await context.ZahtjeviZaPregled
+          .Include(z => z.Pacijent)
+          .Include(z => z.Doktor)
+          .Select(z => new ZahtjevZaPregledDto
+          {
+            Id = z.Id,
+            DatumZahtjeva = z.DatumZahtjeva,
+            Opis = z.Opis,
+            Status = z.Status,
+            PacijentIme = z.Pacijent.Ime,
+            PacijentPrezime = z.Pacijent.Prezime,
+            DoktorIme = z.Doktor.Ime,
+            DoktorPrezime = z.Doktor.Prezime
+          })
+          .ToListAsync();
+
+      return zahtjevi;
     }
   }
 }
