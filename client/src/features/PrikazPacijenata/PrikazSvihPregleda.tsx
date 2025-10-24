@@ -10,14 +10,20 @@ import {
   Collapse,
   Box,
   Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { useState } from "react";
 import type { Pregled } from "../../models/Pregled";
 import { useFetchPreglediQuery } from "../doktor/doktorApi";
+import PregledForm from "../doktor/PregledForm";
 
-function PregledRow({ p }: { p: Pregled }) {
+function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   return (
     <>
@@ -26,7 +32,7 @@ function PregledRow({ p }: { p: Pregled }) {
         hover
         sx={{
           transition: "transform 0.25s ease, box-shadow 0.25s ease",
-          backgroundColor: "#fff", // čvrsto bijela pozadina
+          backgroundColor: "#fff",
           boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
           borderRadius: "12px",
           "& td:first-of-type": {
@@ -38,12 +44,9 @@ function PregledRow({ p }: { p: Pregled }) {
             borderBottomRightRadius: 12,
           },
           "&:hover": {
-            transform: "scale(1.01)", // blago povećanje
-            boxShadow: "0 6px 16px rgba(0,0,0,0.15)", // malo jača sjena
-            backgroundColor: "#fff", // ostaje bijelo
-          },
-          "&.MuiTableRow-hover:hover": {
-            backgroundColor: "#fff !important", // poništava MUI default hover overlay
+            transform: "scale(1.01)",
+            boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+            backgroundColor: "#fff",
           },
         }}
       >
@@ -55,6 +58,9 @@ function PregledRow({ p }: { p: Pregled }) {
           >
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
+        </TableCell>
+        <TableCell>
+          {p.pacijentIme} {p.pacijentPrezime}
         </TableCell>
         <TableCell sx={{ fontWeight: 500 }}>
           {new Date(p.datumPregleda).toLocaleDateString()}
@@ -68,7 +74,7 @@ function PregledRow({ p }: { p: Pregled }) {
 
       {/* Red za collapse */}
       <TableRow>
-        <TableCell colSpan={5} sx={{ p: 0, border: "none" }}>
+        <TableCell colSpan={6} sx={{ p: 0, border: "none" }}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               sx={{
@@ -88,25 +94,74 @@ function PregledRow({ p }: { p: Pregled }) {
                 Detalji pregleda
               </Typography>
 
+
+              <Typography>
+                <b>Opis simptoma:</b> {p.opisSimptoma ?? "-"}
+              </Typography>
+
               <Typography sx={{ mb: 0.5 }}>
                 <b>Dijagnoza:</b> {p.dijagnoza ?? "-"}
               </Typography>
               <Typography sx={{ mb: 0.5 }}>
                 <b>Terapija:</b> {p.terapija ?? "-"}
               </Typography>
+
               <Typography>
-                <b>Opis simptoma:</b> {p.opisSimptoma ?? "-"}
+                <b>Napomena:</b> {p.napomena ?? "-"}
               </Typography>
+
+              {/* Dugme za otvaranje modal forme */}
+              <Button
+                variant="outlined"
+                size="medium"
+                sx={{
+                  borderRadius: "14px",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                  px: 2.5,
+                  py: 1,
+                  color: "#1976d2",
+                  borderColor: "#1976d2",
+                  "&:hover": {
+                    borderColor: "#125ea2",
+                    backgroundColor: "rgba(25,118,210,0.08)",
+                  },
+                  display: "block",
+                  ml: "auto",
+                  mt: 1.5,
+                }}
+                onClick={() => setOpenDialog(true)}
+              >
+                Unesi detalje
+              </Button>
             </Box>
           </Collapse>
         </TableCell>
       </TableRow>
+
+      {/* Modal forma */}
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Unesi detalje pregleda</DialogTitle>
+        <DialogContent>
+          <PregledForm
+            pregled={p}
+            setEditMode={() => setOpenDialog(false)}
+            refetch={refetch}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
 
 export default function PrikazSvihPregleda() {
-  const { data: pregledi, isLoading } = useFetchPreglediQuery();
+  const { data: pregledi, isLoading, refetch } = useFetchPreglediQuery();
 
   if (isLoading || !pregledi)
     return <Typography align="center">Učitavanje...</Typography>;
@@ -120,6 +175,7 @@ export default function PrikazSvihPregleda() {
         <TableHead>
           <TableRow>
             <TableCell />
+            <TableCell sx={{ fontWeight: "bold" }}>Pacijent</TableCell>
             <TableCell sx={{ fontWeight: "bold" }}>Datum pregleda</TableCell>
             <TableCell sx={{ fontWeight: "bold" }}>Vrsta pregleda</TableCell>
             <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
@@ -129,7 +185,7 @@ export default function PrikazSvihPregleda() {
 
         <TableBody>
           {pregledi.map((p: Pregled) => (
-            <PregledRow key={p.id} p={p} />
+            <PregledRow key={p.id} p={p} refetch={refetch} />
           ))}
         </TableBody>
       </Table>

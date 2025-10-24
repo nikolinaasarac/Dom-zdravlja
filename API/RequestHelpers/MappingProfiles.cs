@@ -11,6 +11,7 @@ public class MappingProfiles : Profile
   {
     CreateMap<KreirajPacijentaDto, Pacijent>();
     CreateMap<UpdatePacijentDto, Pacijent>();
+    CreateMap<UpdatePregledDto, Pregled>();
 
   }
 }
