@@ -7,7 +7,6 @@ import LoginPage from "../features/Login/LoginPage";
 import PacijentPodaci from "../features/PrikazPacijenata/pacijentPodaci";
 import TabelaUputnica from "../features/PrikazPacijenata/PrikazUputnica";
 import UputnicaForm from "../features/PrikazPacijenata/UputnicaForm";
-import Pregledi from "../features/Pregledi/Pregledi";
 import PrikazSvihPregleda from "../features/PrikazPacijenata/PrikazSvihPregleda";
 import ZahtjevForm from "../features/pacijent/ZahtjevForm";
 import PrikazZahtjeva from "../features/pacijent/PrikazZahtjeva";
@@ -30,8 +29,8 @@ export const router = createBrowserRouter(
         { path: "/pacijenti/:id/uputnice/dodaj", element: <UputnicaForm /> },
         //{ path: "/pregledi", element: <Pregledi tip={"doktor"} /> },
         { path: "/pregledi", element: <PrikazSvihPregleda /> },
-        { path: "/zahtjev", element: <ZahtjevForm />},
-        { path: "/moji-zahtjevi", element: <PrikazZahtjeva />},
+        { path: "/zahtjev", element: <ZahtjevForm /> },
+        { path: "/moji-zahtjevi", element: <PrikazZahtjeva /> },
 
         /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
           throw new Error("Function not implemented.");
