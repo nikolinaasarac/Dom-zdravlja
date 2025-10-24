@@ -3,6 +3,7 @@ using API.Data;
 using API.DTO;
 using API.Entities;
 using API.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PreglediController(IPregledService pregledService, DomZdravljaContext context) : ControllerBase
+    public class PreglediController(IPregledService pregledService, DomZdravljaContext context, IMapper mapper) : ControllerBase
     {
         [HttpGet("{pacijentId}")]
         public async Task<ActionResult<List<PregledDto>>> GetPregledi(int pacijentId)
@@ -65,15 +66,15 @@ namespace API.Controllers
         }
 
         [HttpPut("obradi/{id}")]
-        public async Task<IActionResult> ObradiPregled(int id, [FromBody] Pregled updated)
+        public async Task<IActionResult> ObradiPregled(int id, [FromBody] UpdatePregledDto dto)
         {
             var pregled = await context.Pregledi.FindAsync(id);
             if (pregled == null) return NotFound();
 
-            pregled.Dijagnoza = updated.Dijagnoza;
-            pregled.Terapija = updated.Terapija;
-            pregled.Napomena = updated.Napomena;
-            pregled.Status = "obavljen";
+            pregled.Status = "Završen";
+
+            // Mapira samo polja koja postoje u DTO-u
+            mapper.Map(dto, pregled);
 
             await context.SaveChangesAsync();
             return Ok(pregled);

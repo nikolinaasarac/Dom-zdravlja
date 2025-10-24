@@ -5,9 +5,9 @@ import PrikazVakcinacija from "../features/PrikazPacijenata/PrikazVakcina";
 import HomePage from "../features/PocetnaStrana/HomePage";
 import LoginPage from "../features/Login/LoginPage";
 import PacijentPodaci from "../features/PrikazPacijenata/pacijentPodaci";
-import PrikazPregleda from "../features/PrikazPacijenata/PrikazPregleda";
 import TabelaUputnica from "../features/PrikazPacijenata/PrikazUputnica";
 import UputnicaForm from "../features/PrikazPacijenata/UputnicaForm";
+import Pregledi from "../features/Pregledi/Pregledi";
 import PrikazSvihPregleda from "../features/PrikazPacijenata/PrikazSvihPregleda";
 import ZahtjevForm from "../features/pacijent/ZahtjevForm";
 import PrikazZahtjeva from "../features/pacijent/PrikazZahtjeva";
@@ -25,9 +25,10 @@ export const router = createBrowserRouter(
         { path: "/pacijenti/:id", element: <PacijentPodaci /> },
         { path: "/vakcine", element: <PrikazVakcinacija /> },
         { path: "/pacijenti/:id/vakcine", element: <PrikazVakcinacija /> },
-        { path: "/pregledi/:id", element: <PrikazPregleda /> },
+        //{ path: "/pregledi/:id", element: <Pregledi tip={"pacijent"} /> },
         { path: "/pacijenti/:id/uputnice", element: <TabelaUputnica /> },
         { path: "/pacijenti/:id/uputnice/dodaj", element: <UputnicaForm /> },
+        //{ path: "/pregledi", element: <Pregledi tip={"doktor"} /> },
         { path: "/pregledi", element: <PrikazSvihPregleda /> },
         { path: "/zahtjev", element: <ZahtjevForm />},
         { path: "/moji-zahtjevi", element: <PrikazZahtjeva />},
