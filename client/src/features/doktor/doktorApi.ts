@@ -13,10 +13,7 @@ export const doktorApi = createApi({
     fetchPregledi: builder.query<Pregled[], void>({
       query: () => `pregledi/doktor/pregledi`,
     }),
-    createPregledInfo: builder.mutation<
-      Pregled,
-      { id: number; data: CreatePregledInfoSchema }
-    >({
+    createPregledInfo: builder.mutation<Pregled, { id: number; data: CreatePregledInfoSchema }>({
       query: ({ id, data }) => ({
         url: `pregledi/obradi/${id}`,
         method: "PUT",
@@ -26,6 +23,7 @@ export const doktorApi = createApi({
           Napomena: data.napomena ?? null,
         },
       }),
+    }),
     fetchDoktori: builder.query<Doktor[], void>({
       query: () => `doktori`
     }),
@@ -39,8 +37,7 @@ export const doktorApi = createApi({
     getMojiZahtjevi: builder.query<ZahtjevZaPregled[], void>({
       query: () => `ZahtjevZaPregled/moji-zahtjevi`,
     }),
-    }),
-  })
+  }),
 });
 
-export const { useFetchPreglediQuery, useCreatePregledInfoMutation, useFetchDoktoriQuery, useCreateZahtjevMutation, useGetMojiZahtjeviQuery  } = doktorApi;
+export const { useFetchPreglediQuery, useCreatePregledInfoMutation, useFetchDoktoriQuery, useCreateZahtjevMutation, useGetMojiZahtjeviQuery } = doktorApi;
