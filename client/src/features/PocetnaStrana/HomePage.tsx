@@ -28,6 +28,18 @@ const opcije = [
     slika: `./../../../images/pregled.png`,
   },
   {
+    naziv: "Zahtjev za pregled",   // nova opcija
+    opis: "Kreiraj novi zahtjev za pregled",
+    putanja: "/zahtjev",
+    slika: `./../../../images/zahtjev.png`, // dodaj odgovarajuću ikonicu
+  },
+    {
+    naziv: "Moji zahtjevi",   // nova opcija
+    opis: "Prikaz svih vaših zahtjeva",
+    putanja: "/moji-zahtjevi",
+    slika: `./../../../images/mojiZahtjevi.png`, // dodaj ikonicu
+  },
+  {
     naziv: "Moj nalog",
     opis: "Prikaz statističkih podataka",
     putanja: "/",

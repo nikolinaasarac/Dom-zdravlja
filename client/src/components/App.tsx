@@ -6,8 +6,9 @@ import NavBar from "./NavBar";
 // Opcije za Navbar
 const opcije = [
   { naziv: "Početna strana", putanja: "/homepage" },
-    { naziv: "Pacijenti", putanja: "/pacijenti" },
+  { naziv: "Pacijenti", putanja: "/pacijenti" },
   { naziv: "Svi pregledi", putanja: "/pregledi" },
+  { naziv: "Moji zahtjevi", putanja: "/moji-zahtjevi" },
   { naziv: "Moj nalog", putanja: "/moj-nalog" },
 ];
 
