@@ -2,6 +2,7 @@ using System.Security.Claims;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -143,6 +144,7 @@ namespace API.Controllers
       return Ok(zahtjevi);
     }
 
+    [Authorize]
     [HttpGet("moji-zahtjevi")]
     public async Task<IActionResult> GetMojiZahtjevi()
     {

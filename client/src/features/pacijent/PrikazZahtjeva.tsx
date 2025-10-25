@@ -16,8 +16,10 @@ export default function PrikazZahtjeva() {
   const { data: zahtjevi, isLoading, isError } = useGetMojiZahtjeviQuery();
 
   if (isLoading) return <CircularProgress sx={{ display: "block", mx: "auto", mt: 4 }} />;
-  if (isError)
+  if (isError) {
+    console.log(zahtjevi);
     return <Typography color="error" align="center">Greška prilikom učitavanja zahtjeva.</Typography>;
+  }
   if (!zahtjevi || zahtjevi.length === 0)
     return <Typography align="center">Trenutno nema zahtjeva.</Typography>;
 

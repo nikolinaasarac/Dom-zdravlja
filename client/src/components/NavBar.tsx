@@ -15,6 +15,9 @@ import { authApi } from "../features/Login/authApi";
 import { setAccessToken } from "../features/Login/tokenStore";
 import { useAppDispatch } from "../store/store";
 import { logout as logoutRedux } from "../features/Login/authSlice";
+import { doktorApi } from "../features/doktor/doktorApi";
+import { pacijentApi } from "../features/PrikazPacijenata/pacijentApi";
+import { adminApi } from "../features/admin/adminApi";
 
 interface Opcija {
   naziv: string;
@@ -36,10 +39,16 @@ export default function Navbar({ opcije }: NavbarProps) {
 
   const handleLogout = async () => {
     try {
+      await authApi.logout();
       setAccessToken(null);
       dispatch(logoutRedux());
+
+      // 🔹 resetuje sve keširane podatke iz RTK Query
+      dispatch(doktorApi.util.resetApiState());
+      dispatch(pacijentApi.util.resetApiState());
+      dispatch(adminApi.util.resetApiState());
+
       navigate("/", { replace: true });
-      await authApi.logout();
     } catch (error) {
       console.error("Logout error:", error);
     }
