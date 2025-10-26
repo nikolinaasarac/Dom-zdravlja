@@ -37,7 +37,22 @@ export const doktorApi = createApi({
     getMojiZahtjevi: builder.query<ZahtjevZaPregled[], void>({
       query: () => `ZahtjevZaPregled/moji-zahtjevi`,
     }),
+    odobriZahtjev: builder.mutation<void, { id: number; datumPregleda: string }>({
+      query: ({ id, datumPregleda }) => ({
+        url: `ZahtjevZaPregled/odobri/${id}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: `"${datumPregleda}"`
+      }),
+    }),
+    odbijZahtjev: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `ZahtjevZaPregled/odbij/${id}`,
+        method: "PUT",
+      })
+    }),
   }),
 });
 
-export const { useFetchPreglediQuery, useCreatePregledInfoMutation, useFetchDoktoriQuery, useCreateZahtjevMutation, useGetMojiZahtjeviQuery } = doktorApi;
+export const { useFetchPreglediQuery, useCreatePregledInfoMutation, useFetchDoktoriQuery,
+  useCreateZahtjevMutation, useGetMojiZahtjeviQuery, useOdobriZahtjevMutation, useOdbijZahtjevMutation } = doktorApi;
