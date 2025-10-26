@@ -202,10 +202,6 @@ namespace API.Controllers
       return Ok(zahtjevi);
     }
 
-
-
-
-
     // PUT: api/ZahtjevZaPregled/odobri/10
     [HttpPut("odobri/{id}")]
     public async Task<IActionResult> PrihvatiZahtjev(int id, [FromBody] DateTime datumPregleda)
