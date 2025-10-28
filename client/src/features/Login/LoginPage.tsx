@@ -45,6 +45,7 @@ export default function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         fontFamily: "'Poppins', sans-serif",
+        color: "#fff", // sva defaultna boja teksta bijela
       }}
     >
       <Box
@@ -62,13 +63,21 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
+        {/* Logo iznad naslova */}
+        <Box
+          component="img"
+          src="../../../images/logo.png" // stavi putanju do svog loga
+          alt="Logo"
+          sx={{ width: 200, height: 150, mb: 2 }}
+        />
+
         <Typography
           variant="h4"
-          sx={{ mb: 1, color: "#fff", fontWeight: 600, letterSpacing: 1 }}
+          sx={{ mb: 1, fontWeight: 600, letterSpacing: 1, color: "#fff" }}
         >
           Login
         </Typography>
-        <Typography sx={{ mb: 3, color: "#ddd", fontSize: 14 }}>
+        <Typography sx={{ mb: 3, color: "#fff", fontSize: 14 }}>
           Dobrodošli nazad! Prijavite se na svoj nalog.
         </Typography>
 
@@ -89,7 +98,7 @@ export default function LoginPage() {
               "&:hover fieldset": { borderColor: "#90caf9" },
               "&.Mui-focused fieldset": { borderColor: "#42a5f5" },
             },
-            "& .MuiInputLabel-root": { color: "#ddd" },
+            "& .MuiInputLabel-root": { color: "#fff" },
           }}
         />
         <TextField
@@ -110,11 +119,9 @@ export default function LoginPage() {
               "&:hover fieldset": { borderColor: "#90caf9" },
               "&.Mui-focused fieldset": { borderColor: "#42a5f5" },
             },
-            "& .MuiInputLabel-root": { color: "#ddd" },
+            "& .MuiInputLabel-root": { color: "#fff" },
           }}
         />
-
-
 
         <Button
           type="submit"
@@ -127,7 +134,9 @@ export default function LoginPage() {
             fontWeight: 600,
             py: 1.2,
             fontSize: "1rem",
-            "&:hover": { background: "linear-gradient(90deg, #3bb78f, #184e8d)" },
+            "&:hover": {
+              background: "linear-gradient(90deg, #3bb78f, #184e8d)",
+            },
           }}
         >
           Prijavi se
@@ -138,16 +147,6 @@ export default function LoginPage() {
             {error}
           </Typography>
         )}
-
-        <Typography sx={{ mt: 3, color: "#eee", fontSize: 14 }}>
-          Nemaš nalog?{" "}
-          <Box
-            component="span"
-            sx={{ color: "#90caf9", cursor: "pointer", fontWeight: 500 }}
-          >
-            Registruj se
-          </Box>
-        </Typography>
       </Box>
     </Box>
   );
