@@ -18,6 +18,7 @@ import { logout as logoutRedux } from "../features/Login/authSlice";
 import { doktorApi } from "../features/doktor/doktorApi";
 import { pacijentApi } from "../features/PrikazPacijenata/pacijentApi";
 import { adminApi } from "../features/admin/adminApi";
+import { korisnikApi } from "../features/korisnik/korisnikApi";
 
 interface Opcija {
   naziv: string;
@@ -34,7 +35,8 @@ export default function Navbar({ opcije }: NavbarProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) =>
+    setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
   const handleLogout = async () => {
@@ -47,6 +49,7 @@ export default function Navbar({ opcije }: NavbarProps) {
       dispatch(doktorApi.util.resetApiState());
       dispatch(pacijentApi.util.resetApiState());
       dispatch(adminApi.util.resetApiState());
+      dispatch(korisnikApi.util.resetApiState());
 
       navigate("/", { replace: true });
     } catch (error) {
@@ -55,12 +58,25 @@ export default function Navbar({ opcije }: NavbarProps) {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: "rgba(21,101,192,0.9)", backdropFilter: "blur(4px)", zIndex: 2 }}>
+    <AppBar
+      position="fixed"
+      sx={{
+        backgroundColor: "rgba(21,101,192,0.9)",
+        backdropFilter: "blur(4px)",
+        zIndex: 2,
+      }}
+    >
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>Dom Zdravlja App</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          Dom Zdravlja App
+        </Typography>
         <Box sx={{ display: "flex", gap: 2 }}>
           {opcije.map((opcija, i) => (
-            <Button key={i} color="inherit" onClick={() => navigate(opcija.putanja)}>
+            <Button
+              key={i}
+              color="inherit"
+              onClick={() => navigate(opcija.putanja)}
+            >
               {opcija.naziv}
             </Button>
           ))}
@@ -74,7 +90,9 @@ export default function Navbar({ opcije }: NavbarProps) {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           >
-            <MenuItem onClick={() => navigate("/moj-nalog")}>Moj nalog</MenuItem>
+            <MenuItem onClick={() => navigate("/moj-nalog")}>
+              Moj nalog
+            </MenuItem>
             <MenuItem onClick={handleLogout}>Odjavi se</MenuItem>
           </Menu>
         </Box>

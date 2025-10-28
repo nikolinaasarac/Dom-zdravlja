@@ -5,6 +5,7 @@ import { pacijentSlice } from "../features/PrikazPacijenata/pacijentSlice";
 import { authSlice } from "../features/Login/authSlice";
 import { adminApi } from "../features/admin/adminApi";
 import { doktorApi } from "../features/doktor/doktorApi";
+import { korisnikApi } from "../features/korisnik/korisnikApi";
 
 export const store = configureStore({
   reducer: {
@@ -13,9 +14,15 @@ export const store = configureStore({
     auth: authSlice.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
     [doktorApi.reducerPath]: doktorApi.reducer,
+    [korisnikApi.reducerPath]: korisnikApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pacijentApi.middleware, adminApi.middleware, doktorApi.middleware),
+    getDefaultMiddleware().concat(
+      pacijentApi.middleware,
+      adminApi.middleware,
+      doktorApi.middleware,
+      korisnikApi.middleware
+    ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
