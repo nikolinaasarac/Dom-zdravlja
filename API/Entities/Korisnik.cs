@@ -17,5 +17,7 @@ namespace API.Entities
 
         public int? PacijentId { get; set; }
         public Pacijent? Pacijent { get; set; }
+
+        public bool MustChangePassword { get; set; } = false;
     }
 }

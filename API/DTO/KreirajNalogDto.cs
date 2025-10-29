@@ -10,7 +10,6 @@ namespace API.DTOs
         public string Password { get; set; } = string.Empty;
         [Required]
         public string Role { get; set; } = string.Empty;
-        public int? DoktorId { get; set; }
-        public int? PacijentId { get; set; }
+        public string? MaticniBroj { get; set; } 
     }
 }

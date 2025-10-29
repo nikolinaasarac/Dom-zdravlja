@@ -55,7 +55,7 @@ export default function TabelaNaloga() {
           fontWeight: 600,
         }}
         //onClick={() => setEditMode(true)}
-        onClick={() => navigate("/noviKorisnik")}
+        onClick={() => navigate("/kreiraj-nalog")}
       >
         Novi korisnik
       </Button>

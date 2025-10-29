@@ -19,6 +19,7 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Ime = table.Column<string>(type: "TEXT", nullable: false),
                     Prezime = table.Column<string>(type: "TEXT", nullable: false),
+                    MaticniBroj = table.Column<string>(type: "TEXT", nullable: false),
                     Specijalizacija = table.Column<string>(type: "TEXT", nullable: false),
                     BrojLicence = table.Column<string>(type: "TEXT", nullable: false),
                     Telefon = table.Column<string>(type: "TEXT", nullable: false),
@@ -57,6 +58,7 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Ime = table.Column<string>(type: "TEXT", nullable: false),
                     Prezime = table.Column<string>(type: "TEXT", nullable: false),
+                    MaticniBroj = table.Column<string>(type: "TEXT", nullable: false),
                     Telefon = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Adresa = table.Column<string>(type: "TEXT", nullable: false)

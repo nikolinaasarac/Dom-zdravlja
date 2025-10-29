@@ -45,7 +45,7 @@ const opcije = [
   {
     naziv: "Moj nalog",
     opis: "Prikaz statističkih podataka",
-    putanja: "/",
+    putanja: "/moj-nalog",
     slika: "./../../../images/mojNalog.png",
   },
 ];

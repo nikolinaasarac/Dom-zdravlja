@@ -4,12 +4,16 @@ import type { Pacijent } from "../../models/Pacijent";
 import type { CreatePacijentSchema } from "../../lib/schemas/createPacijentSchema";
 import type { Korisnik } from "../../models/Korisnik";
 import type { CreateKorisnikSchema } from "../../lib/schemas/createKorisnikSchema";
+import type { Doktor } from "../korisnik/Korisnik";
 
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: customBaseQuery,
   endpoints: (builder) => ({
-    fetchPacijenti: builder.query<Pacijent[], void>({
+    fetchDoktori: builder.query<Doktor[], void>({
+      query: () => "doktori",
+    }),
+    fetchTehnicari: builder.query<[], void>({
       query: () => "pacijenti",
     }),
     createPacijent: builder.mutation<Pacijent, CreatePacijentSchema>({
@@ -38,11 +42,12 @@ export const adminApi = createApi({
     fetchKorisnici: builder.query<Korisnik[], void>({
       query: () => "korisnici",
     }),
-    createKorisnik: builder.mutation<Pacijent, CreateKorisnikSchema>({
+    createKorisnik: builder.mutation<Korisnik, CreateKorisnikSchema>({
       query: (data) => ({
-        url: "korisnici",
+        url: "korisnici/kreiraj-nalog",
         method: "POST",
         body: data, // sada šalješ JSON
+        providesTags: ["Korisnici"],
       }),
     }),
     deleteKorisnik: builder.mutation<void, string>({
@@ -55,7 +60,8 @@ export const adminApi = createApi({
 });
 
 export const {
-  useFetchPacijentiQuery,
+  useFetchDoktoriQuery,
+  useFetchTehnicariQuery,
   useCreatePacijentMutation,
   useDeletePacijentMutation,
   useUpdatePacijentMutation,

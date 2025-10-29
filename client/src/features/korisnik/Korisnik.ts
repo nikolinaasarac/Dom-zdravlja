@@ -20,9 +20,7 @@ export type Pacijent = {
 };
 
 export type Korisnik = {
-  id: string;
+  id: number;
   username: string;
   role: string;
-  doktor?: Doktor | null;
-  pacijent?: Pacijent | null;
 };
