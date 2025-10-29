@@ -1,5 +1,6 @@
 using System;
 using API.DTO;
+using API.DTOs;
 using API.Entities;
 using AutoMapper;
 
@@ -12,6 +13,6 @@ public class MappingProfiles : Profile
     CreateMap<KreirajPacijentaDto, Pacijent>();
     CreateMap<UpdatePacijentDto, Pacijent>();
     CreateMap<UpdatePregledDto, Pregled>();
-
+    CreateMap<KreirajNalogDto, Korisnik>();
   }
 }
