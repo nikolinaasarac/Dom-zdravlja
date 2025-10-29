@@ -54,7 +54,7 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         user.Username = request.Username;
         user.PasswordHash = hashedPassword;
         user.Role = "Admin";
-        user.DoktorId = 1;
+        user.TehnicarId = 1;
 
         context.Korisnici.Add(user);
         await context.SaveChangesAsync();

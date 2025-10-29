@@ -12,8 +12,8 @@ namespace API.Entities
          public int? DoktorId { get; set; }
         public Doktor? Doktor { get; set; }
 
-        //public int? TehnicarId { get; set; }
-        //public Tehnicar? Tehnicar { get; set; }
+        public int? TehnicarId { get; set; }
+        public Tehnicar? Tehnicar { get; set; }
 
         public int? PacijentId { get; set; }
         public Pacijent? Pacijent { get; set; }
