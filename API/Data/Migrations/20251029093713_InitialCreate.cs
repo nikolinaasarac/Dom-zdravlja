@@ -50,29 +50,20 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Korisnici",
+                name: "Tehnicari",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Username = table.Column<string>(type: "TEXT", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
-                    Role = table.Column<string>(type: "TEXT", nullable: false),
-                    DoktorId = table.Column<int>(type: "INTEGER", nullable: true),
-                    PacijentId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Ime = table.Column<string>(type: "TEXT", nullable: false),
+                    Prezime = table.Column<string>(type: "TEXT", nullable: false),
+                    Telefon = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Adresa = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Korisnici", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Korisnici_Doktori_DoktorId",
-                        column: x => x.DoktorId,
-                        principalTable: "Doktori",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Korisnici_Pacijenti_PacijentId",
-                        column: x => x.PacijentId,
-                        principalTable: "Pacijenti",
-                        principalColumn: "Id");
+                    table.PrimaryKey("PK_Tehnicari", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,25 +149,70 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
+                name: "Korisnici",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false),
+                    DoktorId = table.Column<int>(type: "INTEGER", nullable: true),
+                    TehnicarId = table.Column<int>(type: "INTEGER", nullable: true),
+                    PacijentId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Korisnici", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Korisnici_Doktori_DoktorId",
+                        column: x => x.DoktorId,
+                        principalTable: "Doktori",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Korisnici_Pacijenti_PacijentId",
+                        column: x => x.PacijentId,
+                        principalTable: "Pacijenti",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Korisnici_Tehnicari_TehnicarId",
+                        column: x => x.TehnicarId,
+                        principalTable: "Tehnicari",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ZahtjeviZaAnalizu",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    KorisnikId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Token = table.Column<string>(type: "TEXT", nullable: false),
-                    ExpiresAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Revoked = table.Column<bool>(type: "INTEGER", nullable: false)
+                    PacijentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DoktorId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TehnicarId = table.Column<int>(type: "INTEGER", nullable: true),
+                    DatumZahtjeva = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Opis = table.Column<string>(type: "TEXT", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.PrimaryKey("PK_ZahtjeviZaAnalizu", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshTokens_Korisnici_KorisnikId",
-                        column: x => x.KorisnikId,
-                        principalTable: "Korisnici",
+                        name: "FK_ZahtjeviZaAnalizu_Doktori_DoktorId",
+                        column: x => x.DoktorId,
+                        principalTable: "Doktori",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ZahtjeviZaAnalizu_Pacijenti_PacijentId",
+                        column: x => x.PacijentId,
+                        principalTable: "Pacijenti",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ZahtjeviZaAnalizu_Tehnicari_TehnicarId",
+                        column: x => x.TehnicarId,
+                        principalTable: "Tehnicari",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -219,6 +255,62 @@ namespace API.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    KorisnikId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Token = table.Column<string>(type: "TEXT", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Revoked = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Korisnici_KorisnikId",
+                        column: x => x.KorisnikId,
+                        principalTable: "Korisnici",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Nalazi",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ZahtjevZaAnalizuId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PacijentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TehnicarId = table.Column<int>(type: "INTEGER", nullable: true),
+                    FilePath = table.Column<string>(type: "TEXT", nullable: true),
+                    DatumDodavanja = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Nalazi", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Nalazi_Pacijenti_PacijentId",
+                        column: x => x.PacijentId,
+                        principalTable: "Pacijenti",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Nalazi_Tehnicari_TehnicarId",
+                        column: x => x.TehnicarId,
+                        principalTable: "Tehnicari",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Nalazi_ZahtjeviZaAnalizu_ZahtjevZaAnalizuId",
+                        column: x => x.ZahtjevZaAnalizuId,
+                        principalTable: "ZahtjeviZaAnalizu",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Korisnici_DoktorId",
                 table: "Korisnici",
@@ -228,6 +320,26 @@ namespace API.Data.Migrations
                 name: "IX_Korisnici_PacijentId",
                 table: "Korisnici",
                 column: "PacijentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Korisnici_TehnicarId",
+                table: "Korisnici",
+                column: "TehnicarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Nalazi_PacijentId",
+                table: "Nalazi",
+                column: "PacijentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Nalazi_TehnicarId",
+                table: "Nalazi",
+                column: "TehnicarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Nalazi_ZahtjevZaAnalizuId",
+                table: "Nalazi",
+                column: "ZahtjevZaAnalizuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pregledi_DoktorId",
@@ -265,6 +377,21 @@ namespace API.Data.Migrations
                 column: "PacijentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ZahtjeviZaAnalizu_DoktorId",
+                table: "ZahtjeviZaAnalizu",
+                column: "DoktorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ZahtjeviZaAnalizu_PacijentId",
+                table: "ZahtjeviZaAnalizu",
+                column: "PacijentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ZahtjeviZaAnalizu_TehnicarId",
+                table: "ZahtjeviZaAnalizu",
+                column: "TehnicarId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ZahtjeviZaPregled_DoktorId",
                 table: "ZahtjeviZaPregled",
                 column: "DoktorId");
@@ -279,6 +406,9 @@ namespace API.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Nalazi");
+
+            migrationBuilder.DropTable(
                 name: "Pregledi");
 
             migrationBuilder.DropTable(
@@ -291,6 +421,9 @@ namespace API.Data.Migrations
                 name: "Vakcinacije");
 
             migrationBuilder.DropTable(
+                name: "ZahtjeviZaAnalizu");
+
+            migrationBuilder.DropTable(
                 name: "ZahtjeviZaPregled");
 
             migrationBuilder.DropTable(
@@ -301,6 +434,9 @@ namespace API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Pacijenti");
+
+            migrationBuilder.DropTable(
+                name: "Tehnicari");
         }
     }
 }

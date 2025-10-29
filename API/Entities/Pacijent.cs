@@ -13,5 +13,6 @@ public class Pacijent
 
   public ICollection<Vakcinacija>? Vakcinacije { get; set; }
   public ICollection<Pregled>? Pregledi { get; set; }
+  public ICollection<Nalaz>? Nalazi { get; set; }
   public ICollection<ZahtjevZaPregled>? ZahtjeviZaPregled { get; set; }
 }

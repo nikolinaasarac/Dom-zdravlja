@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DomZdravljaContext))]
-    [Migration("20251023100718_InitialCreate")]
+    [Migration("20251029093713_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -79,6 +79,9 @@ namespace API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("TehnicarId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -88,6 +91,8 @@ namespace API.Data.Migrations
                     b.HasIndex("DoktorId");
 
                     b.HasIndex("PacijentId");
+
+                    b.HasIndex("TehnicarId");
 
                     b.ToTable("Korisnici");
                 });
@@ -205,6 +210,37 @@ namespace API.Data.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("API.Entities.Tehnicar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Adresa")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prezime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Telefon")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tehnicari");
+                });
+
             modelBuilder.Entity("API.Entities.Uputnica", b =>
                 {
                     b.Property<int>("Id")
@@ -270,6 +306,75 @@ namespace API.Data.Migrations
                     b.ToTable("Vakcinacije");
                 });
 
+            modelBuilder.Entity("Nalaz", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DatumDodavanja")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PacijentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("TehnicarId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ZahtjevZaAnalizuId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PacijentId");
+
+                    b.HasIndex("TehnicarId");
+
+                    b.HasIndex("ZahtjevZaAnalizuId");
+
+                    b.ToTable("Nalazi");
+                });
+
+            modelBuilder.Entity("ZahtjevZaAnalizu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DatumZahtjeva")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DoktorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Opis")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PacijentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TehnicarId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoktorId");
+
+                    b.HasIndex("PacijentId");
+
+                    b.HasIndex("TehnicarId");
+
+                    b.ToTable("ZahtjeviZaAnalizu");
+                });
+
             modelBuilder.Entity("ZahtjevZaPregled", b =>
                 {
                     b.Property<int>("Id")
@@ -312,9 +417,15 @@ namespace API.Data.Migrations
                         .WithMany()
                         .HasForeignKey("PacijentId");
 
+                    b.HasOne("API.Entities.Tehnicar", "Tehnicar")
+                        .WithMany()
+                        .HasForeignKey("TehnicarId");
+
                     b.Navigation("Doktor");
 
                     b.Navigation("Pacijent");
+
+                    b.Navigation("Tehnicar");
                 });
 
             modelBuilder.Entity("API.Entities.Pregled", b =>
@@ -385,6 +496,56 @@ namespace API.Data.Migrations
                     b.Navigation("Pacijent");
                 });
 
+            modelBuilder.Entity("Nalaz", b =>
+                {
+                    b.HasOne("API.Entities.Pacijent", "Pacijent")
+                        .WithMany("Nalazi")
+                        .HasForeignKey("PacijentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Tehnicar", "Tehnicar")
+                        .WithMany("Nalazi")
+                        .HasForeignKey("TehnicarId");
+
+                    b.HasOne("ZahtjevZaAnalizu", "ZahtjevZaAnalizu")
+                        .WithMany()
+                        .HasForeignKey("ZahtjevZaAnalizuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pacijent");
+
+                    b.Navigation("Tehnicar");
+
+                    b.Navigation("ZahtjevZaAnalizu");
+                });
+
+            modelBuilder.Entity("ZahtjevZaAnalizu", b =>
+                {
+                    b.HasOne("API.Entities.Doktor", "Doktor")
+                        .WithMany("ZahtjeviZaAnalize")
+                        .HasForeignKey("DoktorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Pacijent", "Pacijent")
+                        .WithMany()
+                        .HasForeignKey("PacijentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Tehnicar", "Tehnicar")
+                        .WithMany("ZahtjeviZaAnalizu")
+                        .HasForeignKey("TehnicarId");
+
+                    b.Navigation("Doktor");
+
+                    b.Navigation("Pacijent");
+
+                    b.Navigation("Tehnicar");
+                });
+
             modelBuilder.Entity("ZahtjevZaPregled", b =>
                 {
                     b.HasOne("API.Entities.Doktor", "Doktor")
@@ -408,6 +569,8 @@ namespace API.Data.Migrations
                 {
                     b.Navigation("Pregledi");
 
+                    b.Navigation("ZahtjeviZaAnalize");
+
                     b.Navigation("ZahtjeviZaPregled");
                 });
 
@@ -418,11 +581,20 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Pacijent", b =>
                 {
+                    b.Navigation("Nalazi");
+
                     b.Navigation("Pregledi");
 
                     b.Navigation("Vakcinacije");
 
                     b.Navigation("ZahtjeviZaPregled");
+                });
+
+            modelBuilder.Entity("API.Entities.Tehnicar", b =>
+                {
+                    b.Navigation("Nalazi");
+
+                    b.Navigation("ZahtjeviZaAnalizu");
                 });
 #pragma warning restore 612, 618
         }

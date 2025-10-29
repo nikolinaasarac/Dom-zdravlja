@@ -21,4 +21,5 @@ public class Doktor
     //svi pregledi koje je doktor obavio
     public ICollection<Pregled>? Pregledi { get; set; }
     public ICollection<ZahtjevZaPregled>? ZahtjeviZaPregled { get; set; }
+    public ICollection<ZahtjevZaAnalizu>? ZahtjeviZaAnalize { get; set; }
 }
