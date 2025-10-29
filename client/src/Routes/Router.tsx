@@ -11,6 +11,7 @@ import PrikazSvihPregleda from "../features/PrikazPacijenata/PrikazSvihPregleda"
 import ZahtjevForm from "../features/pacijent/ZahtjevForm";
 import PrikazZahtjeva from "../features/pacijent/PrikazZahtjeva";
 import MojNalog from "../features/korisnik/MojNalog";
+import Korisnici from "../features/admin/Korisnici";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -33,6 +34,7 @@ export const router = createBrowserRouter(
         { path: "/zahtjev", element: <ZahtjevForm /> },
         { path: "/moji-zahtjevi", element: <PrikazZahtjeva /> },
         { path: "/moj-nalog", element: <MojNalog /> },
+        { path: "/nalozi", element: <Korisnici /> },
 
         /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
           throw new Error("Function not implemented.");

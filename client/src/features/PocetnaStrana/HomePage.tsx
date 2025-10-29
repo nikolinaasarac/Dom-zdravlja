@@ -1,8 +1,4 @@
-
-import {
-  Box,
-  Typography
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import Kartica from "./Kartica";
 import "../../styles.css";
@@ -28,16 +24,23 @@ const opcije = [
     slika: `./../../../images/pregled.png`,
   },
   {
-    naziv: "Zahtjev za pregled",   // nova opcija
+    naziv: "Zahtjev za pregled", // nova opcija
     opis: "Kreiraj novi zahtjev za pregled",
     putanja: "/zahtjev",
     slika: `./../../../images/zahtjev.png`, // dodaj odgovarajuću ikonicu
   },
-    {
-    naziv: "Moji zahtjevi",   // nova opcija
+  {
+    naziv: "Moji zahtjevi", // nova opcija
     opis: "Prikaz svih vaših zahtjeva",
     putanja: "/moji-zahtjevi",
     slika: `./../../../images/mojiZahtjevi.png`, // dodaj ikonicu
+  },
+
+  {
+    naziv: "Korisnički nalozi",
+    opis: "Prikaz korisnika sistema",
+    putanja: "/nalozi",
+    slika: "./../../../images/mojNalog.png",
   },
   {
     naziv: "Moj nalog",
@@ -69,11 +72,10 @@ const sliderItems = [
 ];
 
 export default function HomePage() {
-
   return (
     <div className="homepage">
       {/* Navbar */}
-        <NavBar opcije={opcije} />
+      <NavBar opcije={opcije} />
 
       {/* Carousel */}
       <Box sx={{ mt: 8, width: "100%" }}>
@@ -95,9 +97,21 @@ export default function HomePage() {
                 mx: 3,
               }}
             >
-              <Box sx={{ position: "absolute", width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: 2 }} />
-              <Box sx={{ zIndex: 1, textAlign: "center", maxWidth: 700, px: 2 }}>
-                <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>{item.naslov}</Typography>
+              <Box
+                sx={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0,0,0,0.4)",
+                  borderRadius: 2,
+                }}
+              />
+              <Box
+                sx={{ zIndex: 1, textAlign: "center", maxWidth: 700, px: 2 }}
+              >
+                <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
+                  {item.naslov}
+                </Typography>
                 <Typography variant="h6">{item.opis}</Typography>
               </Box>
             </Box>
@@ -106,8 +120,26 @@ export default function HomePage() {
       </Box>
 
       {/* Brzi pristup kartice */}
-      <Box sx={{ py: 6, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <Typography variant="h4" sx={{ textAlign: "center", mb: 4, fontWeight: "bold", color: "#0d47a1" }}>Brzi pristup</Typography>
+      <Box
+        sx={{
+          py: 6,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            textAlign: "center",
+            mb: 4,
+            fontWeight: "bold",
+            color: "#0d47a1",
+          }}
+        >
+          Brzi pristup
+        </Typography>
         <div className="cards-container">
           {opcije.map((opcija, index) => (
             <Kartica key={index} kartica={opcija} />
