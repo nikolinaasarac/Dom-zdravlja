@@ -12,7 +12,7 @@ namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class KorisniciController(DomZdravljaContext context, IMapper mapper): ControllerBase
+public class KorisniciController(DomZdravljaContext context): ControllerBase
 {
     [HttpGet("mojNalog")]
     public async Task<ActionResult<object>> GetMyAccount()
@@ -95,46 +95,83 @@ public class KorisniciController(DomZdravljaContext context, IMapper mapper): Co
         return Ok(korisnici);
     }
 
-   [HttpPost]
-public async Task<ActionResult<KorisnikDto>> KreirajNalog(KreirajNalogDto dto)
-{
-    // Provjera da li korisničko ime već postoji
-    if (await context.Korisnici.AnyAsync(u => u.Username == dto.Username))
-        return BadRequest("Korisničko ime već postoji.");
-
-    // Provjera da li doktor ili pacijent već imaju nalog
-    if (dto.Role == "Doktor" && dto.DoktorId.HasValue)
+    //korisnici/kreiraj-nalog
+    [HttpPost("kreiraj-nalog")]
+    public async Task<IActionResult> KreirajNalog(KreirajNalogDto request)
     {
-        bool doktorImaNalog = await context.Korisnici.AnyAsync(
-            k => k.Role == "Doktor" && k.DoktorId == dto.DoktorId.Value);
-        if (doktorImaNalog)
-            return BadRequest("Ovaj doktor već ima nalog.");
+         if (await context.Korisnici.AnyAsync(u => u.Username == request.Username))
+            return BadRequest("Postoji korisnik sa tim korisnickim imenom");
+
+        var user = new Korisnik();
+        var hasher = new PasswordHasher<Korisnik>();
+        user.PasswordHash = hasher.HashPassword(user, request.Password);
+        user.Username = request.Username;
+        user.Role = request.Role;
+
+        // ✅ 2. Ako je uloga Admin, samo kreiraj korisnika
+        if (request.Role == "Admin")
+        {
+            user.MustChangePassword = true;
+            context.Korisnici.Add(user);
+            await context.SaveChangesAsync();
+            return Ok(user);
+        }
+
+        // ✅ 3. Za sve ostale — provjeri matični broj
+        if (string.IsNullOrEmpty(request.MaticniBroj))
+            throw new Exception("Matični broj je obavezan za ovu ulogu.");
+
+        if (request.Role == "Doktor")
+        {
+            var doktor = await context.Doktori
+                .FirstOrDefaultAsync(d => d.MaticniBroj == request.MaticniBroj);
+
+            if (doktor == null)
+                return BadRequest("Doktor sa unesenim matičnim brojem ne postoji.");
+
+            var postoji = await context.Korisnici.AnyAsync(k => k.DoktorId == doktor.Id);
+            if (postoji)
+                return BadRequest("Već postoji aktivan nalog za ovog doktora.");
+
+            user.DoktorId = doktor.Id;
+        }
+        else if (request.Role == "Pacijent")
+        {
+            var pacijent = await context.Pacijenti
+                .FirstOrDefaultAsync(p => p.MaticniBroj == request.MaticniBroj);
+
+            if (pacijent == null)
+                return BadRequest("Pacijent sa unesenim matičnim brojem ne postoji.");
+
+            var postoji = await context.Korisnici.AnyAsync(k => k.PacijentId == pacijent.Id);
+            if (postoji)
+                return BadRequest("Već postoji aktivan nalog za ovog pacijenta.");
+
+            user.PacijentId = pacijent.Id;
+        }
+        else if (request.Role == "Tehnicar")
+        {
+            var tehnicar = await context.Tehnicari
+                .FirstOrDefaultAsync(t => t.MaticniBroj == request.MaticniBroj);
+
+            if (tehnicar == null)
+                return BadRequest("Tehničar sa unesenim matičnim brojem ne postoji.");
+
+            var postoji = await context.Korisnici.AnyAsync(k => k.TehnicarId == tehnicar.Id);
+            if (postoji)
+                BadRequest("Već postoji aktivan nalog za ovog tehničara.");
+
+            user.TehnicarId = tehnicar.Id;
+        }
+
+        // ✅ 4. Dodaj novog korisnika i sačuvaj
+        user.MustChangePassword = true;
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
+
+        return Ok(user);
     }
 
-    if (dto.Role == "Pacijent" && dto.PacijentId.HasValue)
-    {
-        bool pacijentImaNalog = await context.Korisnici.AnyAsync(
-            k => k.Role == "Pacijent" && k.PacijentId == dto.PacijentId.Value);
-        if (pacijentImaNalog)
-            return BadRequest("Ovaj pacijent već ima nalog.");
-    }
-
-    // Mapiranje DTO -> entitet
-    var korisnik = mapper.Map<Korisnik>(dto);
-
-    // Hash lozinke
-    var hasher = new PasswordHasher<Korisnik>();
-    korisnik.PasswordHash = hasher.HashPassword(korisnik, dto.Password);
-
-
-    // Spremanje u bazu
-    context.Korisnici.Add(korisnik);
-    await context.SaveChangesAsync();
-
-    // Mapiranje entitet -> DTO za povrat
-    var korisnikDto = mapper.Map<KorisnikDto>(korisnik);
-    return Ok(korisnikDto);
-}
 
 
         [HttpDelete("{id:Guid}")]

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DomZdravljaContext))]
-    [Migration("20251029093713_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251029210950_AddMustChangePasswordToKorisnik")]
+    partial class AddMustChangePasswordToKorisnik
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,10 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MaticniBroj")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -225,6 +229,10 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MaticniBroj")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

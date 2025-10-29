@@ -53,9 +53,9 @@ public class DbInitializer
     {
       var doktori = new List<Doktor>
       {
-        new Doktor { Ime = "Petar", Prezime = "Ilić", Specijalizacija = "Opšta praksa", BrojLicence = "L12345", Telefon = "+38765111222", Email = "petar.ilic@domzdravlja.ba", Adresa = "Kralja Tomislava 1, Banja Luka" },
-        new Doktor { Ime = "Marina", Prezime = "Savić", Specijalizacija = "Pediatrija", BrojLicence = "L67890", Telefon = "+38765333444", Email = "marina.savic@domzdravlja.ba", Adresa = "Vojvode Radomira Putnika 3, Bijeljina" },
-        new Doktor { Ime = "Nenad", Prezime = "Jokić", Specijalizacija = "Kardiologija", BrojLicence = "L24680", Telefon = "+38765455666", Email = "nenad.jokic@domzdravlja.ba", Adresa = "Karađorđeva 12, Trebinje" }
+        new Doktor { Ime = "Petar", Prezime = "Ilić", MaticniBroj="1547856254123", Specijalizacija = "Opšta praksa", BrojLicence = "L12345", Telefon = "+38765111222", Email = "petar.ilic@domzdravlja.ba", Adresa = "Kralja Tomislava 1, Banja Luka" },
+        new Doktor { Ime = "Marina", Prezime = "Savić", MaticniBroj="1245875412563", Specijalizacija = "Pediatrija", BrojLicence = "L67890", Telefon = "+38765333444", Email = "marina.savic@domzdravlja.ba", Adresa = "Vojvode Radomira Putnika 3, Bijeljina" },
+        new Doktor { Ime = "Nenad", Prezime = "Jokić", MaticniBroj="1247854632145", Specijalizacija = "Kardiologija", BrojLicence = "L24680", Telefon = "+38765455666", Email = "nenad.jokic@domzdravlja.ba", Adresa = "Karađorđeva 12, Trebinje" }
       };
       context.Doktori.AddRange(doktori);
       context.SaveChanges();
@@ -66,9 +66,9 @@ public class DbInitializer
     {
       var tehnicari = new List<Tehnicar>
       {
-        new Tehnicar { Ime = "Ivana", Prezime = "Stanković", Telefon = "+38765888888", Email = "ivana.stankovic@domzdravlja.ba", Adresa = "Nikole Tesle 14, Banja Luka" },
-        new Tehnicar { Ime = "Miloš", Prezime = "Babić", Telefon = "+38765123455", Email = "milos.babic@domzdravlja.ba", Adresa = "Patrijarha Pavla 9, Bijeljina" },
-        new Tehnicar { Ime = "Sandra", Prezime = "Mihajlović", Telefon = "+38765987650", Email = "sandra.mihajlovic@domzdravlja.ba", Adresa = "Srpskih Vladara 20, Trebinje" }
+        new Tehnicar { Ime = "Ivana", Prezime = "Stanković", MaticniBroj="1478563245125", Telefon = "+38765888888", Email = "ivana.stankovic@domzdravlja.ba", Adresa = "Nikole Tesle 14, Banja Luka" },
+        new Tehnicar { Ime = "Miloš", Prezime = "Babić", MaticniBroj="1236521478541", Telefon = "+38765123455", Email = "milos.babic@domzdravlja.ba", Adresa = "Patrijarha Pavla 9, Bijeljina" },
+        new Tehnicar { Ime = "Sandra", Prezime = "Mihajlović", MaticniBroj="1365478526541", Telefon = "+38765987650", Email = "sandra.mihajlovic@domzdravlja.ba", Adresa = "Srpskih Vladara 20, Trebinje" }
       };
       context.Tehnicari.AddRange(tehnicari);
       context.SaveChanges();
