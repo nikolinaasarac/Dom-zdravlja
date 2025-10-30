@@ -67,6 +67,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseStaticFiles(); // ovo omogućava pristup svim fajlovima u wwwroot
+
 
 DbInitializer.InitDb(app);
 
