@@ -41,6 +41,7 @@ export const router = createBrowserRouter(
         { path: "/nalozi", element: <Korisnici /> },
         { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
         { path: "/promijeni-lozinku", element: <PromijeniLozinku /> },
+        { path: "/promijeni-lozinku/:userId", element: <PromijeniLozinku /> },
         { path: "/pacijenti/:id/zahtjevi-analiza", element: <PrikazZahtjevaZaAnalize /> },
         { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
         { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },

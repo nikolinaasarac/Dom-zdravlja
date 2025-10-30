@@ -208,7 +208,7 @@ public async Task<ActionResult> PromijeniLozinkuAdmin(Guid userId, [FromBody] Pr
 
     var hasher = new PasswordHasher<Korisnik>();
     korisnik.PasswordHash = hasher.HashPassword(korisnik, dto.NovaLozinka);
-    korisnik.MustChangePassword = false;
+    korisnik.MustChangePassword = true;
     await context.SaveChangesAsync();
 
     return Ok(new { message = "Lozinka uspješno promijenjena." });
