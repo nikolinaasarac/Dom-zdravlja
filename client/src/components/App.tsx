@@ -17,10 +17,11 @@ function App() {
 
   // Ne prikazuj Navbar i Sidebar na login stranici
   const isLoginPage = location.pathname === "/";
+  const isChangePasswordPage = location.pathname === "/promijeni-lozinku";
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {!isLoginPage && <NavBar opcije={opcije} />}
+      {!isLoginPage && !isChangePasswordPage && <NavBar opcije={opcije} />}
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
         {!isLoginPage && <Sidebar />}

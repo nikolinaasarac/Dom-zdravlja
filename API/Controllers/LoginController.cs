@@ -22,25 +22,26 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenResponseDto>> Login(UserDto request)
+        public async Task<IActionResult> Login(UserDto request)
         {
             var result = await authService.LoginAsync(request);
             if (result is null)
-                return BadRequest("Invalid username or password.");
+                return BadRequest("Pogrešno korisničko ime ili lozinka.");
+
             Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // ako koristiš HTTPS
+                Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             });
 
-            // ⚠️ Ne vraćaj refresh token klijentu
             return Ok(new TokenResponseDto
             {
                 AccessToken = result.AccessToken,
-                RefreshToken = "", // prazno jer se ne koristi na frontu
-                UserId = result.UserId
+                RefreshToken = "", // ne vraćamo ga na front
+                UserId = result.UserId,
+                MustChangePassword = result.MustChangePassword // ✅ proslijedimo
             });
         }
 

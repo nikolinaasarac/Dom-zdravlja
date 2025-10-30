@@ -110,6 +110,7 @@ export default function TabelaNaloga() {
                   >
                     <Button
                       //onClick={() => handleSelectKorisnik(korisnik)}
+                      onClick={()=>navigate("/promijeni-lozinku")}
                       size="small"
                       variant="outlined"
                       color="success"
