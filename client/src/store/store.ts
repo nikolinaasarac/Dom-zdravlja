@@ -6,6 +6,8 @@ import { authSlice } from "../features/Login/authSlice";
 import { adminApi } from "../features/admin/adminApi";
 import { doktorApi } from "../features/doktor/doktorApi";
 import { korisnikApi } from "../features/korisnik/korisnikApi";
+import { zahtjevApi } from "../features/Nalazi/zahtjevApi";
+import { nalazApi } from "../features/Nalazi/nalazApi";
 
 export const store = configureStore({
   reducer: {
@@ -15,13 +17,17 @@ export const store = configureStore({
     [adminApi.reducerPath]: adminApi.reducer,
     [doktorApi.reducerPath]: doktorApi.reducer,
     [korisnikApi.reducerPath]: korisnikApi.reducer,
+    [zahtjevApi.reducerPath]: zahtjevApi.reducer,
+    [nalazApi.reducerPath]: nalazApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       pacijentApi.middleware,
       adminApi.middleware,
       doktorApi.middleware,
-      korisnikApi.middleware
+      korisnikApi.middleware,
+      zahtjevApi.middleware,
+      nalazApi.middleware,
     ),
 });
 

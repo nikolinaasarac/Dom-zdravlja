@@ -35,6 +35,12 @@ const opcije = [
     putanja: "/moji-zahtjevi",
     slika: `./../../../images/mojiZahtjevi.png`, // dodaj ikonicu
   },
+  {
+    naziv: "Zahtjevi za analize",
+    opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
+    putanja: "/zahtjevi-analize",
+    slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
+  },
 
   {
     naziv: "Korisnički nalozi",
