@@ -20,11 +20,16 @@ export default function LoginPage() {
 
     try {
       const response = await authApi.login({ username, password });
-      const { accessToken, userId } = response.data;
+      const { accessToken, userId, mustChangePassword } = response.data;
       setAccessToken(accessToken);
 
       if (userId) {
         dispatch(setUser({ id: userId, email: "", role: "" }));
+      }
+
+      if (mustChangePassword) {
+        navigate("/promijeni-lozinku", { replace: true });
+        return;
       }
 
       navigate("/homepage", { replace: true });

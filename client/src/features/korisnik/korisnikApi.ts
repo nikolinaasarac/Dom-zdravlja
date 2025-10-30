@@ -19,7 +19,38 @@ export const korisnikApi = createApi({
         body,
       }),
     }),
+    promijeniLozinku: builder.mutation<
+      { message: string },
+      { novaLozinka: string; potvrdiLozinku: string }
+    >({
+      query: (body) => ({
+        url: "korisnici/promijeniLozinku",
+        method: "PUT",
+        body: {
+          NovaLozinka: body.novaLozinka,
+          NovaLozinkaPotvrda: body.potvrdiLozinku,
+        },
+      }),
+    }),
+    promijeniLozinkuAdmin: builder.mutation<
+      { message: string },
+      { userId: string; novaLozinka: string; potvrdiLozinku: string }
+    >({
+      query: ({ userId, novaLozinka, potvrdiLozinku }) => ({
+        url: `korisnici/promijeniLozinku/${userId}`,
+        method: "PUT",
+        body: {
+          NovaLozinka: novaLozinka,
+          NovaLozinkaPotvrda: potvrdiLozinku,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetMyAccountQuery, useUpdateUsernameMutation } = korisnikApi;
+export const {
+  useGetMyAccountQuery,
+  useUpdateUsernameMutation,
+  usePromijeniLozinkuMutation,
+  usePromijeniLozinkuAdminMutation,
+} = korisnikApi;

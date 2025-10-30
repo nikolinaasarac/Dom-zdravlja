@@ -27,7 +27,10 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
             return null;
         }
 
-        return await CreateTokenResponse(user);
+        var tokenResponse = await CreateTokenResponse(user);
+        tokenResponse.MustChangePassword = user.MustChangePassword; // ✅ dodano
+
+        return tokenResponse;
     }
 
     private async Task<TokenResponseDto> CreateTokenResponse(Korisnik user)

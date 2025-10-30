@@ -99,7 +99,7 @@ public class KorisniciController(DomZdravljaContext context): ControllerBase
     [HttpPost("kreiraj-nalog")]
     public async Task<IActionResult> KreirajNalog(KreirajNalogDto request)
     {
-         if (await context.Korisnici.AnyAsync(u => u.Username == request.Username))
+        if (await context.Korisnici.AnyAsync(u => u.Username == request.Username))
             return BadRequest("Postoji korisnik sa tim korisnickim imenom");
 
         var user = new Korisnik();
@@ -172,17 +172,59 @@ public class KorisniciController(DomZdravljaContext context): ControllerBase
         return Ok(user);
     }
 
+    [Authorize]
+    [HttpPut("promijeniLozinku")]
+    public async Task<ActionResult> PromijeniLozinku([FromBody] PromjeniLozinkuDto dto)
+    {
+        if (dto.NovaLozinka != dto.NovaLozinkaPotvrda)
+            return BadRequest("Lozinke se ne poklapaju.");
+
+        var username = User.Identity?.Name;
+        if (username == null)
+            return Unauthorized();
+
+        var korisnik = await context.Korisnici.FirstOrDefaultAsync(k => k.Username == username);
+        if (korisnik == null)
+            return NotFound("Korisnik nije pronađen.");
+
+        var hasher = new PasswordHasher<Korisnik>();
+        korisnik.PasswordHash = hasher.HashPassword(korisnik, dto.NovaLozinka);
+        korisnik.MustChangePassword = false;
+        await context.SaveChangesAsync();
+
+        return Ok(new { message = "Lozinka uspješno promijenjena." });
+    }
+
+    [Authorize(Roles = "Admin")]
+[HttpPut("promijeniLozinku/{userId}")]
+public async Task<ActionResult> PromijeniLozinkuAdmin(Guid userId, [FromBody] PromjeniLozinkuDto dto)
+{
+    if (dto.NovaLozinka != dto.NovaLozinkaPotvrda)
+        return BadRequest("Lozinke se ne poklapaju.");
+
+    var korisnik = await context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+    if (korisnik == null)
+        return NotFound("Korisnik nije pronađen.");
+
+    var hasher = new PasswordHasher<Korisnik>();
+    korisnik.PasswordHash = hasher.HashPassword(korisnik, dto.NovaLozinka);
+    korisnik.MustChangePassword = false;
+    await context.SaveChangesAsync();
+
+    return Ok(new { message = "Lozinka uspješno promijenjena." });
+}
 
 
-        [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult> DeleteKorisnik(Guid id)
-        {
-            var korisnik = await context.Korisnici.FindAsync(id);
-            if (korisnik == null) return NotFound();
 
-            context.Korisnici.Remove(korisnik);
-            var success =  await context.SaveChangesAsync() > 0;
-            if (!success) return BadRequest();
-            return Ok();
-        }
+    [HttpDelete("{id:Guid}")]
+    public async Task<ActionResult> DeleteKorisnik(Guid id)
+    {
+        var korisnik = await context.Korisnici.FindAsync(id);
+        if (korisnik == null) return NotFound();
+
+        context.Korisnici.Remove(korisnik);
+        var success =  await context.SaveChangesAsync() > 0;
+        if (!success) return BadRequest();
+        return Ok();
+    }
 }

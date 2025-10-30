@@ -13,6 +13,7 @@ import PrikazZahtjeva from "../features/pacijent/PrikazZahtjeva";
 import MojNalog from "../features/korisnik/MojNalog";
 import Korisnici from "../features/admin/Korisnici";
 import KreirajNalogForm from "../features/admin/KreirajNalogForm";
+import PromijeniLozinku from "../features/korisnik/PromijeniLozinku";
 import PrikazZahtjevaZaAnalize from "../features/Nalazi/PrikazZahtjevaZaAnalize";
 import PrikazNalaza from "../features/Nalazi/PrikazNalaza";
 //import PacijentForm from "../features/admin/PacijentForm";
@@ -39,6 +40,7 @@ export const router = createBrowserRouter(
         { path: "/moj-nalog", element: <MojNalog /> },
         { path: "/nalozi", element: <Korisnici /> },
         { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
+        { path: "/promijeni-lozinku", element: <PromijeniLozinku /> },
         { path: "/pacijenti/:id/zahtjevi-analiza", element: <PrikazZahtjevaZaAnalize /> },
         { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
         { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },

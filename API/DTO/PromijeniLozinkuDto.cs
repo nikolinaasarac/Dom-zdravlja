@@ -1,5 +1,8 @@
-public class PromijeniLozinkuDto
+namespace API.DTOs
 {
-    public Guid UserId { get; set; }
-    public string NewPassword { get; set; } = string.Empty;
+    public class PromjeniLozinkuDto
+    {
+        public string NovaLozinka { get; set; } = string.Empty;
+        public string NovaLozinkaPotvrda { get; set; } = string.Empty;
+    }
 }
