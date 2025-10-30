@@ -2,7 +2,7 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "../../store/store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   usePromijeniLozinkuAdminMutation,
   usePromijeniLozinkuMutation,
@@ -14,11 +14,8 @@ import {
   type PromjenaLozinkeForm,
 } from "../../lib/schemas/createPromjenaLozinkeSchema";
 
-type Props = {
-  userId?: string; // opcionalno, samo za admina
-};
-
-export default function PromijeniLozinku({ userId }: Props) {
+export default function PromijeniLozinku() {
+  const { userId } = useParams<{ userId?: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [promijeniLozinku] = usePromijeniLozinkuMutation();
@@ -35,23 +32,30 @@ export default function PromijeniLozinku({ userId }: Props) {
   const onSubmit = async (data: PromjenaLozinkeForm) => {
     try {
       if (userId) {
-        // admin mijenja lozinku nekome
+        console.log("ADMIN mijenja lozinku za:", userId, data);
+
+        // Admin mijenja lozinku drugom korisniku
         await promijeniLozinkuAdmin({
           userId,
           novaLozinka: data.novaLozinka,
           potvrdiLozinku: data.potvrdiLozinku,
         }).unwrap();
+
+        alert("Lozinka korisnika uspješno promijenjena!");
+        // NE radimo logout niti redirect
       } else {
+        // Obični korisnik mijenja svoju lozinku
         await promijeniLozinku({
           novaLozinka: data.novaLozinka,
           potvrdiLozinku: data.potvrdiLozinku,
         }).unwrap();
-      }
 
-      dispatch(logout());
-      navigate("/", { replace: true });
+        dispatch(logout());
+        navigate("/", { replace: true });
+      }
     } catch (err) {
       console.error("Greška pri promjeni lozinke:", err);
+      alert("Greška pri promjeni lozinke");
     }
   };
 
