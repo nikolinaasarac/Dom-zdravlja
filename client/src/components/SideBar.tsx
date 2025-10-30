@@ -22,6 +22,24 @@ export default function Sidebar() {
     { label: "Vakcinacije", to: `/pacijenti/${id}/vakcine`, icon: <svg width="24" height="24" viewBox="0 0 24 24"><path d="M21.71 11.29l-3-3-1.42 1.42 3 3L21.71 11.29zM14.71 18.29l-3-3-1.42 1.42 3 3L14.71 18.29zM2 21h4l9-9-4-4-9 9v4z" /></svg> },
     { label: "Pregledi", to: `/pregledi/${id}`, icon: <svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" /></svg> },
     { label: "Uputnice", to: `/pacijenti/${id}/uputnice`, icon: <svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm9 5V3.5L18.5 7H15z" /></svg> },
+    {
+      label: "Zahtjevi za analize",
+      to: `/pacijenti/${id}/zahtjevi-analiza`,
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Nalazi",
+      to: `/pacijenti/${id}/nalazi`,
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M21 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H21v-2z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
