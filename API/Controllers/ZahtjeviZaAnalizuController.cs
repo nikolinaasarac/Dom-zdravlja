@@ -174,7 +174,7 @@ public class ZahtjevZaAnalizuController(DomZdravljaContext context) : Controller
 
         var noviStatus = status;
 
-        if (noviStatus.Status != "U obradi" && noviStatus.Status != "Obrađen" && noviStatus.Status != "Odbijen")
+        if (noviStatus.Status != "U obradi" && noviStatus.Status != "Obrađen" && noviStatus.Status != "Odbijen" && noviStatus.Status !="Na čekanju")
             return BadRequest("Nevažeći status.");
 
         // ✅ Ako zahtjev nema tehničara, dodaj trenutnog tehničara iz tokena

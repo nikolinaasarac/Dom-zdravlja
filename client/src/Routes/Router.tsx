@@ -16,6 +16,8 @@ import KreirajNalogForm from "../features/admin/KreirajNalogForm";
 import PromijeniLozinku from "../features/korisnik/PromijeniLozinku";
 import PrikazZahtjevaZaAnalize from "../features/Nalazi/PrikazZahtjevaZaAnalize";
 import PrikazNalaza from "../features/Nalazi/PrikazNalaza";
+import TabelaRecepata from "../features/Recepti/TabelaRecepata";
+import ReceptForm from "../features/Recepti/ReceptiForm";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -45,6 +47,9 @@ export const router = createBrowserRouter(
         { path: "/pacijenti/:id/zahtjevi-analiza", element: <PrikazZahtjevaZaAnalize /> },
         { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
         { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },
+        { path: "/pacijenti/:id/recepti", element: <TabelaRecepata /> },
+        { path: "/pacijenti/:id/recepti/dodaj", element: <ReceptForm /> },
+        { path: "zahtjevi-na-cekanju", element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" /> }
 
 
 
