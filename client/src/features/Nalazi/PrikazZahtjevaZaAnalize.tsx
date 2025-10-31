@@ -27,6 +27,7 @@ import UploadNalazForm from "./UploadNalazForm";
 import {
   useGetZahtjeviQuery,
   useGetZahtjeviPacijentaQuery,
+  useGetZahtjeviNaCekanjuQuery,
   usePromijeniStatusMutation,
   useKreirajZahtjevMutation,
 } from "./zahtjevApi";
@@ -61,15 +62,18 @@ function ZahtjevRow({ z, refetch }: { z: ZahtjevZaAnalizu; refetch: () => void }
 
   return (
     <>
-      <TableRow hover sx={{
-        transition: "transform 0.25s ease, box-shadow 0.25s ease",
-        backgroundColor: "#fff",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-        borderRadius: "12px",
-        "& td:first-of-type": { borderTopLeftRadius: 12, borderBottomLeftRadius: 12 },
-        "& td:last-of-type": { borderTopRightRadius: 12, borderBottomRightRadius: 12 },
-        "&:hover": { transform: "scale(1.01)", boxShadow: "0 6px 16px rgba(0,0,0,0.15)" },
-      }}>
+      <TableRow
+        hover
+        sx={{
+          transition: "transform 0.25s ease, box-shadow 0.25s ease",
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+          borderRadius: "12px",
+          "& td:first-of-type": { borderTopLeftRadius: 12, borderBottomLeftRadius: 12 },
+          "& td:last-of-type": { borderTopRightRadius: 12, borderBottomRightRadius: 12 },
+          "&:hover": { transform: "scale(1.01)", boxShadow: "0 6px 16px rgba(0,0,0,0.15)" },
+        }}
+      >
         <TableCell width={50}>
           <IconButton size="small" onClick={() => setOpenCollapse(!openCollapse)}>
             {openCollapse ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -83,6 +87,7 @@ function ZahtjevRow({ z, refetch }: { z: ZahtjevZaAnalizu; refetch: () => void }
             <MenuItem value="Na čekanju">Na čekanju</MenuItem>
             <MenuItem value="U obradi">U obradi</MenuItem>
             <MenuItem value="Obrađen">Obrađen</MenuItem>
+            <MenuItem value="Odbijen">Odbijen</MenuItem>
           </Select>
         </TableCell>
         <TableCell>{new Date(z.datumZahtjeva).toLocaleDateString()}</TableCell>
@@ -116,7 +121,12 @@ function ZahtjevRow({ z, refetch }: { z: ZahtjevZaAnalizu; refetch: () => void }
       </TableRow>
 
       {/* Snackbar */}
-      <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
         <Alert severity="success" onClose={() => setOpenSnackbar(false)}>{snackbarMessage}</Alert>
       </Snackbar>
 
@@ -166,32 +176,53 @@ function NoviZahtjevForm({ pacijentId, onSuccess, onClose }: { pacijentId: numbe
         <Button variant="contained" onClick={handleSubmit}>Kreiraj zahtjev</Button>
       </Box>
 
-      <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
         <Alert severity="success" onClose={() => setOpenSnackbar(false)}>{snackbarMessage}</Alert>
       </Snackbar>
     </>
   );
 }
 
-export default function PrikazZahtjevaZaAnalize() {
+// ---------- Glavna komponenta ----------
+export default function PrikazZahtjevaZaAnalize({
+  filterStatus,
+}: {
+  filterStatus?: "svi" | "na-cekanju" | "pacijent";
+}) {
   const { id } = useParams<{ id: string }>();
-
-  const { data: zahtjeviPacijenta, isLoading: loadingPacijent, refetch: refetchPacijent } =
-    useGetZahtjeviPacijentaQuery(id ? Number(id) : skipToken);
-  const { data: sviZahtjevi, isLoading: loadingSvi, refetch: refetchSvi } = useGetZahtjeviQuery();
-
   const [openNoviDialog, setOpenNoviDialog] = useState(false);
 
-  const zahtjevi = id ? zahtjeviPacijenta : sviZahtjevi;
-  const isLoading = id ? loadingPacijent : loadingSvi;
-  const refetch = id ? refetchPacijent : refetchSvi;
+  const { data: sviZahtjevi, isLoading: loadingSvi, refetch: refetchSvi } = useGetZahtjeviQuery();
+  const { data: zahtjeviPacijenta, isLoading: loadingPacijent, refetch: refetchPacijent } = useGetZahtjeviPacijentaQuery(id ? Number(id) : skipToken);
+  const { data: zahtjeviNaCekanju, isLoading: loadingNaCekanju, refetch: refetchNaCekanju } = useGetZahtjeviNaCekanjuQuery();
+
+  let zahtjevi, isLoading, refetch;
+
+  if (filterStatus === "na-cekanju") {
+    zahtjevi = zahtjeviNaCekanju;
+    isLoading = loadingNaCekanju;
+    refetch = refetchNaCekanju;
+  } else if (id) {
+    zahtjevi = zahtjeviPacijenta;
+    isLoading = loadingPacijent;
+    refetch = refetchPacijent;
+  } else {
+    zahtjevi = sviZahtjevi;
+    isLoading = loadingSvi;
+    refetch = refetchSvi;
+  }
 
   if (isLoading || !zahtjevi) return <Typography align="center">Učitavanje...</Typography>;
 
   return (
     <>
-      {/* Dugme za novi zahtjev (ako smo u pacijent view) */}
-      {id && (
+      {/* Dugme za novi zahtjev, samo ako gledamo pacijenta i nije filter 'na-cekanju' */}
+      {id && filterStatus !== "na-cekanju" && (
         <Button variant="contained" sx={{ mb: 2 }} onClick={() => setOpenNoviDialog(true)}>
           Dodaj novi zahtjev
         </Button>
@@ -219,16 +250,18 @@ export default function PrikazZahtjevaZaAnalize() {
       </TableContainer>
 
       {/* Dialog za novi zahtjev */}
-      <Dialog open={openNoviDialog} onClose={() => setOpenNoviDialog(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Kreiraj novi zahtjev</DialogTitle>
-        <DialogContent>
-          <NoviZahtjevForm
-            pacijentId={id ? Number(id) : 0}
-            onSuccess={refetch}
-            onClose={() => setOpenNoviDialog(false)}
-          />
-        </DialogContent>
-      </Dialog>
+      {filterStatus !== "na-cekanju" && id && (
+        <Dialog open={openNoviDialog} onClose={() => setOpenNoviDialog(false)} fullWidth maxWidth="sm">
+          <DialogTitle>Kreiraj novi zahtjev</DialogTitle>
+          <DialogContent>
+            <NoviZahtjevForm
+              pacijentId={Number(id)}
+              onSuccess={refetch}
+              onClose={() => setOpenNoviDialog(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }
