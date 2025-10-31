@@ -42,6 +42,13 @@ const opcije = [
     slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
   },
 
+    {
+    naziv: "Zahtjevi za analize na čekanju",
+    opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
+    putanja: "/zahtjevi-na-cekanju",
+    slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
+  },
+
   {
     naziv: "Korisnički nalozi",
     opis: "Prikaz korisnika sistema",

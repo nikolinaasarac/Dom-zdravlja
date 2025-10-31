@@ -6,6 +6,7 @@ import type { PacijentParams } from "../../models/PacijentParams";
 import type { Pagination } from "../../models/pagination";
 import type { Pregled } from "../../models/Pregled";
 import type { Uputnica, UputnicaDto } from "../../models/Uputnica";
+import type { Recept, ReceptDto } from "../../models/Recept";
 
 export const pacijentApi = createApi({
   reducerPath: "pacijentApi",
@@ -49,6 +50,30 @@ export const pacijentApi = createApi({
         body: data,
       }),
     }),
+    fetchRecepti: builder.query<Recept[], number | void>({
+      query: (id) => `recepti/${id}`,
+    }),
+
+    createRecepti: builder.mutation<Recept, { pacijentId: number; data: ReceptDto }>({
+      query: ({ pacijentId, data }) => ({
+        url: `recepti/${pacijentId}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    getReceptPdf: builder.query<Blob, number>({
+      query: (id) => ({
+        url: `recepti/${id}/pdf`,
+        responseHandler: (response) => response.blob(),
+      }),
+    }),
+     getUputnicaPdf: builder.query<Blob, number>({
+      query: (id) => ({
+        url: `uputnice/${id}/pdf`,
+        responseHandler: (response) => response.blob(),
+      }),
+    }),
   }),
 });
 
@@ -58,5 +83,9 @@ export const {
   useFetchPacijentPreglediQuery,
   useFetchPacijentByIdQuery,
   useCreateUputnicaMutation,
-  useFetchUputniceQuery
+  useFetchUputniceQuery,
+  useFetchReceptiQuery,
+  useCreateReceptiMutation,
+  useLazyGetReceptPdfQuery,
+  useLazyGetUputnicaPdfQuery
 } = pacijentApi;
