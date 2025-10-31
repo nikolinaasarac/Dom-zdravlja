@@ -1,10 +1,8 @@
-export type Doktor = {
+export type Tehnicar = {
   id: number;
   ime: string;
   prezime: string;
   maticniBroj: string;
-  specijalizacija: string;
-  brojLicence: string;
   telefon: string;
   email: string;
   adresa: string;

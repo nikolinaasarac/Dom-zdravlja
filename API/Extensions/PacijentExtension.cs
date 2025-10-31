@@ -37,7 +37,7 @@ public static class PacijentExtension
 
     return query.Where(x =>
     (x.Ime + " " + x.Prezime).ToLower().Contains(lowerCaseSearchTerm) ||
-    (x.Prezime + " " + x.Ime).ToLower().Contains(lowerCaseSearchTerm)
+    (x.Prezime + " " + x.Ime).ToLower().Contains(lowerCaseSearchTerm) || x.MaticniBroj.ToLower().Contains(lowerCaseSearchTerm)
 );
 
   }

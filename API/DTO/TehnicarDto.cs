@@ -10,6 +10,8 @@ public class TehnicarDto
 
     public required string Prezime { get; set; }
 
+    public required string MaticniBroj { get; set; }
+
     public required string Telefon { get; set; }
 
     public required string Email { get; set; }

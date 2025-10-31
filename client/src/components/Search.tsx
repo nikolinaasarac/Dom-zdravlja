@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import { InputAdornment, TextField } from "@mui/material";
-import { setSearchTerm } from "../features/PrikazPacijenata/pacijentSlice";
-import { useAppDispatch, useAppSelector } from "../store/store";
 import SearchIcon from "@mui/icons-material/Search";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import type { RootState } from "../store/store"; // tip Redux store-a
 
-export default function Search() {
-  const { searchTerm } = useAppSelector((state) => state.pacijent);
+interface SearchProps {
+  selector: (state: RootState) => string | undefined; // state selector vraća string
+  setAction: (value: string) => { type: string; payload: string }; // tip Redux akcije
+  label?: string;
+}
+
+export default function Search({ selector, setAction, label }: SearchProps) {
+  const value = useAppSelector(selector);
   const dispatch = useAppDispatch();
-
-  const [term, setTerm] = useState(searchTerm); //pocetna vrijednost polja term
+  const [term, setTerm] = useState(value);
 
   useEffect(() => {
-    setTerm(searchTerm);
-  }, [searchTerm]); //svaki put kad se promijeni vrijednost searchTerm postavi novi
+    setTerm(value);
+  }, [value]);
 
   return (
     <TextField
-      label="Pretraži pacijente"
+      label={label || "Pretraži"}
       type="search"
       value={term}
       sx={{
@@ -38,12 +43,11 @@ export default function Search() {
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            {" "}
-            <SearchIcon color="action" />{" "}
+            <SearchIcon color="action" />
           </InputAdornment>
         ),
       }}
-      onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+      onChange={(e) => dispatch(setAction(e.target.value))}
     />
   );
 }

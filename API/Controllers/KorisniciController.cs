@@ -79,20 +79,24 @@ public class KorisniciController(DomZdravljaContext context): ControllerBase
     public async Task<ActionResult<IEnumerable<KorisnikDto>>> GetKorisnickiNalozi()
     {
         var korisnici = await context.Korisnici
-            .Include(k => k.Doktor)
-            .Include(k => k.Pacijent)
-            .Select(k => new KorisnikDto
-            {
-                Id = k.Id,
-                Username = k.Username,
-                Role = k.Role,
-                Ime = k.Doktor != null ? k.Doktor.Ime :
-                      k.Pacijent != null ? k.Pacijent.Ime : null,
-                Prezime = k.Doktor != null ? k.Doktor.Prezime :
-                          k.Pacijent != null ? k.Pacijent.Prezime : null
-            })
-            .ToListAsync();
-        return Ok(korisnici);
+        .Include(k => k.Doktor)
+        .Include(k => k.Pacijent)
+        .Include(k => k.Tehnicar)
+        .Select(k => new KorisnikDto
+        {
+            Id = k.Id,
+            Username = k.Username,
+            Role = k.Role,
+            Ime = k.Doktor != null ? k.Doktor.Ime :
+                  k.Pacijent != null ? k.Pacijent.Ime :
+                  k.Tehnicar != null ? k.Tehnicar.Ime : null,
+            Prezime = k.Doktor != null ? k.Doktor.Prezime :
+                      k.Pacijent != null ? k.Pacijent.Prezime :
+                      k.Tehnicar != null ? k.Tehnicar.Prezime : null
+        })
+        .ToListAsync();
+
+    return Ok(korisnici);
     }
 
     //korisnici/kreiraj-nalog

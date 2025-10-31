@@ -5,6 +5,8 @@ import type { CreatePregledInfoSchema } from "../../lib/schemas/createPregledSch
 import type { Doktor } from "../../models/Doktor";
 import type { CreateZahtjevSchema } from "../../lib/schemas/createZahtjevSchema";
 import type { ZahtjevZaPregled } from "../../models/ZahtjevZaPregled";
+import type { Pagination } from "../../models/pagination";
+import type { DoktorParams } from "../../models/DoktorParams";
 
 export const doktorApi = createApi({
   reducerPath: "doktorApi",
@@ -14,6 +16,24 @@ export const doktorApi = createApi({
   tagTypes: ["Zahtjevi"],
 
   endpoints: (builder) => ({
+    fetchDoktori: builder.query<
+      { doktori: Doktor[]; pagination: Pagination },
+      DoktorParams
+    >({
+      query: (doktorParams) => {
+        return {
+          url: "doktori",
+          params: doktorParams,
+        };
+      },
+      transformResponse: (doktori: Doktor[], meta) => {
+        const paginationHeader = meta?.response?.headers.get("Pagination");
+        const pagination = paginationHeader
+          ? JSON.parse(paginationHeader)
+          : null;
+        return { doktori, pagination };
+      },
+    }),
     fetchPregledi: builder.query<Pregled[], void>({
       query: () => `pregledi/doktor/pregledi`,
     }),
@@ -32,11 +52,6 @@ export const doktorApi = createApi({
         },
       }),
     }),
-
-    fetchDoktori: builder.query<Doktor[], void>({
-      query: () => `doktori`,
-    }),
-
     // ✅ Ovdje dodaj invalidatesTags
     createZahtjev: builder.mutation<ZahtjevZaPregled, CreateZahtjevSchema>({
       query: (body) => ({

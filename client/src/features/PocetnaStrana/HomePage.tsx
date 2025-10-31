@@ -54,6 +54,18 @@ const opcije = [
     putanja: "/moj-nalog",
     slika: "./../../../images/mojNalog.png",
   },
+  {
+    naziv: "Doktori",
+    opis: "Prikaz statističkih podataka",
+    putanja: "/doktori",
+    slika: "./../../../images/mojNalog.png",
+  },
+  {
+    naziv: "Tehnicari",
+    opis: "Prikaz statističkih podataka",
+    putanja: "/tehnicari",
+    slika: "./../../../images/mojNalog.png",
+  },
 ];
 
 const sliderItems = [
