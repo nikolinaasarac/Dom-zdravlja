@@ -1,73 +1,68 @@
 import { Button, Paper, Box, Typography } from "@mui/material";
-import { useFetchPacijentiQuery } from "./pacijentApi";
-import { useAppDispatch, useAppSelector, type RootState } from "../../store/store";
-import { resetParams, setPageNumber, setSearchTerm } from "./pacijentSlice";
-import Filter from "../../components/Filter";
-import Sort from "../../components/Sort";
+import {
+  useAppDispatch,
+  useAppSelector,
+  type RootState,
+} from "../../store/store";
 import AppPagination from "../../components/AppPagination";
-import TabelaPacijenata from "../../components/TabelaPacijenata";
 import { useState } from "react";
-import type { Pacijent } from "../../models/Pacijent";
-import { useDeletePacijentMutation } from "../admin/adminApi";
-import PacijentForm from "../admin/PacijentForm";
+import type { Tehnicar } from "../../models/Tehnicar";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Search from "../../components/Search";
+import {
+  useDeleteTehnicarMutation,
+  useFetchTehnicariQuery,
+} from "../admin/adminApi";
+import TehnicarForm from "./TehnicarForm";
+import { resetParams, setPageNumber, setSearchTerm } from "./tehnicarSlice";
+import TabelaTehnicara from "../../components/TabelaTehnicara";
+import SortTehnicar from "../../components/SortTehnicar";
 
-export default function PrikazPacijenata() {
-  const pacijentParams = useAppSelector((state) => state.pacijent);
+export default function PrikazTehnicara() {
+  const tehnicarParams = useAppSelector((state) => state.tehnicar);
   const {
-    data: pacijenti,
+    data: tehnicari,
     isLoading,
     refetch,
-  } = useFetchPacijentiQuery(pacijentParams);
+  } = useFetchTehnicariQuery(tehnicarParams);
   const dispatch = useAppDispatch();
   const [editMode, setEditMode] = useState(false);
-  const [selectedPacijent, setSelectedPacijent] = useState<Pacijent | null>(
+  const [selectedTehnicar, setSelectedTehnicar] = useState<Tehnicar | null>(
     null
   );
-  const [deletePacijent] = useDeletePacijentMutation();
+  const [deleteTehnicar] = useDeleteTehnicarMutation();
 
-  const handleSelectPacijent = (pacijent: Pacijent) => {
-    setSelectedPacijent(pacijent);
+  const handleSelectTehnicar = (tehnicar: Tehnicar) => {
+    setSelectedTehnicar(tehnicar);
     setEditMode(true);
   };
 
-  const handleDeletePacijent = async (id: number) => {
-    const confirmDelete = window.confirm(
-      "Jeste li sigurni da želite obrisati ovog pacijenta?"
-    );
-    if (!confirmDelete) return;
-
+  const handleDeleteTehnicar = async (id: number) => {
+    if (!window.confirm("Jeste li sigurni da želite obrisati ovog tehničara?"))
+      return;
     try {
-      await deletePacijent(id);
+      await deleteTehnicar(id);
       refetch();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   if (editMode)
     return (
-      <PacijentForm
+      <TehnicarForm
         setEditMode={setEditMode}
-        pacijent={selectedPacijent}
+        tehnicar={selectedTehnicar}
         refetch={refetch}
-        setSelectedPacijent={setSelectedPacijent}
+        setSelectedTehnicar={setSelectedTehnicar}
       />
     );
 
-  if (isLoading || !pacijenti) return <div>Loading...</div>;
+  if (isLoading || !tehnicari) return <div>Loading...</div>;
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "#f3f5f9",
-        p: 3,
-        borderRadius: 3,
-      }}
-    >
-      {/* Gornji bar: pretraga + filteri + dugmad */}
+    <Box sx={{ backgroundColor: "#f3f5f9", p: 3, borderRadius: 3 }}>
       <Paper
         elevation={0}
         sx={{
@@ -83,14 +78,11 @@ export default function PrikazPacijenata() {
           gap: 2,
         }}
       >
-        {/* ✅ Moderno Search polje */}
         <Search
-          selector={(state: RootState) => state.pacijent.searchTerm}
+          selector={(state: RootState) => state.tehnicar.searchTerm}
           setAction={setSearchTerm}
-          label="Pretraži pacijente"
+          label="Pretraži tehničare"
         />
-
-        {/* Desna strana: filteri + dugmad */}
         <Box
           sx={{
             display: "flex",
@@ -100,8 +92,7 @@ export default function PrikazPacijenata() {
             justifyContent: "flex-end",
           }}
         >
-          <Filter />
-          <Sort />
+          <SortTehnicar />
           <Button
             variant="outlined"
             color="inherit"
@@ -130,22 +121,20 @@ export default function PrikazPacijenata() {
             }}
             onClick={() => setEditMode(true)}
           >
-            Novi pacijent
+            Novi tehničar
           </Button>
         </Box>
       </Paper>
 
-      {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
+      {tehnicari.tehnicari && tehnicari.tehnicari.length > 0 ? (
         <>
-          {/* Tabela */}
-          <TabelaPacijenata
-            handleSelectPacijent={handleSelectPacijent}
-            handleDeletePacijent={handleDeletePacijent}
+          <TabelaTehnicara
+            handleSelectTehnicar={handleSelectTehnicar}
+            handleDeleteTehnicar={handleDeleteTehnicar}
           />
-
           <Box sx={{ mt: 3 }}>
             <AppPagination
-              metadata={pacijenti.pagination}
+              metadata={tehnicari.pagination}
               onPageChange={(page: number) => {
                 dispatch(setPageNumber(page));
                 window.scrollTo({ top: 0, behavior: "smooth" });

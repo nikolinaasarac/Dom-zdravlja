@@ -5,17 +5,16 @@ import type { CreatePacijentSchema } from "../../lib/schemas/createPacijentSchem
 import type { Korisnik } from "../../models/Korisnik";
 import type { CreateKorisnikSchema } from "../../lib/schemas/createKorisnikSchema";
 import type { Doktor } from "../korisnik/Korisnik";
+import type { CreateDoktorSchema } from "../../lib/schemas/createDoktorSchema";
+import type { Tehnicar } from "../../models/Tehnicar";
+import type { CreateTehnicarSchema } from "../../lib/schemas/createTehnicarSchema";
+import type { Pagination } from "../../models/pagination";
+import type { TehnicarParams } from "../../models/TehnicarParams";
 
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: customBaseQuery,
   endpoints: (builder) => ({
-    fetchDoktori: builder.query<Doktor[], void>({
-      query: () => "doktori",
-    }),
-    fetchTehnicari: builder.query<[], void>({
-      query: () => "pacijenti",
-    }),
     createPacijent: builder.mutation<Pacijent, CreatePacijentSchema>({
       query: (data) => ({
         url: "pacijenti",
@@ -36,6 +35,70 @@ export const adminApi = createApi({
     deletePacijent: builder.mutation<void, number>({
       query: (id) => ({
         url: `pacijenti/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    createDoktor: builder.mutation<Doktor, CreateDoktorSchema>({
+      query: (data) => ({
+        url: "doktori",
+        method: "POST",
+        body: data, // sada šalješ JSON
+      }),
+    }),
+    updateDoktor: builder.mutation<
+      void,
+      { id: number; data: CreateDoktorSchema }
+    >({
+      query: ({ id, data }) => ({
+        url: `doktori`,
+        method: "PUT",
+        body: { id, ...data }, // JSON
+      }),
+    }),
+    deleteDoktor: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `doktori/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    fetchTehnicari: builder.query<
+      { tehnicari: Tehnicar[]; pagination: Pagination },
+      TehnicarParams
+    >({
+      query: (tehnicarParams) => {
+        return {
+          url: "tehnicari",
+          params: tehnicarParams,
+        };
+      },
+      transformResponse: (tehnicari: Tehnicar[], meta) => {
+        const paginationHeader = meta?.response?.headers.get("Pagination");
+        const pagination = paginationHeader
+          ? JSON.parse(paginationHeader)
+          : null;
+        return { tehnicari, pagination };
+      },
+    }),
+    createTehnicar: builder.mutation<Tehnicar, CreateTehnicarSchema>({
+      query: (data) => ({
+        url: "tehnicari",
+        method: "POST",
+        body: data, // sada šalješ JSON
+      }),
+    }),
+    updateTehnicar: builder.mutation<
+      void,
+      { id: number; data: CreateTehnicarSchema }
+    >({
+      query: ({ id, data }) => ({
+        url: `tehnicari`,
+        method: "PUT",
+        body: { id, ...data }, // JSON
+      }),
+    }),
+    deleteTehnicar: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `tehnicari/${id}`,
         method: "DELETE",
       }),
     }),
@@ -60,7 +123,6 @@ export const adminApi = createApi({
 });
 
 export const {
-  useFetchDoktoriQuery,
   useFetchTehnicariQuery,
   useCreatePacijentMutation,
   useDeletePacijentMutation,
@@ -68,4 +130,10 @@ export const {
   useFetchKorisniciQuery,
   useCreateKorisnikMutation,
   useDeleteKorisnikMutation,
+  useDeleteDoktorMutation,
+  useCreateDoktorMutation,
+  useUpdateDoktorMutation,
+  useCreateTehnicarMutation,
+  useUpdateTehnicarMutation,
+  useDeleteTehnicarMutation,
 } = adminApi;

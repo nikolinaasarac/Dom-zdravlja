@@ -10,6 +10,8 @@ public class DoktorDto
 
     public required string Prezime { get; set; }
 
+    public required string MaticniBroj { get; set; }
+
     public required string Specijalizacija { get; set; }
 
     public required string BrojLicence { get; set; }

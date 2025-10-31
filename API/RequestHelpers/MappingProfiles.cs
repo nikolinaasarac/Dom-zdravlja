@@ -14,5 +14,7 @@ public class MappingProfiles : Profile
     CreateMap<UpdatePacijentDto, Pacijent>();
     CreateMap<UpdatePregledDto, Pregled>();
     CreateMap<KreirajNalogDto, Korisnik>();
+    CreateMap<DoktorDto, Doktor>();
+    CreateMap<TehnicarDto, Tehnicar>();
   }
 }

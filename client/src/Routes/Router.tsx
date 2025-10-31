@@ -16,6 +16,8 @@ import KreirajNalogForm from "../features/admin/KreirajNalogForm";
 import PromijeniLozinku from "../features/korisnik/PromijeniLozinku";
 import PrikazZahtjevaZaAnalize from "../features/Nalazi/PrikazZahtjevaZaAnalize";
 import PrikazNalaza from "../features/Nalazi/PrikazNalaza";
+import PrikazDoktora from "../features/PrikazDoktora/PrikazDoktora";
+import PrikazTehnicara from "../features/PrikaziTehnicare/PrikazTehnicara";
 import TabelaRecepata from "../features/Recepti/TabelaRecepata";
 import ReceptForm from "../features/Recepti/ReceptiForm";
 //import PacijentForm from "../features/admin/PacijentForm";
@@ -44,9 +46,14 @@ export const router = createBrowserRouter(
         { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
         { path: "/promijeni-lozinku", element: <PromijeniLozinku /> },
         { path: "/promijeni-lozinku/:userId", element: <PromijeniLozinku /> },
-        { path: "/pacijenti/:id/zahtjevi-analiza", element: <PrikazZahtjevaZaAnalize /> },
+        {
+          path: "/pacijenti/:id/zahtjevi-analiza",
+          element: <PrikazZahtjevaZaAnalize />,
+        },
         { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
         { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },
+        { path: "doktori", element: <PrikazDoktora /> },
+        { path: "tehnicari", element: <PrikazTehnicara /> },
         { path: "/pacijenti/:id/recepti", element: <TabelaRecepata /> },
         { path: "/pacijenti/:id/recepti/dodaj", element: <ReceptForm /> },
         { path: "zahtjevi-na-cekanju", element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" /> }

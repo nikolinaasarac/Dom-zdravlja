@@ -1,73 +1,64 @@
 import { Button, Paper, Box, Typography } from "@mui/material";
-import { useFetchPacijentiQuery } from "./pacijentApi";
-import { useAppDispatch, useAppSelector, type RootState } from "../../store/store";
-import { resetParams, setPageNumber, setSearchTerm } from "./pacijentSlice";
-import Filter from "../../components/Filter";
-import Sort from "../../components/Sort";
+import {
+  useAppDispatch,
+  useAppSelector,
+  type RootState,
+} from "../../store/store";
 import AppPagination from "../../components/AppPagination";
-import TabelaPacijenata from "../../components/TabelaPacijenata";
 import { useState } from "react";
-import type { Pacijent } from "../../models/Pacijent";
-import { useDeletePacijentMutation } from "../admin/adminApi";
-import PacijentForm from "../admin/PacijentForm";
+import type { Doktor } from "../../models/Doktor";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Search from "../../components/Search";
+import { useFetchDoktoriQuery } from "../doktor/doktorApi";
+import { resetParams, setPageNumber, setSearchTerm } from "./doktorSlice";
+import TabelaDoktora from "../../components/TabelaDoktora";
+import SortDoktor from "../../components/SortDoktor";
+import { useDeleteDoktorMutation } from "../admin/adminApi";
+import DoktorForm from "./DoktorForm";
 
-export default function PrikazPacijenata() {
-  const pacijentParams = useAppSelector((state) => state.pacijent);
+export default function PrikazDoktora() {
+  const doktorParams = useAppSelector((state) => state.doktor);
   const {
-    data: pacijenti,
+    data: doktori,
     isLoading,
     refetch,
-  } = useFetchPacijentiQuery(pacijentParams);
+  } = useFetchDoktoriQuery(doktorParams);
   const dispatch = useAppDispatch();
   const [editMode, setEditMode] = useState(false);
-  const [selectedPacijent, setSelectedPacijent] = useState<Pacijent | null>(
-    null
-  );
-  const [deletePacijent] = useDeletePacijentMutation();
+  const [selectedDoktor, setSelectedDoktor] = useState<Doktor | null>(null);
+  const [deleteDoktor] = useDeleteDoktorMutation();
 
-  const handleSelectPacijent = (pacijent: Pacijent) => {
-    setSelectedPacijent(pacijent);
+  const handleSelectDoktor = (doktor: Doktor) => {
+    setSelectedDoktor(doktor);
     setEditMode(true);
   };
 
-  const handleDeletePacijent = async (id: number) => {
-    const confirmDelete = window.confirm(
-      "Jeste li sigurni da želite obrisati ovog pacijenta?"
-    );
-    if (!confirmDelete) return;
-
+  const handleDeleteDoktor = async (id: number) => {
+    if (!window.confirm("Jeste li sigurni da želite obrisati ovog doktora?"))
+      return;
     try {
-      await deletePacijent(id);
+      await deleteDoktor(id);
       refetch();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   if (editMode)
     return (
-      <PacijentForm
+      <DoktorForm
         setEditMode={setEditMode}
-        pacijent={selectedPacijent}
+        doktor={selectedDoktor}
         refetch={refetch}
-        setSelectedPacijent={setSelectedPacijent}
+        setSelectedDoktor={setSelectedDoktor}
       />
     );
 
-  if (isLoading || !pacijenti) return <div>Loading...</div>;
+  if (isLoading || !doktori) return <div>Loading...</div>;
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "#f3f5f9",
-        p: 3,
-        borderRadius: 3,
-      }}
-    >
-      {/* Gornji bar: pretraga + filteri + dugmad */}
+    <Box sx={{ backgroundColor: "#f3f5f9", p: 3, borderRadius: 3 }}>
       <Paper
         elevation={0}
         sx={{
@@ -83,14 +74,11 @@ export default function PrikazPacijenata() {
           gap: 2,
         }}
       >
-        {/* ✅ Moderno Search polje */}
         <Search
-          selector={(state: RootState) => state.pacijent.searchTerm}
+          selector={(state: RootState) => state.doktor.searchTerm}
           setAction={setSearchTerm}
-          label="Pretraži pacijente"
+          label="Pretraži doktore"
         />
-
-        {/* Desna strana: filteri + dugmad */}
         <Box
           sx={{
             display: "flex",
@@ -100,8 +88,7 @@ export default function PrikazPacijenata() {
             justifyContent: "flex-end",
           }}
         >
-          <Filter />
-          <Sort />
+          <SortDoktor />
           <Button
             variant="outlined"
             color="inherit"
@@ -130,22 +117,20 @@ export default function PrikazPacijenata() {
             }}
             onClick={() => setEditMode(true)}
           >
-            Novi pacijent
+            Novi doktor
           </Button>
         </Box>
       </Paper>
 
-      {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
+      {doktori.doktori && doktori.doktori.length > 0 ? (
         <>
-          {/* Tabela */}
-          <TabelaPacijenata
-            handleSelectPacijent={handleSelectPacijent}
-            handleDeletePacijent={handleDeletePacijent}
+          <TabelaDoktora
+            handleSelectDoktor={handleSelectDoktor}
+            handleDeleteDoktor={handleDeleteDoktor}
           />
-
           <Box sx={{ mt: 3 }}>
             <AppPagination
-              metadata={pacijenti.pagination}
+              metadata={doktori.pagination}
               onPageChange={(page: number) => {
                 dispatch(setPageNumber(page));
                 window.scrollTo({ top: 0, behavior: "smooth" });

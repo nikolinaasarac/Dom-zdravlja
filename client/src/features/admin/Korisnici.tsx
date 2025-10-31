@@ -26,7 +26,7 @@ export default function TabelaNaloga() {
 
   const handleDeleteKorisnik = async (id: string) => {
     const confirmDelete = window.confirm(
-      "Jeste li sigurni da želite obrisati ovog pacijenta?"
+      "Jeste li sigurni da želite obrisati ovog korisnika?"
     );
     if (!confirmDelete) return;
     try {
@@ -110,7 +110,9 @@ export default function TabelaNaloga() {
                   >
                     <Button
                       //onClick={() => handleSelectKorisnik(korisnik)}
-                      onClick={()=>navigate(`/promijeni-lozinku/${korisnik.id}`)}
+                      onClick={() =>
+                        navigate(`/promijeni-lozinku/${korisnik.id}`)
+                      }
                       size="small"
                       variant="outlined"
                       color="success"
