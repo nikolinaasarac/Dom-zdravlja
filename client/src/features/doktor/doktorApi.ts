@@ -7,6 +7,8 @@ import type { CreateZahtjevSchema } from "../../lib/schemas/createZahtjevSchema"
 import type { ZahtjevZaPregled } from "../../models/ZahtjevZaPregled";
 import type { Pagination } from "../../models/pagination";
 import type { DoktorParams } from "../../models/DoktorParams";
+import type { ZdravstvenoStanje } from "../../models/ZdravstvenoStanje";
+import { type CreateZdravstvenoStanjeSchema } from "../../lib/schemas/createZdravstvenoStanjeSchema";
 
 export const doktorApi = createApi({
   reducerPath: "doktorApi",
@@ -87,6 +89,19 @@ export const doktorApi = createApi({
       }),
       invalidatesTags: ["Zahtjevi"], // ✅ I ovdje
     }),
+    fetchPacijentZdravstvenaStanja: builder.query<ZdravstvenoStanje[], number>({
+      query: (pacijentId) => `zdravstvenastanja/pacijent/${pacijentId}`,
+    }),
+    createZdravstvenoStanje: builder.mutation<
+      ZdravstvenoStanje,
+      { pacijentId: number; data: CreateZdravstvenoStanjeSchema }
+    >({
+      query: ({ pacijentId, data }) => ({
+        url: `zdravstvenaStanja/pacijent/${pacijentId}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -98,4 +113,6 @@ export const {
   useGetMojiZahtjeviQuery,
   useOdobriZahtjevMutation,
   useOdbijZahtjevMutation,
+  useFetchPacijentZdravstvenaStanjaQuery,
+  useCreateZdravstvenoStanjeMutation,
 } = doktorApi;

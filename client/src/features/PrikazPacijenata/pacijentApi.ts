@@ -7,6 +7,8 @@ import type { Pagination } from "../../models/pagination";
 import type { Pregled } from "../../models/Pregled";
 import type { Uputnica, UputnicaDto } from "../../models/Uputnica";
 import type { Recept, ReceptDto } from "../../models/Recept";
+import type { KrvnaGrupa } from "../../models/KrvnaGrupa";
+import type { CreateKrvnaGrupaSchema } from "../../lib/schemas/createKrvnaGrupaSchema";
 
 export const pacijentApi = createApi({
   reducerPath: "pacijentApi",
@@ -43,7 +45,10 @@ export const pacijentApi = createApi({
       query: (id) => `uputnice/${id}`,
     }),
 
-    createUputnica: builder.mutation<Uputnica, { pacijentId: number; data: UputnicaDto }>({
+    createUputnica: builder.mutation<
+      Uputnica,
+      { pacijentId: number; data: UputnicaDto }
+    >({
       query: ({ pacijentId, data }) => ({
         url: `uputnice/${pacijentId}`,
         method: "POST",
@@ -54,7 +59,10 @@ export const pacijentApi = createApi({
       query: (id) => `recepti/${id}`,
     }),
 
-    createRecepti: builder.mutation<Recept, { pacijentId: number; data: ReceptDto }>({
+    createRecepti: builder.mutation<
+      Recept,
+      { pacijentId: number; data: ReceptDto }
+    >({
       query: ({ pacijentId, data }) => ({
         url: `recepti/${pacijentId}`,
         method: "POST",
@@ -68,10 +76,33 @@ export const pacijentApi = createApi({
         responseHandler: (response) => response.blob(),
       }),
     }),
-     getUputnicaPdf: builder.query<Blob, number>({
+    getUputnicaPdf: builder.query<Blob, number>({
       query: (id) => ({
         url: `uputnice/${id}/pdf`,
         responseHandler: (response) => response.blob(),
+      }),
+    }),
+    fetchKrvnaGrupa: builder.query<KrvnaGrupa, number>({
+      query: (pacijentId) => `krvnegrupe/pacijent/${pacijentId}`,
+    }),
+    createKrvnaGrupa: builder.mutation<
+      KrvnaGrupa,
+      { pacijentId: number; data: CreateKrvnaGrupaSchema }
+    >({
+      query: ({ pacijentId, data }) => ({
+        url: `krvnegrupe/pacijent/${pacijentId}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateKrvnaGrupa: builder.mutation<
+      KrvnaGrupa,
+      { pacijentId: number; data: CreateKrvnaGrupaSchema }
+    >({
+      query: ({ pacijentId, data }) => ({
+        url: `krvnegrupe/pacijent/${pacijentId}`,
+        method: "PUT",
+        body: data,
       }),
     }),
   }),
@@ -87,5 +118,8 @@ export const {
   useFetchReceptiQuery,
   useCreateReceptiMutation,
   useLazyGetReceptPdfQuery,
-  useLazyGetUputnicaPdfQuery
+  useLazyGetUputnicaPdfQuery,
+  useCreateKrvnaGrupaMutation,
+  useUpdateKrvnaGrupaMutation,
+  useFetchKrvnaGrupaQuery,
 } = pacijentApi;
