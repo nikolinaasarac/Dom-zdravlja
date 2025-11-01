@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DomZdravljaContext))]
-    partial class DomZdravljaContextModelSnapshot : ModelSnapshot
+    [Migration("20251101132414_AddZdravstvenaStanja")]
+    partial class AddZdravstvenaStanja
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -99,32 +102,6 @@ namespace API.Data.Migrations
                     b.HasIndex("TehnicarId");
 
                     b.ToTable("Korisnici");
-                });
-
-            modelBuilder.Entity("API.Entities.KrvnaGrupa", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Faktor")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Grupa")
-                        .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PacijentId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PacijentId");
-
-                    b.ToTable("KrvneGrupe");
                 });
 
             modelBuilder.Entity("API.Entities.Pacijent", b =>
@@ -532,17 +509,6 @@ namespace API.Data.Migrations
                     b.Navigation("Tehnicar");
                 });
 
-            modelBuilder.Entity("API.Entities.KrvnaGrupa", b =>
-                {
-                    b.HasOne("API.Entities.Pacijent", "Pacijent")
-                        .WithMany()
-                        .HasForeignKey("PacijentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pacijent");
-                });
-
             modelBuilder.Entity("API.Entities.Pregled", b =>
                 {
                     b.HasOne("API.Entities.Doktor", "Doktor")
@@ -633,7 +599,7 @@ namespace API.Data.Migrations
             modelBuilder.Entity("API.Entities.ZdravstvenoStanje", b =>
                 {
                     b.HasOne("API.Entities.Pacijent", "Pacijent")
-                        .WithMany("ZdravstvenaStanja")
+                        .WithMany()
                         .HasForeignKey("PacijentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -733,8 +699,6 @@ namespace API.Data.Migrations
                     b.Navigation("Vakcinacije");
 
                     b.Navigation("ZahtjeviZaPregled");
-
-                    b.Navigation("ZdravstvenaStanja");
                 });
 
             modelBuilder.Entity("API.Entities.Tehnicar", b =>

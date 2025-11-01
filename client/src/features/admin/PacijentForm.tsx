@@ -67,7 +67,6 @@ export default function PacijentForm({
     }
   }, [pacijent, reset]);
 
-
   /*const createFormData = (items: FieldValues) => {
     const formData = new FormData();
 
@@ -133,7 +132,6 @@ export default function PacijentForm({
                 </LocalizationProvider>
               )}
             />
-
           </Grid>
 
           <Grid size={6}>
@@ -146,7 +144,6 @@ export default function PacijentForm({
                 { value: "Ženski", label: "Ženski" },
               ]}
             />
-
           </Grid>
           <Grid size={12}>
             <AppTextInput control={control} name="adresa" label="Adresa" />
@@ -179,7 +176,7 @@ export default function PacijentForm({
           <Button
             loading={isSubmitting}
             variant="contained"
-            color="success"
+            color="primary"
             type="submit"
           >
             Sačuvaj

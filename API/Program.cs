@@ -56,6 +56,8 @@ builder.Services.AddScoped<IPregledService, PregledService>();
 builder.Services.AddScoped<IUputnicaService, UputnicaService>();
 builder.Services.AddScoped<IVakcinacijaService, VakcinacijaService>();
 builder.Services.AddScoped<ITehnicarService, TehnicarService>();
+builder.Services.AddScoped<IZdravstvenoStanjeService, ZdravstvenoStanjeService>();
+builder.Services.AddScoped<IKrvnaGrupaService, KrvnaGrupaService>();
 
 
 var app = builder.Build();

@@ -15,4 +15,5 @@ public class Pacijent
   public ICollection<Pregled>? Pregledi { get; set; }
   public ICollection<Nalaz>? Nalazi { get; set; }
   public ICollection<ZahtjevZaPregled>? ZahtjeviZaPregled { get; set; }
+  public ICollection<ZdravstvenoStanje>? ZdravstvenaStanja { get; set; }
 }

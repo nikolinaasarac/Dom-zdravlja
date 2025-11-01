@@ -73,5 +73,73 @@ public class DbInitializer
       context.Tehnicari.AddRange(tehnicari);
       context.SaveChanges();
     }
-  }
+
+    // 🔹 Zdravstvena stanja
+    if (!context.ZdravstvenaStanja.Any())
+    {
+      var stanja = new List<ZdravstvenoStanje>
+    {
+        new ZdravstvenoStanje
+        {
+            PacijentId = 1,
+            Naziv = "Bronhitis",
+            Tip = "Bolest",
+            DatumDijagnoze = new DateTime(2020, 11, 12),
+            Napomena = "Povremeni napadi kašlja, liječenje uspješno završeno."
+        },
+        new ZdravstvenoStanje
+        {
+            PacijentId = 1,
+            Naziv = "Alergija na polen",
+            Tip = "Alergija",
+            DatumDijagnoze = new DateTime(2015, 4, 5),
+            Napomena = "Sezonska alergija, koristi antihistaminike po potrebi."
+        },
+        new ZdravstvenoStanje
+        {
+            PacijentId = 2,
+            Naziv = "Dijabetes tip 2",
+            Tip = "Bolest",
+            DatumDijagnoze = new DateTime(2018, 2, 10),
+            Napomena = "Redovna kontrola šećera u krvi, terapija metformin."
+        },
+        new ZdravstvenoStanje
+        {
+            PacijentId = 3,
+            Naziv = "Alergija na penicilin",
+            Tip = "Alergija",
+            DatumDijagnoze = new DateTime(2019, 8, 20),
+            Napomena = "Zabilježeno u kartonu, izbjegavati penicilin i derivate."
+        },
+        new ZdravstvenoStanje
+        {
+            PacijentId = 4,
+            Naziv = "Astma",
+            Tip = "Bolest",
+            DatumDijagnoze = new DateTime(2012, 6, 1),
+            Napomena = "Blaga forma, koristi inhalator po potrebi."
+        }
+    };
+
+      context.ZdravstvenaStanja.AddRange(stanja);
+      
+    context.SaveChanges();
+    }
+    
+        
+    // 🔹 Krvne grupe
+if (!context.KrvneGrupe.Any())
+{
+    var krvneGrupe = new List<KrvnaGrupa>
+    {
+        new KrvnaGrupa { PacijentId = 1, Grupa = "A", Faktor = "+" },
+        new KrvnaGrupa { PacijentId = 2, Grupa = "B", Faktor = "-" },
+        new KrvnaGrupa { PacijentId = 3, Grupa = "0", Faktor = "+" }
+    };
+
+    context.KrvneGrupe.AddRange(krvneGrupe);
+    context.SaveChanges();
+}
+}
+
 }
