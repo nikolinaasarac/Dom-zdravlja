@@ -9,6 +9,7 @@ import type { Uputnica, UputnicaDto } from "../../models/Uputnica";
 import type { Recept, ReceptDto } from "../../models/Recept";
 import type { KrvnaGrupa } from "../../models/KrvnaGrupa";
 import type { CreateKrvnaGrupaSchema } from "../../lib/schemas/createKrvnaGrupaSchema";
+import type { Doktor } from "../../models/Doktor";
 
 export const pacijentApi = createApi({
   reducerPath: "pacijentApi",
@@ -31,6 +32,9 @@ export const pacijentApi = createApi({
           : null;
         return { pacijenti, pagination };
       },
+    }),
+    fetchDoktori: builder.query<Doktor[], void>({
+      query: () => `doktori`,
     }),
     fetchPacijentVakcine: builder.query<Vakcinacija[], number>({
       query: (pacijentId) => `vakcinacije/${pacijentId}`,
@@ -122,4 +126,5 @@ export const {
   useCreateKrvnaGrupaMutation,
   useUpdateKrvnaGrupaMutation,
   useFetchKrvnaGrupaQuery,
+  useFetchDoktoriQuery,
 } = pacijentApi;

@@ -4,9 +4,14 @@ import {
   type FetchArgs,
   type BaseQueryApi,
 } from "@reduxjs/toolkit/query/react";
-import { getAccessToken, setAccessToken } from "../../features/Login/tokenStore";
-import { logout } from "../../features/Login/authSlice";
+import {
+  getAccessToken,
+  setAccessToken,
+} from "../../features/Login/tokenStore";
+import { logout, setUser } from "../../features/Login/authSlice";
 import { Mutex } from "async-mutex";
+
+import { jwtDecode } from "jwt-decode";
 
 // 🔒 Mutex sprečava više paralelnih refresh poziva
 const mutex = new Mutex();
@@ -29,26 +34,25 @@ export const customBaseQuery = async (
   await mutex.waitForUnlock(); // čeka ako refresh već traje
 
   let result = await baseQuery(args, api, extraOptions);
-  console.log("Prije provjere refresh")
+  console.log("Prije provjere refresh");
   //console.log(result.error +" "+ (result.error as FetchBaseQueryError).status)
 
   console.log("Result:", result);
-if (result.error) {
-    console.log("Error type:",  result.error);
+  if (result.error) {
+    console.log("Error type:", result.error);
     console.log("Error status:", (result.error as FetchBaseQueryError).status);
     console.log("Error data:", (result.error as FetchBaseQueryError).data);
-}
-
+  }
 
   // 🧠 Ako dobijemo 401 (unauthorized), pokušaj refresh tokena
   if (result.error && (result.error as FetchBaseQueryError).status === 401) {
-    console.log("Poslije refresa")
+    console.log("Poslije refresa");
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       try {
         console.log("trazi novi access");
         const refreshResult = await baseQuery(
-            { url: "login/refresh-token", method: "POST"},
+          { url: "login/refresh-token", method: "POST" },
           api,
           extraOptions
         );
@@ -59,7 +63,23 @@ if (result.error) {
           "accessToken" in refreshResult.data
         ) {
           const { accessToken } = refreshResult.data as { accessToken: string };
-          setAccessToken(accessToken); // ✅ ispravno — čuvamo token u runtime-u
+          // Sačuvaj novi access token
+          setAccessToken(accessToken);
+          console.log("Novi token: " + accessToken);
+
+          // Dekodiraj korisnika iz tokena
+          const decoded = jwtDecode<{ userId: string; role: string }>(
+            accessToken
+          );
+
+          // Popuni Redux state sa novim korisnikom
+          api.dispatch(
+            setUser({
+              id: decoded.userId,
+              email: "", // ako nemaš email u tokenu
+              role: decoded.role,
+            })
+          );
           console.log("Novi token: " + accessToken);
 
           // 🔁 ponovi originalni zahtjev

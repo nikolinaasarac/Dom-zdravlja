@@ -114,7 +114,10 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         {
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim("userId", user.Id.ToString()),
+             new Claim("username", user.Username),
+            new Claim("role", user.Role)
         };
 
     var key = new SymmetricSecurityKey(

@@ -20,6 +20,7 @@ import { useFetchPacijentZdravstvenaStanjaQuery } from "../doktor/doktorApi";
 import ZdravstvenaStanja from "../../components/ZdravstvenaStanja";
 import ZdravstvenoStanjeForm from "../doktor/ZdravstvenoStanjeForm";
 import KrvnaGrupaPrikaz from "./KrvnaGrupaPrikaz";
+import { useAppSelector } from "../../store/store";
 
 export default function PacijentPodaci() {
   const { id } = useParams<{ id: string }>();
@@ -35,6 +36,7 @@ export default function PacijentPodaci() {
   const { data: stanja, refetch } = useFetchPacijentZdravstvenaStanjaQuery(
     Number(id)
   );
+  const userRole = useAppSelector((state) => state.auth.user?.role);
 
   if (isLoading)
     return (
@@ -145,11 +147,12 @@ export default function PacijentPodaci() {
         </DialogContent>
       </Dialog>
 
-      <KrvnaGrupaPrikaz pacijentId={Number(id)} />
+      <KrvnaGrupaPrikaz pacijentId={Number(id)} userRole={userRole!} />
 
       <ZdravstvenaStanja
         stanja={stanja}
         setOpenForm={setOpenForm}
+        userRole={userRole!}
       ></ZdravstvenaStanja>
     </Box>
   );

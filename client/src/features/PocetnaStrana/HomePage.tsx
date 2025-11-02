@@ -3,6 +3,7 @@ import Carousel from "react-material-ui-carousel";
 import Kartica from "./Kartica";
 import "../../styles.css";
 import NavBar from "../../components/NavBar";
+import { useAppSelector } from "../../store/store";
 
 const opcije = [
   {
@@ -10,43 +11,50 @@ const opcije = [
     opis: "",
     putanja: "/homepage",
     slika: "",
+    allowedRoles: ["Pacijent", "Doktor", "Admin", "Tehničar"],
   },
   {
     naziv: "Pacijenti",
     opis: "Prikaži i upravljaj pacijentima",
     putanja: "/pacijenti",
     slika: `./../../../images/pacijent.png`,
+    allowedRoles: ["Doktor", "Admin", "Tehnicar"],
   },
   {
     naziv: "Svi pregledi",
     opis: "Pregledaj evidenciju svih pregleda",
     putanja: "/pregledi",
     slika: `./../../../images/pregled.png`,
+    allowedRoles: ["Pacijent", "Doktor"],
   },
   {
     naziv: "Zahtjev za pregled", // nova opcija
     opis: "Kreiraj novi zahtjev za pregled",
     putanja: "/zahtjev",
     slika: `./../../../images/zahtjev.png`, // dodaj odgovarajuću ikonicu
+    allowedRoles: ["Pacijent", "Doktor"],
   },
   {
     naziv: "Moji zahtjevi", // nova opcija
     opis: "Prikaz svih vaših zahtjeva",
     putanja: "/moji-zahtjevi",
     slika: `./../../../images/mojiZahtjevi.png`, // dodaj ikonicu
+    allowedRoles: ["Pacijent"],
   },
   {
     naziv: "Zahtjevi za analize",
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-analize",
     slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
+    allowedRoles: ["Pacijent", "Doktor", "Tehnicar"],
   },
 
-    {
+  {
     naziv: "Zahtjevi za analize na čekanju",
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-na-cekanju",
     slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
+    allowedRoles: ["Doktor", "Tehnicar"],
   },
 
   {
@@ -54,24 +62,28 @@ const opcije = [
     opis: "Prikaz korisnika sistema",
     putanja: "/nalozi",
     slika: "./../../../images/mojNalog.png",
+    allowedRoles: ["Admin"],
   },
   {
     naziv: "Moj nalog",
     opis: "Prikaz statističkih podataka",
     putanja: "/moj-nalog",
     slika: "./../../../images/mojNalog.png",
+    allowedRoles: ["Pacijent", "Doktor", "Admin", "Tehnicar"],
   },
   {
     naziv: "Doktori",
     opis: "Prikaz statističkih podataka",
     putanja: "/doktori",
     slika: "./../../../images/mojNalog.png",
+    allowedRoles: ["Admin"],
   },
   {
     naziv: "Tehnicari",
     opis: "Prikaz statističkih podataka",
     putanja: "/tehnicari",
     slika: "./../../../images/mojNalog.png",
+    allowedRoles: ["Admin"],
   },
 ];
 
@@ -97,6 +109,7 @@ const sliderItems = [
 ];
 
 export default function HomePage() {
+  const userRole = useAppSelector((state) => state.auth.user?.role);
   return (
     <div className="homepage">
       {/* Navbar */}
@@ -166,9 +179,11 @@ export default function HomePage() {
           Brzi pristup
         </Typography>
         <div className="cards-container">
-          {opcije.map((opcija, index) => (
-            <Kartica key={index} kartica={opcija} />
-          ))}
+          {opcije
+            .filter((opcija) => opcija.allowedRoles.includes(userRole!))
+            .map((opcija, index) => (
+              <Kartica key={index} kartica={opcija} />
+            ))}
         </div>
       </Box>
     </div>

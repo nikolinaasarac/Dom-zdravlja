@@ -20,6 +20,7 @@ import PrikazDoktora from "../features/PrikazDoktora/PrikazDoktora";
 import PrikazTehnicara from "../features/PrikaziTehnicare/PrikazTehnicara";
 import TabelaRecepata from "../features/Recepti/TabelaRecepata";
 import ReceptForm from "../features/Recepti/ReceptiForm";
+import ProtectedRoute from "./ProtectedRoute";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -42,8 +43,8 @@ export const router = createBrowserRouter(
         { path: "/zahtjev", element: <ZahtjevForm /> },
         { path: "/moji-zahtjevi", element: <PrikazZahtjeva /> },
         { path: "/moj-nalog", element: <MojNalog /> },
-        { path: "/nalozi", element: <Korisnici /> },
-        { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
+        //{ path: "/nalozi", element: <Korisnici /> },
+        //{ path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
         { path: "/promijeni-lozinku", element: <PromijeniLozinku /> },
         { path: "/promijeni-lozinku/:userId", element: <PromijeniLozinku /> },
         {
@@ -52,14 +53,24 @@ export const router = createBrowserRouter(
         },
         { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
         { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },
-        { path: "doktori", element: <PrikazDoktora /> },
-        { path: "tehnicari", element: <PrikazTehnicara /> },
+        //{ path: "doktori", element: <PrikazDoktora /> },
+        //{ path: "tehnicari", element: <PrikazTehnicara /> },
         { path: "/pacijenti/:id/recepti", element: <TabelaRecepata /> },
         { path: "/pacijenti/:id/recepti/dodaj", element: <ReceptForm /> },
-        { path: "zahtjevi-na-cekanju", element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" /> }
+        {
+          path: "zahtjevi-na-cekanju",
+          element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" />,
+        },
 
-
-
+        {
+          element: <ProtectedRoute allowedRoles={["Admin"]} />,
+          children: [
+            { path: "/nalozi", element: <Korisnici /> },
+            { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
+            { path: "/doktori", element: <PrikazDoktora /> },
+            { path: "/tehnicari", element: <PrikazTehnicara /> },
+          ],
+        },
 
         /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
           throw new Error("Function not implemented.");

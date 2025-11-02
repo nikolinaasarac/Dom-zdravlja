@@ -19,11 +19,13 @@ import type { Pacijent } from "../models/Pacijent";
 type Props = {
   handleSelectPacijent: (pacijent: Pacijent) => void;
   handleDeletePacijent: (id: number) => void;
+  userRole: string;
 };
 
 export default function TabelaPacijenata({
   handleSelectPacijent,
   handleDeletePacijent,
+  userRole,
 }: Props) {
   const pacijentParams = useAppSelector((state) => state.pacijent);
   const { data: pacijenti, isLoading } = useFetchPacijentiQuery(pacijentParams);
@@ -96,26 +98,30 @@ export default function TabelaPacijenata({
                   >
                     Pregled
                   </Button>
-                  <Button
-                    onClick={() => handleSelectPacijent(pacijent)}
-                    size="small"
-                    variant="outlined"
-                    color="success"
-                    startIcon={<Edit />}
-                    sx={{ borderRadius: 2, textTransform: "none" }}
-                  >
-                    Uredi
-                  </Button>
-                  <Button
-                    onClick={() => handleDeletePacijent(pacijent.id)}
-                    size="small"
-                    variant="outlined"
-                    color="error"
-                    startIcon={<Delete />}
-                    sx={{ borderRadius: 2, textTransform: "none" }}
-                  >
-                    Obriši
-                  </Button>
+                  {userRole! === "Admin" && (
+                    <>
+                      <Button
+                        onClick={() => handleSelectPacijent(pacijent)}
+                        size="small"
+                        variant="outlined"
+                        color="success"
+                        startIcon={<Edit />}
+                        sx={{ borderRadius: 2, textTransform: "none" }}
+                      >
+                        Uredi
+                      </Button>
+                      <Button
+                        onClick={() => handleDeletePacijent(pacijent.id)}
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        startIcon={<Delete />}
+                        sx={{ borderRadius: 2, textTransform: "none" }}
+                      >
+                        Obriši
+                      </Button>
+                    </>
+                  )}
                 </Box>
               </TableCell>
             </TableRow>
