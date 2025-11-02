@@ -13,12 +13,7 @@ import {
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDeleteKorisnikMutation, useFetchKorisniciQuery } from "./adminApi";
-//import type { Korisnik } from "../../models/Korisnik";
 
-/*type Props = {
-  handleSelectKorisnik: (korisnik: Korisnik) => void;
-  handleDeleteKorisnik: (id: string) => void;
-};*/
 export default function TabelaNaloga() {
   const { data: korisnici, isLoading, refetch } = useFetchKorisniciQuery();
   const [deleteKorisnik] = useDeleteKorisnikMutation();

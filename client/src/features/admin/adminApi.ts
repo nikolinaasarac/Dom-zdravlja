@@ -14,6 +14,7 @@ import type { TehnicarParams } from "../../models/TehnicarParams";
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: customBaseQuery,
+  tagTypes: ["Korisnici"],
   endpoints: (builder) => ({
     createPacijent: builder.mutation<Pacijent, CreatePacijentSchema>({
       query: (data) => ({
@@ -104,14 +105,15 @@ export const adminApi = createApi({
     }),
     fetchKorisnici: builder.query<Korisnik[], void>({
       query: () => "korisnici",
+      providesTags: ["Korisnici"],
     }),
     createKorisnik: builder.mutation<Korisnik, CreateKorisnikSchema>({
       query: (data) => ({
         url: "korisnici/kreiraj-nalog",
         method: "POST",
         body: data, // sada šalješ JSON
-        providesTags: ["Korisnici"],
       }),
+      invalidatesTags: ["Korisnici"],
     }),
     deleteKorisnik: builder.mutation<void, string>({
       query: (id) => ({
