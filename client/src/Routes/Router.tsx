@@ -20,7 +20,7 @@ import PrikazDoktora from "../features/PrikazDoktora/PrikazDoktora";
 import PrikazTehnicara from "../features/PrikaziTehnicare/PrikazTehnicara";
 import TabelaRecepata from "../features/Recepti/TabelaRecepata";
 import ReceptForm from "../features/Recepti/ReceptiForm";
-import ProtectedRoute from "./ProtectedRoute";
+import PreglediRoute from "./PreglediRoute";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -35,7 +35,7 @@ export const router = createBrowserRouter(
         { path: "/pacijenti/:id", element: <PacijentPodaci /> },
         { path: "/vakcine", element: <PrikazVakcinacija /> },
         { path: "/pacijenti/:id/vakcine", element: <PrikazVakcinacija /> },
-        //{ path: "/pregledi/:id", element: <Pregledi tip={"pacijent"} /> },
+        { path: "/pregledi/:id", element: <PreglediRoute /> },
         { path: "/pacijenti/:id/uputnice", element: <TabelaUputnica /> },
         { path: "/pacijenti/:id/uputnice/dodaj", element: <UputnicaForm /> },
         //{ path: "/pregledi", element: <Pregledi tip={"doktor"} /> },
@@ -61,17 +61,12 @@ export const router = createBrowserRouter(
           path: "zahtjevi-na-cekanju",
           element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" />,
         },
+        { path: "/nalozi", element: <Korisnici /> },
 
-        {
-          element: <ProtectedRoute allowedRoles={["Admin"]} />,
-          children: [
-            { path: "/nalozi", element: <Korisnici /> },
-            { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
-            { path: "/doktori", element: <PrikazDoktora /> },
-            { path: "/tehnicari", element: <PrikazTehnicara /> },
-          ],
-        },
-
+        { path: "/nalozi", element: <Korisnici /> },
+        { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
+        { path: "/doktori", element: <PrikazDoktora /> },
+        { path: "/tehnicari", element: <PrikazTehnicara /> },
         /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
           throw new Error("Function not implemented.");
         } } pacijent={null} refetch={function (): void {
