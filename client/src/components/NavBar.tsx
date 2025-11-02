@@ -19,6 +19,8 @@ import { doktorApi } from "../features/doktor/doktorApi";
 import { pacijentApi } from "../features/PrikazPacijenata/pacijentApi";
 import { adminApi } from "../features/admin/adminApi";
 import { korisnikApi } from "../features/korisnik/korisnikApi";
+import { zahtjevApi } from "../features/Nalazi/zahtjevApi";
+import { nalazApi } from "../features/Nalazi/nalazApi";
 
 interface Opcija {
   naziv: string;
@@ -50,6 +52,8 @@ export default function Navbar({ opcije }: NavbarProps) {
       dispatch(pacijentApi.util.resetApiState());
       dispatch(adminApi.util.resetApiState());
       dispatch(korisnikApi.util.resetApiState());
+      dispatch(zahtjevApi.util.resetApiState());
+      dispatch(nalazApi.util.resetApiState());
 
       navigate("/", { replace: true });
     } catch (error) {
