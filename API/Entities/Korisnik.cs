@@ -9,7 +9,7 @@ namespace API.Entities
 
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
-         public int? DoktorId { get; set; }
+        public int? DoktorId { get; set; }
         public Doktor? Doktor { get; set; }
 
         public int? TehnicarId { get; set; }

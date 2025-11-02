@@ -10,7 +10,7 @@ public class Vakcinacija
 
     // Podaci o vakcini
     public required string NazivVakcine { get; set; }
-    public DateOnly DatumPrimanja { get; set; }
+    public required DateOnly DatumPrimanja { get; set; }
     public int Doza { get; set; } // npr. 1, 2, booster
-    public string? Napomena { get; set; } = null;
+    public string? Napomena { get; set; }
 }

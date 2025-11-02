@@ -1,9 +1,10 @@
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services
+namespace API.Services.Implementations
 {
     public class VakcinacijaService(DomZdravljaContext context) : IVakcinacijaService
     {

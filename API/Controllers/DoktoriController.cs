@@ -2,6 +2,7 @@ using API.DTO;
 using API.Entities;
 using API.RequestHelpers;
 using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace API.Controllers
     [ApiController]
     public class DoktoriController(IDoktorService doktorService) : ControllerBase
     {
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<Doktor>>> GetDoktori([FromQuery] Params doktoriParams)
         {
@@ -18,6 +20,7 @@ namespace API.Controllers
             return Ok(doktori);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<DoktorDto>> GetDoktor(int id)
         {
@@ -31,7 +34,7 @@ namespace API.Controllers
         public async Task<ActionResult<Doktor>> KreirajDoktora(DoktorDto doktorDto)
         {
             var doktor = await doktorService.CreateDoktorAsync(doktorDto);
-            if (doktor == null) return BadRequest("Problem creating new doktor");
+            if (doktor == null) return BadRequest("Problem pri kreiranju naloga doktora.");
             return CreatedAtAction(nameof(GetDoktori), new { Id = doktor.Id }, doktor);
         }
 

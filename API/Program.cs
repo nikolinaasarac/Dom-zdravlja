@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using QuestPDF.Infrastructure;
+using API.Services.Interfaces;
+using API.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +60,13 @@ builder.Services.AddScoped<IVakcinacijaService, VakcinacijaService>();
 builder.Services.AddScoped<ITehnicarService, TehnicarService>();
 builder.Services.AddScoped<IZdravstvenoStanjeService, ZdravstvenoStanjeService>();
 builder.Services.AddScoped<IKrvnaGrupaService, KrvnaGrupaService>();
+builder.Services.AddScoped<IZahtjevZaPregledService, ZahtjevZaPregledService>();
+builder.Services.AddScoped<IZahtjevAnalizeService, ZahtjevAnalizeService>();
+builder.Services.AddScoped<IKorisnikService, KorisnikService>();
+builder.Services.AddScoped<INalazService, NalazService>();
+builder.Services.AddScoped<IReceptService, ReceptService>();
+builder.Services.AddScoped<IUputnicaService, UputnicaService>();
+
 
 
 var app = builder.Build();

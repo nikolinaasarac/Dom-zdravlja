@@ -3,11 +3,12 @@ using API.DTO;
 using API.Entities;
 using API.Extensions;
 using API.RequestHelpers;
+using API.Services.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services
+namespace API.Services.Implementations
 {
     public class TehnicarService(DomZdravljaContext context, IMapper mapper) : ITehnicarService
     {

@@ -1,12 +1,13 @@
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace API.Services
+namespace API.Services.Implementations
 {
     public class UputnicaService(DomZdravljaContext context) : IUputnicaService
     {

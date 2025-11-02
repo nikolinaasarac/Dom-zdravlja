@@ -2,7 +2,7 @@ using API.DTO;
 using API.Entities;
 using API.RequestHelpers;
 
-namespace API.Services
+namespace API.Services.Interfaces
 {
     public interface IPacijentService
     {

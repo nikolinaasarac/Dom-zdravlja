@@ -2,6 +2,7 @@
 using API.DTO;
 using API.Entities;
 using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,16 +12,6 @@ namespace API.Controllers
     [ApiController]
     public class LoginController(IAuthService authService) : ControllerBase
     {
-        [HttpPost("register")]
-        public async Task<ActionResult<Korisnik>> Register(UserDto request)
-        {
-            var user = await authService.RegisterAsync(request);
-            if (user is null)
-                return BadRequest("Username already exists.");
-
-            return Ok(user);
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserDto request)
         {
@@ -74,44 +65,28 @@ namespace API.Controllers
                 UserId = result.UserId
             });
         }
-        
+
         [HttpPost("logout")]
-public async Task<IActionResult> Logout()
-{
-    var refreshToken = Request.Cookies["refreshToken"];
-    if (string.IsNullOrEmpty(refreshToken))
-        return BadRequest("No refresh token found.");
-
-    var success = await authService.LogoutAsync(refreshToken);
-    if (!success)
-        return NotFound("Refresh token not found.");
-
-    // 🔹 Obriši cookie
-    Response.Cookies.Delete("refreshToken", new CookieOptions
-    {
-        HttpOnly = true,
-        Secure = true,
-        SameSite = SameSiteMode.Strict
-    });
-
-    return Ok(new { message = "Logged out successfully." }
-);
-}
-
-
-        [Authorize]
-        [HttpGet]
-        public IActionResult AuthenticatedOnlyEndpoint()
+        public async Task<IActionResult> Logout()
         {
-            return Ok("You are authenticated!");
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+                return BadRequest("No refresh token found.");
 
-        }
+            var success = await authService.LogoutAsync(refreshToken);
+            if (!success)
+                return NotFound("Refresh token not found.");
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("admin-only")]
-        public IActionResult AdminOnlyEndpoint()
-        {
-            return Ok("You are and admin!");
+            // 🔹 Obriši cookie
+            Response.Cookies.Delete("refreshToken", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            });
+
+            return Ok(new { message = "Logged out successfully." }
+        );
         }
     }
 }

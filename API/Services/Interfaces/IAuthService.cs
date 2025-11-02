@@ -2,7 +2,7 @@ using System;
 using API.DTO;
 using API.Entities;
 
-namespace API.Services;
+namespace API.Services.Interfaces;
 
 public interface IAuthService
 {

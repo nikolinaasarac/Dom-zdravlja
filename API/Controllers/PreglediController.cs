@@ -1,18 +1,17 @@
 using System.Security.Claims;
-using API.Data;
 using API.DTO;
-using API.Entities;
 using API.Services;
-using AutoMapper;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PreglediController(IPregledService pregledService, DomZdravljaContext context, IMapper mapper) : ControllerBase
+    public class PreglediController(IPregledService pregledService) : ControllerBase
     {
+        [Authorize(Roles = "Doktor,Pacijent")]
         [HttpGet("{pacijentId}")]
         public async Task<ActionResult<List<PregledDto>>> GetPregledi(int pacijentId)
         {
@@ -20,65 +19,32 @@ namespace API.Controllers
             return Ok(pregledi);
         }
 
+        [Authorize(Roles = "Doktor")]
         [HttpGet("doktor/pregledi")]
         public async Task<IActionResult> GetPreglediZaPrijavljenogDoktora()
         {
-            // 1. Dohvati korisnički ID iz JWT tokena
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim is null) return Unauthorized();
+            if (userIdClaim is null)
+                return Unauthorized();
 
             var userId = Guid.Parse(userIdClaim);
+            var pregledi = await pregledService.GetPreglediZaDoktoraAsync(userId);
 
-            // 2. Dohvati korisnika i njegovog doktora
-            var korisnik = await context.Korisnici
-                .Include(u => u.Doktor)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (korisnik?.Doktor == null)
-                return BadRequest("Prijavljeni korisnik nije doktor.");
-
-            var doktorId = korisnik.Doktor.Id;
-
-            // 3. Dohvati preglede za doktora
-            var pregledi = await context.Pregledi
-                .Where(p => p.DoktorId == doktorId)
-                .Include(p => p.Pacijent)
-                .Select(p => new PregledDto
-                {
-                    Id = p.Id,
-                    DatumPregleda = p.DatumPregleda,
-                    VrstaPregleda = p.VrstaPregleda,
-                    OpisSimptoma = p.OpisSimptoma,
-                    Dijagnoza = p.Dijagnoza,
-                    Terapija = p.Terapija,
-                    Napomena = p.Napomena,
-                    Status = p.Status,
-
-                    PacijentIme = p.Pacijent.Ime,
-                    PacijentPrezime = p.Pacijent.Prezime,
-
-                    DoktorIme = korisnik.Doktor.Ime,
-                    DoktorPrezime = korisnik.Doktor.Prezime
-                })
-                .ToListAsync();
+            if (pregledi.Count == 0)
+                return BadRequest("Prijavljeni korisnik nije doktor ili nema pregleda.");
 
             return Ok(pregledi);
         }
 
+        [Authorize(Roles = "Doktor")]
         [HttpPut("obradi/{id}")]
         public async Task<IActionResult> ObradiPregled(int id, [FromBody] UpdatePregledDto dto)
         {
-            var pregled = await context.Pregledi.FindAsync(id);
-            if (pregled == null) return NotFound();
+            var result = await pregledService.ObradiPregledAsync(id, dto);
+            if (!result)
+                return NotFound();
 
-            pregled.Status = "Završen";
-
-            // Mapira samo polja koja postoje u DTO-u
-            mapper.Map(dto, pregled);
-
-            await context.SaveChangesAsync();
-            return Ok(pregled);
+            return Ok("Pregled uspješno obrađen.");
         }
-
     }
 }

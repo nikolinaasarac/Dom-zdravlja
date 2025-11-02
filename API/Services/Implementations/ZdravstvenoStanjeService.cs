@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services
+namespace API.Services.Implementations
 {
     public class ZdravstvenoStanjeService(DomZdravljaContext context, IMapper mapper) : IZdravstvenoStanjeService
     {

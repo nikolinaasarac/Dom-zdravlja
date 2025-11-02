@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTO;
 using API.Services;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -12,6 +14,7 @@ namespace API.Controllers
     {
 
         // GET: api/krvnegrupe/pacijent/5
+        [Authorize(Roles = "Doktor,Pacijent")]
         [HttpGet("pacijent/{pacijentId}")]
         public async Task<ActionResult<KrvnaGrupaDto>> GetKrvnaGrupa(int pacijentId)
         {
@@ -21,6 +24,7 @@ namespace API.Controllers
         }
 
         // POST: api/krvnegrupe/pacijent/5
+        [Authorize(Roles="Doktor")]
         [HttpPost("pacijent/{pacijentId}")]
         public async Task<ActionResult<KrvnaGrupaDto>> CreateKrvnaGrupa(
             int pacijentId,
@@ -34,16 +38,18 @@ namespace API.Controllers
                 new { pacijentId = pacijentId }, result);
         }
 
+        [Authorize(Roles = "Doktor")]
         [HttpPut("pacijent/{pacijentId}")]
-public async Task<ActionResult<KrvnaGrupaDto>> UpdateKrvnaGrupa(int pacijentId, [FromBody] KreirajKrvnuGrupuDto dto)
-{
-    var result = await krvnaGrupaService.UpdateAsync(pacijentId, dto);
-    if (result == null) return NotFound("Krvna grupa nije pronađena.");
-    return Ok(result);
-}
+        public async Task<ActionResult<KrvnaGrupaDto>> UpdateKrvnaGrupa(int pacijentId, [FromBody] KreirajKrvnuGrupuDto dto)
+        {
+            var result = await krvnaGrupaService.UpdateAsync(pacijentId, dto);
+            if (result == null) return NotFound("Krvna grupa nije pronađena.");
+            return Ok(result);
+        }
 
 
         // DELETE: api/krvnegrupe/5
+        [Authorize(Roles="Doktor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteKrvnaGrupa(int id)
         {

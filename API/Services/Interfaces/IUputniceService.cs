@@ -1,7 +1,7 @@
 using API.DTOs;
 using API.Entities;
 
-namespace API.Services
+namespace API.Services.Interfaces
 {
     public interface IUputnicaService
     {
