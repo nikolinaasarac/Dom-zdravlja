@@ -5,6 +5,8 @@ import { useAppDispatch } from "../../store/store";
 import { setAccessToken } from "./tokenStore";
 import { setUser, logout } from "./authSlice";
 import { authApi } from "./authApi";
+import type { JwtPayload } from "../../models/JwtPayload";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -23,8 +25,16 @@ export default function LoginPage() {
       const { accessToken, userId, mustChangePassword } = response.data;
       setAccessToken(accessToken);
 
+      const decoded = jwtDecode<JwtPayload>(accessToken);
+
       if (userId) {
-        dispatch(setUser({ id: userId, email: "", role: "" }));
+        dispatch(
+          setUser({
+            id: decoded.userId,
+            email: "", // nemaš email u tokenu, možeš dodati ako želiš
+            role: decoded.role,
+          })
+        );
       }
 
       if (mustChangePassword) {

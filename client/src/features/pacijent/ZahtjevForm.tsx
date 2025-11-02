@@ -1,10 +1,14 @@
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createZahtjevSchema, type CreateZahtjevSchema } from "../../lib/schemas/createZahtjevSchema";
+import {
+  createZahtjevSchema,
+  type CreateZahtjevSchema,
+} from "../../lib/schemas/createZahtjevSchema";
 import AppSelect from "../../components/AppSelect";
 import AppTextInput from "../../components/AppTextInput";
-import { useFetchDoktoriQuery, useCreateZahtjevMutation } from "../doktor/doktorApi";
+import { useCreateZahtjevMutation } from "../doktor/doktorApi";
+import { useFetchDoktoriQuery } from "../PrikazPacijenata/pacijentApi";
 
 type Props = {
   onSuccess?: () => void;
@@ -51,7 +55,7 @@ export default function ZahtjevForm({ onSuccess }: Props) {
               control={control} // obavezno proslijedi
               label="Izaberite doktora"
               options={
-                doktori?.map(d => ({
+                doktori?.map((d) => ({
                   value: d.id.toString(),
                   label: `${d.ime} ${d.prezime} (${d.specijalizacija})`,
                 })) || []

@@ -11,9 +11,14 @@ import type { ZdravstvenoStanje } from "../models/ZdravstvenoStanje";
 export type Props = {
   stanja: ZdravstvenoStanje[] | undefined;
   setOpenForm: (open: boolean) => void;
+  userRole: string;
 };
 
-export default function ZdravstvenaStanja({ stanja, setOpenForm }: Props) {
+export default function ZdravstvenaStanja({
+  stanja,
+  setOpenForm,
+  userRole,
+}: Props) {
   return (
     <Card
       sx={{ mt: 3, borderRadius: 2, boxShadow: 2, border: "1px solid #e0e0e0" }}
@@ -31,13 +36,15 @@ export default function ZdravstvenaStanja({ stanja, setOpenForm }: Props) {
           <Typography variant="h6" sx={{ fontWeight: 600, color: "#1976d2" }}>
             Alergije / Bolesti
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setOpenForm(true)}
-          >
-            Dodaj novo zdravstveno stanje
-          </Button>
+          {userRole! === "Doktor" && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpenForm(true)}
+            >
+              Dodaj novo zdravstveno stanje
+            </Button>
+          )}
         </Box>
 
         {/* Ako nema podataka */}

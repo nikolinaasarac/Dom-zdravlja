@@ -1,6 +1,10 @@
 import { Button, Paper, Box, Typography } from "@mui/material";
 import { useFetchPacijentiQuery } from "./pacijentApi";
-import { useAppDispatch, useAppSelector, type RootState } from "../../store/store";
+import {
+  useAppDispatch,
+  useAppSelector,
+  type RootState,
+} from "../../store/store";
 import { resetParams, setPageNumber, setSearchTerm } from "./pacijentSlice";
 import Filter from "../../components/Filter";
 import Sort from "../../components/Sort";
@@ -15,6 +19,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Search from "../../components/Search";
 
 export default function PrikazPacijenata() {
+  const userRole = useAppSelector((state) => state.auth.user?.role);
   const pacijentParams = useAppSelector((state) => state.pacijent);
   const {
     data: pacijenti,
@@ -117,21 +122,23 @@ export default function PrikazPacijenata() {
           >
             Resetuj
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              boxShadow: "none",
-              textTransform: "none",
-              fontWeight: 600,
-            }}
-            onClick={() => setEditMode(true)}
-          >
-            Novi pacijent
-          </Button>
+          {userRole! === "Admin" && (
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                boxShadow: "none",
+                textTransform: "none",
+                fontWeight: 600,
+              }}
+              onClick={() => setEditMode(true)}
+            >
+              Novi pacijent
+            </Button>
+          )}
         </Box>
       </Paper>
 
@@ -141,6 +148,7 @@ export default function PrikazPacijenata() {
           <TabelaPacijenata
             handleSelectPacijent={handleSelectPacijent}
             handleDeletePacijent={handleDeletePacijent}
+            userRole={userRole!}
           />
 
           <Box sx={{ mt: 3 }}>

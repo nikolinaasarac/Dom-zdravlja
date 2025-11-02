@@ -26,8 +26,10 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useAppSelector } from "../../store/store";
 
 export default function PrikazZahtjeva() {
+  const userRole = useAppSelector((state) => state.auth.user?.role);
   const { data: zahtjevi, isLoading, isError } = useGetMojiZahtjeviQuery();
   const [odobriZahtjev] = useOdobriZahtjevMutation();
   const [odbijZahtjev] = useOdbijZahtjevMutation();
@@ -107,24 +109,26 @@ export default function PrikazZahtjeva() {
                   {new Date(z.datumZahtjeva).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      size="small"
-                      onClick={() => handleOpen(z.id)}
-                    >
-                      Odobri
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      size="small"
-                      onClick={() => handleOdbij(z.id)}
-                    >
-                      Odbij
-                    </Button>
-                  </Stack>
+                  {userRole === "Doktor" && z.status === "Na čekanju" && (
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        onClick={() => handleOpen(z.id)}
+                      >
+                        Odobri
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        onClick={() => handleOdbij(z.id)}
+                      >
+                        Odbij
+                      </Button>
+                    </Stack>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

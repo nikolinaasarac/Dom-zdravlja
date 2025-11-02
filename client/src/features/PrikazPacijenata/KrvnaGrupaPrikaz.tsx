@@ -21,9 +21,10 @@ import {
 
 export type Props = {
   pacijentId: number;
+  userRole: string;
 };
 
-export default function KrvnaGrupaPrikaz({ pacijentId }: Props) {
+export default function KrvnaGrupaPrikaz({ pacijentId, userRole }: Props) {
   const {
     data: krvnaGrupa,
     error,
@@ -115,11 +116,11 @@ export default function KrvnaGrupaPrikaz({ pacijentId }: Props) {
             </Typography>
           </Box>
         )}
-
-        <Button sx={{ mt: 2 }} variant="contained" onClick={openEditForm}>
-          {krvnaGrupa ? "Uredi krvnu grupu" : "Unesi krvnu grupu"}
-        </Button>
-
+        {userRole === "Doktor" && (
+          <Button sx={{ mt: 2 }} variant="contained" onClick={openEditForm}>
+            {krvnaGrupa ? "Uredi krvnu grupu" : "Unesi krvnu grupu"}
+          </Button>
+        )}
         {openForm && (
           <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
             <Controller
