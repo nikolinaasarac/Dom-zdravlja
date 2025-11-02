@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTO;
 using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,6 +47,7 @@ namespace API.Controllers
 
         // POST: kreiranje stanja za pacijenta
         [HttpPost("pacijent/{pacijentId}")]
+        [Authorize(Roles="Doktor")]
         public async Task<ActionResult<ZdravstvenoStanjeDto>> Create(
             int pacijentId,
             [FromBody] KreirajZdravstvenoStanjeDto dto)

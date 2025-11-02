@@ -1,6 +1,8 @@
 using API.DTOs;
 using API.Entities;
 using API.Services;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -10,6 +12,7 @@ namespace API.Controllers
     public class UputniceController(IUputnicaService uputnicaService) : ControllerBase
     {
         [HttpGet("{pacijentId}")]
+        [Authorize(Roles="Doktor,Pacijent")]
         public async Task<ActionResult<List<Uputnica>>> GetUputniceZaPacijenta(int pacijentId)
         {
             var uputnice = await uputnicaService.GetUputniceZaPacijentaAsync(pacijentId);
@@ -18,6 +21,7 @@ namespace API.Controllers
             return Ok(uputnice);
         }
 
+        [Authorize(Roles = "Doktor")]
         [HttpPost("{pacijentId}")]
         public async Task<ActionResult<Uputnica>> CreateUputnica(int pacijentId, [FromBody] UputnicaDto dto)
         {
@@ -27,6 +31,7 @@ namespace API.Controllers
             return Ok(uputnica);
         }
 
+        [Authorize(Roles ="Doktor,Pacijent")]
         [HttpGet("{id}/pdf")]
         public async Task<IActionResult> GetUputnicaPdf(int id)
         {

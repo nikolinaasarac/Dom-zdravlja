@@ -2,6 +2,7 @@ using API.DTO;
 using API.Entities;
 using API.RequestHelpers;
 using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,14 @@ namespace API.Controllers
     public class TehnicariController(ITehnicarService service) : ControllerBase
     {
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<Tehnicar>>> GetTehnicari([FromQuery] Params tehnicarParams)
         {
             var tehnicari = await service.GetTehnicariAsync(tehnicarParams, Response);
             return Ok(tehnicari);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<TehnicarDto>> GetTehnicar(int id)
         {

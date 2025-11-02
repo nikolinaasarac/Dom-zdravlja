@@ -3,7 +3,7 @@ using API.Entities;
 using API.RequestHelpers;
 using Microsoft.AspNetCore.Http;
 
-namespace API.Services
+namespace API.Services.Interfaces
 {
     public interface IDoktorService
     {

@@ -6,11 +6,12 @@ using System.Text;
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Services;
+namespace API.Services.Implementations;
 
 public class AuthService(DomZdravljaContext context, IConfiguration configuration) : IAuthService
 {
@@ -57,7 +58,6 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         user.Username = request.Username;
         user.PasswordHash = hashedPassword;
         user.Role = "Admin";
-        user.TehnicarId = 1;
 
         context.Korisnici.Add(user);
         await context.SaveChangesAsync();

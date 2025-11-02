@@ -1,293 +1,95 @@
 using System.Security.Claims;
-using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ZahtjevZaAnalizuController(DomZdravljaContext context) : ControllerBase
+public class ZahtjevZaAnalizuController(IZahtjevAnalizeService service) : ControllerBase
 {
-    // ✅ Doktor kreira zahtjev za određenog pacijenta
+    [Authorize(Roles = "Doktor")]
     [HttpPost("pacijent/{pacijentId}")]
     public async Task<IActionResult> KreirajZahtjev(int pacijentId, [FromBody] KreirajZahtjevAnalizuDto dto)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userIdClaim == null) return Unauthorized();
 
-        var userId = Guid.Parse(userIdClaim);
-        var korisnik = await context.Korisnici
-            .Include(k => k.Doktor)
-            .FirstOrDefaultAsync(k => k.Id == userId);
-
-        if (korisnik?.Doktor == null) return BadRequest("Prijavljeni korisnik nije doktor.");
-
-        var pacijent = await context.Pacijenti.FindAsync(pacijentId);
-        if (pacijent == null) return NotFound("Pacijent nije pronađen.");
-
-        var zahtjev = new ZahtjevZaAnalizu
-        {
-            PacijentId = pacijent.Id,
-            Pacijent = pacijent,
-            DoktorId = korisnik.Doktor.Id,
-            Doktor = korisnik.Doktor,
-            Opis = dto.Opis,
-            Status = "Na čekanju",
-            DatumZahtjeva = DateTime.Now
-        };
-
-        context.ZahtjeviZaAnalizu.Add(zahtjev);
-        await context.SaveChangesAsync();
+        var zahtjev = await service.KreirajZahtjevAsync(pacijentId, dto, Guid.Parse(userIdClaim));
+        if (zahtjev == null) return BadRequest("Pacijent ili doktor nisu pronađeni.");
 
         return Ok(new { message = "Zahtjev uspješno kreiran." });
     }
 
-    // ✅ Doktor vidi sve zahtjeve koje je on kreirao
+    [Authorize(Roles = "Doktor")]
     [HttpGet("doktor")]
-    public async Task<ActionResult<IEnumerable<ZahtjevZaAnalizuDto>>> GetZahtjeviDoktora()
+    public async Task<IActionResult> GetZahtjeviDoktora()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userIdClaim == null) return Unauthorized();
 
-        var userId = Guid.Parse(userIdClaim);
-        var korisnik = await context.Korisnici
-            .Include(k => k.Doktor)
-            .FirstOrDefaultAsync(k => k.Id == userId);
-
-        if (korisnik?.Doktor == null)
-            return BadRequest("Prijavljeni korisnik nije doktor.");
-
-        var zahtjevi = await context.ZahtjeviZaAnalizu
-            .Include(z => z.Pacijent)
-            .Include(z => z.Tehnicar)
-            .Where(z => z.DoktorId == korisnik.Doktor.Id)
-            .Select(z => new ZahtjevZaAnalizuDto
-            {
-                Id = z.Id,
-                PacijentId = z.PacijentId,
-                PacijentIme = z.Pacijent.Ime,
-                PacijentPrezime = z.Pacijent.Prezime,
-                DoktorId = z.DoktorId,
-                DoktorIme = korisnik.Doktor.Ime,
-                DoktorPrezime = korisnik.Doktor.Prezime,
-                TehnicarId = z.TehnicarId,
-                TehnicarIme = z.Tehnicar != null ? z.Tehnicar.Ime : null,
-                TehnicarPrezime = z.Tehnicar != null ? z.Tehnicar.Prezime : null,
-                Opis = z.Opis,
-                Status = z.Status,
-                DatumZahtjeva = z.DatumZahtjeva
-            })
-            .ToListAsync();
-
+        var zahtjevi = await service.GetZahtjeviDoktoraAsync(Guid.Parse(userIdClaim));
         return Ok(zahtjevi);
     }
 
-    // ✅ Doktor vidi zahtjeve određenog pacijenta
+    [Authorize(Roles = "Doktor,Pacijent")]
     [HttpGet("pacijent/{pacijentId}")]
-    public async Task<ActionResult<IEnumerable<ZahtjevZaAnalizuDto>>> GetZahtjeviPacijenta(int pacijentId)
+    public async Task<IActionResult> GetZahtjeviPacijenta(int pacijentId)
     {
-        var zahtjevi = await context.ZahtjeviZaAnalizu
-            .Include(z => z.Doktor)
-            .Include(z => z.Tehnicar)
-            .Include(z => z.Pacijent)
-            .Where(z => z.PacijentId == pacijentId)
-            .Select(z => new ZahtjevZaAnalizuDto
-            {
-                Id = z.Id,
-                PacijentId = z.PacijentId,
-                PacijentIme = z.Pacijent.Ime,
-                PacijentPrezime = z.Pacijent.Prezime,
-                DoktorId = z.DoktorId,
-                DoktorIme = z.Doktor.Ime,
-                DoktorPrezime = z.Doktor.Prezime,
-                TehnicarId = z.TehnicarId,
-                TehnicarIme = z.Tehnicar != null ? z.Tehnicar.Ime : null,
-                TehnicarPrezime = z.Tehnicar != null ? z.Tehnicar.Prezime : null,
-                Opis = z.Opis,
-                Status = z.Status,
-                DatumZahtjeva = z.DatumZahtjeva
-            })
-            .ToListAsync();
-
+        var zahtjevi = await service.GetZahtjeviPacijentaAsync(pacijentId);
         return Ok(zahtjevi);
     }
 
+    [Authorize(Roles = "Doktor,Tehnicar,Pacijent")]
     [HttpGet("na-cekanju")]
-    public async Task<ActionResult<List<ZahtjevZaAnalizuDto>>> GetZahtjeviNaCekanju()
+    public async Task<IActionResult> GetZahtjeviNaCekanju()
     {
-        var zahtjevi = await context.ZahtjeviZaAnalizu
-            .Where(z => z.Status == "Na čekanju")
-            .Include(z => z.Pacijent)
-            .Include(z => z.Doktor)
-            .Include(z => z.Tehnicar)
-            .Select(z => new ZahtjevZaAnalizuDto
-            {
-                Id = z.Id,
-                PacijentId = z.PacijentId,
-                PacijentIme = z.Pacijent.Ime,
-                PacijentPrezime = z.Pacijent.Prezime,
-                DoktorId = z.DoktorId,
-                DoktorIme = z.Doktor.Ime,
-                DoktorPrezime = z.Doktor.Prezime,
-                TehnicarId = z.TehnicarId,
-                TehnicarIme = z.Tehnicar != null ? z.Tehnicar.Ime : null,
-                TehnicarPrezime = z.Tehnicar != null ? z.Tehnicar.Prezime : null,
-                Opis = z.Opis,
-                Status = z.Status,
-                DatumZahtjeva = z.DatumZahtjeva
-            })
-            .ToListAsync();
-
+        var zahtjevi = await service.GetZahtjeviNaCekanjuAsync();
         return Ok(zahtjevi);
     }
 
-    public class PromjenaStatusaDto
-    {
-        public string? Status { get; set; }
-    }
+    public class PromjenaStatusaDto { public string? Status { get; set; } }
 
-    // ✅ Tehničar mijenja status zahtjeva
+    [Authorize(Roles = "Tehnicar")]
     [HttpPut("{id}/status")]
     public async Task<IActionResult> PromijeniStatus(int id, [FromBody] PromjenaStatusaDto status)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userIdClaim == null) return Unauthorized();
 
-        var userId = Guid.Parse(userIdClaim);
-        var korisnik = await context.Korisnici
-            .Include(k => k.Tehnicar)
-            .FirstOrDefaultAsync(k => k.Id == userId);
+        var success = await service.PromijeniStatusAsync(id, status.Status!, Guid.Parse(userIdClaim));
+        if (!success) return BadRequest("Nevažeći status ili korisnik nije tehničar.");
 
-        if (korisnik?.Tehnicar == null)
-            return BadRequest("Prijavljeni korisnik nije tehničar.");
-
-        var zahtjev = await context.ZahtjeviZaAnalizu
-            .Include(z => z.Pacijent)
-            .FirstOrDefaultAsync(z => z.Id == id);
-
-        if (zahtjev == null)
-            return NotFound("Zahtjev nije pronađen.");
-
-        var noviStatus = status;
-
-        if (noviStatus.Status != "U obradi" && noviStatus.Status != "Obrađen" && noviStatus.Status != "Odbijen" && noviStatus.Status !="Na čekanju")
-            return BadRequest("Nevažeći status.");
-
-        // ✅ Ako zahtjev nema tehničara, dodaj trenutnog tehničara iz tokena
-        if (zahtjev.TehnicarId == null)
-        {
-            zahtjev.TehnicarId = korisnik.Tehnicar.Id;
-            zahtjev.Tehnicar = korisnik.Tehnicar;
-        }
-
-        zahtjev.Status = noviStatus.Status;
-
-        await context.SaveChangesAsync();
-        return Ok(new { message = $"Status zahtjeva promijenjen u '{noviStatus}'." });
+        return Ok(new { message = $"Status zahtjeva promijenjen u '{status.Status}'." });
     }
 
-
+    [Authorize(Roles = "Tehnicar")]
     [HttpPost("{zahtjevId}/zavrsi")]
     public async Task<IActionResult> ZavrsiObraduZahtjeva(int zahtjevId, IFormFile file)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userIdClaim == null) return Unauthorized();
 
-        var userId = Guid.Parse(userIdClaim);
-        var korisnik = await context.Korisnici
-            .Include(k => k.Tehnicar)
-            .FirstOrDefaultAsync(k => k.Id == userId);
-
-        if (korisnik?.Tehnicar == null)
-            return BadRequest("Prijavljeni korisnik nije tehničar.");
-
-        var zahtjev = await context.ZahtjeviZaAnalizu
-            .Include(z => z.Pacijent)
-            .FirstOrDefaultAsync(z => z.Id == zahtjevId);
-
-        if (zahtjev == null)
-            return NotFound("Zahtjev nije pronađen.");
-
-        if (file == null || file.Length == 0)
-            return BadRequest("PDF fajl nije poslat.");
-
-        // ✅ Dodaj tehničara ako nije već upisan
-        if (zahtjev.TehnicarId == null)
-        {
-            zahtjev.TehnicarId = korisnik.Tehnicar.Id;
-            zahtjev.Tehnicar = korisnik.Tehnicar;
-        }
-
-        // Kreiraj folder ako ne postoji
-        var folderPath = Path.Combine("wwwroot", "uploads", "nalazi");
-        if (!Directory.Exists(folderPath))
-            Directory.CreateDirectory(folderPath);
-
-        var fileName = $"nalaz_{zahtjev.Id}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-        var filePath = Path.Combine(folderPath, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        var nalaz = new Nalaz
-        {
-            ZahtjevZaAnalizuId = zahtjev.Id,
-            ZahtjevZaAnalizu = zahtjev,
-            PacijentId = zahtjev.PacijentId,
-            Pacijent = zahtjev.Pacijent,
-            TehnicarId = zahtjev.TehnicarId,
-            Tehnicar = zahtjev.Tehnicar,
-            FilePath = $"uploads/nalazi/{fileName}",
-            DatumDodavanja = DateTime.Now
-        };
-
-        context.Nalazi.Add(nalaz);
-        zahtjev.Status = "Obrađen";
-
-        await context.SaveChangesAsync();
+        var nalaz = await service.ZavrsiZahtjevAsync(zahtjevId, file, Guid.Parse(userIdClaim));
+        if (nalaz == null) return BadRequest("Zahtjev nije pronađen ili fajl nije poslan.");
 
         return Ok(new
         {
             message = "Nalaz uspješno dodan i zahtjev završen.",
-            zahtjevId = zahtjev.Id,
+            zahtjevId = nalaz.ZahtjevZaAnalizuId,
             nalazFilePath = nalaz.FilePath
         });
     }
 
-    // ✅ Vraća sve zahtjeve za analizu (za administraciju ili pregled svih podataka)
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ZahtjevZaAnalizuDto>>> GetAllZahtjevi()
+    [Authorize(Roles = "Doktor,Tehnicar,Admin")]
+    public async Task<IActionResult> GetAllZahtjevi()
     {
-        var zahtjevi = await context.ZahtjeviZaAnalizu
-            .Include(z => z.Pacijent)
-            .Include(z => z.Doktor)
-            .Include(z => z.Tehnicar)
-            .Select(z => new ZahtjevZaAnalizuDto
-            {
-                Id = z.Id,
-                PacijentId = z.PacijentId,
-                PacijentIme = z.Pacijent.Ime,
-                PacijentPrezime = z.Pacijent.Prezime,
-                DoktorId = z.DoktorId,
-                DoktorIme = z.Doktor.Ime,
-                DoktorPrezime = z.Doktor.Prezime,
-                TehnicarId = z.TehnicarId,
-                TehnicarIme = z.Tehnicar != null ? z.Tehnicar.Ime : null,
-                TehnicarPrezime = z.Tehnicar != null ? z.Tehnicar.Prezime : null,
-                Opis = z.Opis,
-                Status = z.Status,
-                DatumZahtjeva = z.DatumZahtjeva
-            })
-            .ToListAsync();
-
+        var zahtjevi = await service.GetAllZahtjeviAsync();
         return Ok(zahtjevi);
     }
-
-
 }

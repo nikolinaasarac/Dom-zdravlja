@@ -2,6 +2,7 @@ using API.DTO;
 using API.Entities;
 using API.RequestHelpers;
 using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace API.Controllers
     [ApiController]
     public class PacijentiController(IPacijentService pacijentService) : ControllerBase
     {
-        [Authorize]
+        [Authorize(Roles ="Doktor,Tehnicar,Pacijent,Admin")]
         [HttpGet]
         public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery] Params pacijentiParams)
         {
@@ -19,6 +20,7 @@ namespace API.Controllers
             return Ok(pacijenti);
         }
 
+        [Authorize(Roles ="Doktor,Tehnicar,Pacijent")]
         [HttpGet("{id}")]
         public async Task<ActionResult<pacijentDto>> GetPacijent(int id)
         {
@@ -27,6 +29,7 @@ namespace API.Controllers
             return Ok(pacijent);
         }
 
+        [Authorize(Roles ="Doktor,Pacijent")]
         [HttpGet("{id}/vakcinacije")]
         public async Task<ActionResult<List<Vakcinacija>>> GetVakcinacijePoPacijentu(int id)
         {
