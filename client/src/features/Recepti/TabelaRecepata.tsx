@@ -73,7 +73,7 @@ export default function TabelaRecepata() {
             component={Link}
             to={`/pacijenti/${id}/recepti/dodaj`}
             variant="contained"
-            color="success"
+            color="primary"
             sx={{ borderRadius: 2, textTransform: "none" }}
           >
             Novi recept
