@@ -18,8 +18,9 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { useState } from "react";
 import type { Pregled } from "../../models/Pregled";
-import { useFetchPreglediQuery } from "../doktor/doktorApi";
 import PregledForm from "../doktor/PregledForm";
+import { useFetchPreglediQuery } from "../doktor/doktorApi";
+import { useFetchPacijentPreglediQuery } from "./pacijentApi";
 
 function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
   const [open, setOpen] = useState(false);
@@ -72,7 +73,7 @@ function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
         </TableCell>
       </TableRow>
 
-      {/* Red za collapse */}
+      {/* Collapse red */}
       <TableRow>
         <TableCell colSpan={6} sx={{ p: 0, border: "none" }}>
           <Collapse in={open} timeout="auto" unmountOnExit>
@@ -83,7 +84,6 @@ function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
                 backgroundColor: "#fafafa",
                 borderRadius: 2,
                 boxShadow: "inset 0 1px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.3s ease",
               }}
             >
               <Typography
@@ -94,23 +94,19 @@ function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
                 Detalji pregleda
               </Typography>
 
-
               <Typography>
                 <b>Opis simptoma:</b> {p.opisSimptoma ?? "-"}
               </Typography>
-
               <Typography sx={{ mb: 0.5 }}>
                 <b>Dijagnoza:</b> {p.dijagnoza ?? "-"}
               </Typography>
               <Typography sx={{ mb: 0.5 }}>
                 <b>Terapija:</b> {p.terapija ?? "-"}
               </Typography>
-
               <Typography>
                 <b>Napomena:</b> {p.napomena ?? "-"}
               </Typography>
 
-              {/* Dugme za otvaranje modal forme */}
               <Button
                 variant="outlined"
                 size="medium"
@@ -160,8 +156,31 @@ function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
   );
 }
 
-export default function PrikazSvihPregleda() {
-  const { data: pregledi, isLoading, refetch } = useFetchPreglediQuery();
+interface Props {
+  pacijentId?: number;
+}
+
+export default function PrikazSvihPregleda({ pacijentId }: Props) {
+  // ✅ Hookovi se pozivaju uvek, ali API se preskače pomoću skip opcije
+  const {
+    data: preglediPacijenta,
+    isLoading: loadingPacijent,
+    refetch: refetchPacijent,
+  } = useFetchPacijentPreglediQuery(pacijentId!, {
+    skip: !pacijentId,
+  });
+
+  const {
+    data: sviPregledi,
+    isLoading: loadingSvi,
+    refetch: refetchSvi,
+  } = useFetchPreglediQuery(undefined, {
+    skip: !!pacijentId,
+  });
+
+  const pregledi = pacijentId ? preglediPacijenta : sviPregledi;
+  const isLoading = pacijentId ? loadingPacijent : loadingSvi;
+  const refetch = pacijentId ? refetchPacijent : refetchSvi;
 
   if (isLoading || !pregledi)
     return <Typography align="center">Učitavanje...</Typography>;
