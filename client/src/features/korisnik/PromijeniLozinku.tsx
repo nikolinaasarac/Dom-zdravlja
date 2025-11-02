@@ -42,6 +42,7 @@ export default function PromijeniLozinku() {
         }).unwrap();
 
         alert("Lozinka korisnika uspješno promijenjena!");
+        navigate("/nalozi", { replace: true });
         // NE radimo logout niti redirect
       } else {
         // Obični korisnik mijenja svoju lozinku

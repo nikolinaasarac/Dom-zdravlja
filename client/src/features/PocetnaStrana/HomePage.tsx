@@ -4,13 +4,14 @@ import Kartica from "./Kartica";
 import "../../styles.css";
 import NavBar from "../../components/NavBar";
 import { useAppSelector } from "../../store/store";
+import { useGetMyAccountQuery } from "../korisnik/korisnikApi";
 
 const opcije = [
   {
     naziv: "Početna strana",
     opis: "",
     putanja: "/homepage",
-    slika: "",
+    slika: "./../../../images/pocetnaStrana.png",
     allowedRoles: ["Pacijent", "Doktor", "Admin", "Tehničar"],
   },
   {
@@ -31,7 +32,7 @@ const opcije = [
     naziv: "Zahtjev za pregled", // nova opcija
     opis: "Kreiraj novi zahtjev za pregled",
     putanja: "/zahtjev",
-    slika: `./../../../images/zahtjev.png`, // dodaj odgovarajuću ikonicu
+    slika: `./../../../images/zahtjevPregled.png`, // dodaj odgovarajuću ikonicu
     allowedRoles: ["Pacijent", "Doktor"],
   },
   {
@@ -45,23 +46,37 @@ const opcije = [
     naziv: "Zahtjevi za analize",
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-analize",
-    slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
+    slika: `./../../../images/ZahtjeviZaAnalize.png`, // dodaj odgovarajuću ikonicu
     allowedRoles: ["Pacijent", "Doktor", "Tehnicar"],
   },
 
   {
-    naziv: "Zahtjevi za analize na čekanju",
+    naziv: "Zahtjevi na čekanju",
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-na-cekanju",
-    slika: `./../../../images/zahtjeviAnalize.png`, // dodaj odgovarajuću ikonicu
+    slika: `./../../../images/zahtjeviNaCekanju.png`, // dodaj odgovarajuću ikonicu
     allowedRoles: ["Doktor", "Tehnicar"],
   },
 
   {
+    naziv: "Doktori",
+    opis: "Prikaz statističkih podataka",
+    putanja: "/doktori",
+    slika: "./../../../images/doktor.png",
+    allowedRoles: ["Admin"],
+  },
+  {
+    naziv: "Tehnicari",
+    opis: "Prikaz statističkih podataka",
+    putanja: "/tehnicari",
+    slika: "./../../../images/tehnicar.png",
+    allowedRoles: ["Admin"],
+  },
+  {
     naziv: "Korisnički nalozi",
     opis: "Prikaz korisnika sistema",
     putanja: "/nalozi",
-    slika: "./../../../images/mojNalog.png",
+    slika: "./../../../images/korisnici.png",
     allowedRoles: ["Admin"],
   },
   {
@@ -70,20 +85,6 @@ const opcije = [
     putanja: "/moj-nalog",
     slika: "./../../../images/mojNalog.png",
     allowedRoles: ["Pacijent", "Doktor", "Admin", "Tehnicar"],
-  },
-  {
-    naziv: "Doktori",
-    opis: "Prikaz statističkih podataka",
-    putanja: "/doktori",
-    slika: "./../../../images/mojNalog.png",
-    allowedRoles: ["Admin"],
-  },
-  {
-    naziv: "Tehnicari",
-    opis: "Prikaz statističkih podataka",
-    putanja: "/tehnicari",
-    slika: "./../../../images/mojNalog.png",
-    allowedRoles: ["Admin"],
   },
 ];
 
@@ -109,7 +110,12 @@ const sliderItems = [
 ];
 
 export default function HomePage() {
+  const { isLoading } = useGetMyAccountQuery();
   const userRole = useAppSelector((state) => state.auth.user?.role);
+
+  if (isLoading) {
+    console.log("Ucitavanje");
+  }
   return (
     <div className="homepage">
       {/* Navbar */}
