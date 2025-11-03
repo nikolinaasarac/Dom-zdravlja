@@ -35,6 +35,7 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
 import { useAppSelector } from "../../store/store";
 
+// ---------- Red (row) komponenta ----------
 function ZahtjevRow({
   z,
   refetch,
@@ -47,49 +48,47 @@ function ZahtjevRow({
   const [status, setStatus] = useState(z.status);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-
   const [promijeniStatus] = usePromijeniStatusMutation();
+  const userRole = useAppSelector((state) => state.auth.user?.role);
 
-  const handleSaveStatus = async () => {
-    if (status !== z.status) {
-      await promijeniStatus({ id: z.id, noviStatus: status });
-      refetch();
-      setSnackbarMessage(`Status uspješno promijenjen u "${status}"!`);
-      setOpenSnackbar(true);
-      if (status === "Obrađen") setOpenDialog(true);
+  // Odredi dozvoljene opcije za prelaz statusa
+  const getAllowedStatuses = (trenutni: string) => {
+    switch (trenutni) {
+      case "Na čekanju":
+        return ["U obradi", "Odbijen"];
+      case "U obradi":
+        return ["Obrađen"];
+      default:
+        return []; // ako je već obrađen/odbijen – nema više promjena
     }
   };
 
-  const handleUploadSuccess = () => {
-    setSnackbarMessage("Upload nalaza uspješno završen!");
-    setOpenSnackbar(true);
-    setOpenDialog(false);
-    refetch();
+  const allowedStatuses = getAllowedStatuses(z.status);
+
+  const handleSaveStatus = async () => {
+    if (status === z.status) return; // nije ništa promijenjeno
+
+    // ako ide na "Obrađen", prvo traži upload nalaza
+    if (status === "Obrađen") {
+      setOpenDialog(true);
+      return;
+    }
+
+    // sve ostalo – normalno mijenja status
+    try {
+      await promijeniStatus({ id: z.id, noviStatus: status }).unwrap();
+      refetch();
+      setSnackbarMessage(`Status uspješno promijenjen u "${status}"!`);
+      setOpenSnackbar(true);
+    } catch {
+      setSnackbarMessage("Greška prilikom promjene statusa!");
+      setOpenSnackbar(true);
+    }
   };
 
   return (
     <>
-      <TableRow
-        hover
-        sx={{
-          transition: "transform 0.25s ease, box-shadow 0.25s ease",
-          backgroundColor: "#fff",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-          borderRadius: "12px",
-          "& td:first-of-type": {
-            borderTopLeftRadius: 12,
-            borderBottomLeftRadius: 12,
-          },
-          "& td:last-of-type": {
-            borderTopRightRadius: 12,
-            borderBottomRightRadius: 12,
-          },
-          "&:hover": {
-            transform: "scale(1.01)",
-            boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-          },
-        }}
-      >
+      <TableRow hover>
         <TableCell width={50}>
           <IconButton
             size="small"
@@ -107,23 +106,36 @@ function ZahtjevRow({
         <TableCell>
           {z.tehnicarIme ? `${z.tehnicarIme} ${z.tehnicarPrezime}` : "-"}
         </TableCell>
+
         <TableCell>
-          <Select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            size="small"
-          >
-            <MenuItem value="Na čekanju">Na čekanju</MenuItem>
-            <MenuItem value="U obradi">U obradi</MenuItem>
-            <MenuItem value="Obrađen">Obrađen</MenuItem>
-            <MenuItem value="Odbijen">Odbijen</MenuItem>
-          </Select>
+          {userRole === "Tehnicar" && allowedStatuses.length > 0 ? (
+            <Select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              size="small"
+            >
+              <MenuItem value={z.status} disabled>
+                {z.status}
+              </MenuItem>
+              {allowedStatuses.map((opt) => (
+                <MenuItem key={opt} value={opt}>
+                  {opt}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Typography>{z.status}</Typography>
+          )}
         </TableCell>
+
         <TableCell>{new Date(z.datumZahtjeva).toLocaleDateString()}</TableCell>
+
         <TableCell>
-          <Button variant="outlined" size="small" onClick={handleSaveStatus}>
-            Završi
-          </Button>
+          {userRole === "Tehnicar" && allowedStatuses.length > 0 && (
+            <Button variant="contained" size="small" onClick={handleSaveStatus}>
+              Sačuvaj
+            </Button>
+          )}
         </TableCell>
       </TableRow>
 
@@ -149,7 +161,7 @@ function ZahtjevRow({
                   <b>Tehničar:</b> {z.tehnicarIme} {z.tehnicarPrezime}
                 </Typography>
               )}
-              {status === "Obrađen" && (
+              {z.status === "Obrađen" && userRole === "Tehnicar" && (
                 <Button
                   variant="outlined"
                   sx={{ mt: 1 }}
@@ -163,7 +175,6 @@ function ZahtjevRow({
         </TableCell>
       </TableRow>
 
-      {/* Snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -175,7 +186,6 @@ function ZahtjevRow({
         </Alert>
       </Snackbar>
 
-      {/* Dialog za upload */}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -184,14 +194,29 @@ function ZahtjevRow({
       >
         <DialogTitle>Upload nalaza</DialogTitle>
         <DialogContent>
-          <UploadNalazForm zahtjev={z} onSuccess={handleUploadSuccess} />
+          <UploadNalazForm
+            zahtjev={z}
+            onSuccess={async () => {
+              // nakon uspješnog uploada – promijeni status na "Obrađen"
+              await promijeniStatus({
+                id: z.id,
+                noviStatus: "Obrađen",
+              }).unwrap();
+              setOpenSnackbar(true);
+              setSnackbarMessage(
+                "Nalaz uspješno uploadovan i status postavljen na 'Obrađen'!"
+              );
+              setOpenDialog(false);
+              refetch();
+            }}
+          />
         </DialogContent>
       </Dialog>
     </>
   );
 }
 
-// ---------- Forma za kreiranje novog zahtjeva ----------
+// ---------- Forma za novi zahtjev ----------
 function NoviZahtjevForm({
   pacijentId,
   onSuccess,
@@ -256,12 +281,13 @@ export default function PrikazZahtjevaZaAnalize({
 }: {
   filterStatus?: "svi" | "na-cekanju" | "pacijent";
 }) {
-  // unutar glavne funkcije
   const userRole = useAppSelector((state) => state.auth.user?.role);
-
   const { id } = useParams<{ id: string }>();
+  const pacijentId = id ? Number(id) : undefined;
+
   const [openNoviDialog, setOpenNoviDialog] = useState(false);
 
+  // odabir hook-a
   const {
     data: sviZahtjevi,
     isLoading: loadingSvi,
@@ -271,20 +297,24 @@ export default function PrikazZahtjevaZaAnalize({
     data: zahtjeviPacijenta,
     isLoading: loadingPacijent,
     refetch: refetchPacijent,
-  } = useGetZahtjeviPacijentaQuery(id ? Number(id) : skipToken);
+  } = useGetZahtjeviPacijentaQuery(
+    !pacijentId || isNaN(pacijentId) ? skipToken : pacijentId
+  );
   const {
     data: zahtjeviNaCekanju,
     isLoading: loadingNaCekanju,
     refetch: refetchNaCekanju,
   } = useGetZahtjeviNaCekanjuQuery();
 
-  let zahtjevi, isLoading, refetch;
+  let zahtjevi: ZahtjevZaAnalizu[] | undefined,
+    isLoading: boolean,
+    refetch: () => void;
 
   if (filterStatus === "na-cekanju") {
     zahtjevi = zahtjeviNaCekanju;
     isLoading = loadingNaCekanju;
     refetch = refetchNaCekanju;
-  } else if (id) {
+  } else if (pacijentId) {
     zahtjevi = zahtjeviPacijenta;
     isLoading = loadingPacijent;
     refetch = refetchPacijent;
@@ -299,8 +329,7 @@ export default function PrikazZahtjevaZaAnalize({
 
   return (
     <>
-      {/* Dugme za novi zahtjev, samo ako gledamo pacijenta i nije filter 'na-cekanju' */}
-      {id && filterStatus !== "na-cekanju" && userRole === "Doktor" && (
+      {pacijentId && filterStatus !== "na-cekanju" && userRole === "Doktor" && (
         <Button
           variant="contained"
           sx={{ mb: 2 }}
@@ -327,15 +356,14 @@ export default function PrikazZahtjevaZaAnalize({
             </TableRow>
           </TableHead>
           <TableBody>
-            {zahtjevi.map((z: ZahtjevZaAnalizu) => (
+            {zahtjevi.map((z) => (
               <ZahtjevRow key={z.id} z={z} refetch={refetch} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {/* Dialog za novi zahtjev */}
-      {filterStatus !== "na-cekanju" && id && (
+      {filterStatus !== "na-cekanju" && pacijentId && (
         <Dialog
           open={openNoviDialog}
           onClose={() => setOpenNoviDialog(false)}
@@ -345,7 +373,7 @@ export default function PrikazZahtjevaZaAnalize({
           <DialogTitle>Kreiraj novi zahtjev</DialogTitle>
           <DialogContent>
             <NoviZahtjevForm
-              pacijentId={Number(id)}
+              pacijentId={pacijentId}
               onSuccess={refetch}
               onClose={() => setOpenNoviDialog(false)}
             />
