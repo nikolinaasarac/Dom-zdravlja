@@ -55,10 +55,11 @@ export default function PregledForm({
             if (pregled && pregled.id) {
                 await createPregledInfo({ id: pregled.id, data }).unwrap();
             }
-            setEditMode(false);
-            refetch();
         } catch (error) {
             console.error(error);
+        } finally {
+            setEditMode(false); // ✅ sigurno zatvori dijalog
+            await refetch();    // ✅ sigurno osvježi tabelu
         }
     };
 

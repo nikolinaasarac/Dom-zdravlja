@@ -28,15 +28,21 @@ namespace API.Services.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Uputnica> CreateUputnicaAsync(int pacijentId, UputnicaDto dto)
+        public async Task<Uputnica> CreateUputnicaAsync(int pacijentId, UputnicaDto dto, Guid userId)
         {
+            var korisnik = await context.Korisnici
+                .Include(k => k.Doktor)
+                .FirstOrDefaultAsync(k => k.Id == userId);
+
+            if (korisnik?.Doktor == null)
+                return null;
             var pacijent = await context.Pacijenti.FindAsync(pacijentId);
             if (pacijent == null) return null;
 
             var uputnica = new Uputnica
             {
                 PacijentId = pacijentId,
-                DoktorId = dto.DoktorId,
+                DoktorId = korisnik.Doktor.Id,
                 Dijagnoza = dto.Dijagnoza,
                 Opis = dto.Opis,
                 UpucujeSe = dto.UpucujeSe,

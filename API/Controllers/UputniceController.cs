@@ -45,7 +45,11 @@ namespace API.Controllers
         [HttpPost("{pacijentId}")]
         public async Task<ActionResult<Uputnica>> CreateUputnica(int pacijentId, [FromBody] UputnicaDto dto)
         {
-            var uputnica = await uputnicaService.CreateUputnicaAsync(pacijentId, dto);
+             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null) return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim);
+            var uputnica = await uputnicaService.CreateUputnicaAsync(pacijentId, dto, userId);
             if (uputnica == null)
                 return NotFound("Pacijent nije pronađen");
             return Ok(uputnica);

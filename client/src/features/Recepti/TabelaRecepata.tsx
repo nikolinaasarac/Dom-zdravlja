@@ -82,7 +82,7 @@ export default function TabelaRecepata() {
       </Box>
 
       {
-      !recepti ? <Typography align="center">Nema uputnica za izabranog pacijenta.</Typography>
+      !recepti ? <Typography align="center">Nema recepata za izabranog pacijenta.</Typography>
       :
       isLoading ? (
         <Typography align="center">Učitavanje recepata...</Typography>

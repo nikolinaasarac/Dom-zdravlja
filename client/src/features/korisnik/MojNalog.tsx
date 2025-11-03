@@ -61,8 +61,8 @@ export default function MojNalog() {
   const ime =
     data.doktor?.ime ||
     data.pacijent?.ime ||
-    data.username.charAt(0).toUpperCase() + data.username.slice(1);
-  const prezime = data.doktor?.prezime || data.pacijent?.prezime || "";
+    data.tehnicar?.ime || "";
+  const prezime = data.doktor?.prezime || data.pacijent?.prezime || data.tehnicar?.prezime || "";
   const role = data.role;
 
   const handleSave = async () => {
@@ -164,6 +164,25 @@ export default function MojNalog() {
             {data.pacijent &&
               Object.entries(data.pacijent).map(([key, value]) => {
                 if (value === null || value === undefined) return null;
+                return (
+                  <React.Fragment key={key}>
+                    <Grid size={6}>
+                      <Typography variant="subtitle1" sx={{ opacity: 0.8 }}>
+                        {labels[key] || key}:
+                      </Typography>
+                    </Grid>
+                    <Grid size={6}>
+                      <Typography variant="subtitle1">{value}</Typography>
+                    </Grid>
+                  </React.Fragment>
+                );
+              })}
+
+            {/* Polja tehničara */}
+            {data.tehnicar &&
+              Object.entries(data.tehnicar).map(([key, value]) => {
+                if (value === null || value === undefined) return null;
+
                 return (
                   <React.Fragment key={key}>
                     <Grid size={6}>

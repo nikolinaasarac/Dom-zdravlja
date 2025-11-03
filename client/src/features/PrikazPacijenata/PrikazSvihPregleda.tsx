@@ -21,10 +21,21 @@ import type { Pregled } from "../../models/Pregled";
 import PregledForm from "../doktor/PregledForm";
 import { useFetchPreglediQuery } from "../doktor/doktorApi";
 import { useFetchPacijentPreglediQuery } from "./pacijentApi";
+import { useAppSelector } from "../../store/store";
 
-function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
+function PregledRow({
+  p,
+  refetch,
+  showUnesiDetalje,
+}: {
+  p: Pregled;
+  refetch: () => void;
+  showUnesiDetalje: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+
+  const userRole = useAppSelector((state) => state.auth.user?.role);
 
   return (
     <>
@@ -107,30 +118,33 @@ function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
                 <b>Napomena:</b> {p.napomena ?? "-"}
               </Typography>
 
-              <Button
-                variant="outlined"
-                size="medium"
-                sx={{
-                  borderRadius: "14px",
-                  textTransform: "none",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  px: 2.5,
-                  py: 1,
-                  color: "#1976d2",
-                  borderColor: "#1976d2",
-                  "&:hover": {
-                    borderColor: "#125ea2",
-                    backgroundColor: "rgba(25,118,210,0.08)",
-                  },
-                  display: "block",
-                  ml: "auto",
-                  mt: 1.5,
-                }}
-                onClick={() => setOpenDialog(true)}
-              >
-                Unesi detalje
-              </Button>
+              {/* ✅ Prikaži dugme samo ako je ulogovani doktor i ako prikaz nije za pacijenta */}
+              {userRole === "Doktor" && showUnesiDetalje && (
+                <Button
+                  variant="outlined"
+                  size="medium"
+                  sx={{
+                    borderRadius: "14px",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                    px: 2.5,
+                    py: 1,
+                    color: "#1976d2",
+                    borderColor: "#1976d2",
+                    "&:hover": {
+                      borderColor: "#125ea2",
+                      backgroundColor: "rgba(25,118,210,0.08)",
+                    },
+                    display: "block",
+                    ml: "auto",
+                    mt: 1.5,
+                  }}
+                  onClick={() => setOpenDialog(true)}
+                >
+                  Unesi detalje
+                </Button>
+              )}
             </Box>
           </Collapse>
         </TableCell>
@@ -138,6 +152,7 @@ function PregledRow({ p, refetch }: { p: Pregled; refetch: () => void }) {
 
       {/* Modal forma */}
       <Dialog
+        key={p.id}
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         fullWidth
@@ -161,32 +176,30 @@ interface Props {
 }
 
 export default function PrikazSvihPregleda({ pacijentId }: Props) {
-  // ✅ Hookovi se pozivaju uvek, ali API se preskače pomoću skip opcije
   const {
     data: preglediPacijenta,
     isLoading: loadingPacijent,
     refetch: refetchPacijent,
-  } = useFetchPacijentPreglediQuery(pacijentId!, {
-    skip: !pacijentId,
-  });
+  } = useFetchPacijentPreglediQuery(pacijentId!, { skip: !pacijentId });
 
   const {
     data: sviPregledi,
     isLoading: loadingSvi,
     refetch: refetchSvi,
-  } = useFetchPreglediQuery(undefined, {
-    skip: !!pacijentId,
-  });
+  } = useFetchPreglediQuery(undefined, { skip: !!pacijentId });
 
   const pregledi = pacijentId ? preglediPacijenta : sviPregledi;
   const isLoading = pacijentId ? loadingPacijent : loadingSvi;
   const refetch = pacijentId ? refetchPacijent : refetchSvi;
 
-  if (!pregledi)
-    return <Typography align="center">Nema pregleda.</Typography>;
+  // ✅ Ako je pozvan API za pacijenta, ne prikazujemo dugme "Unesi detalje"
+  const showUnesiDetalje = !pacijentId;
 
   if (isLoading)
     return <Typography align="center">Učitavanje...</Typography>;
+
+  if (!pregledi)
+    return <Typography align="center">Nema pregleda.</Typography>;
 
   return (
     <TableContainer
@@ -207,7 +220,12 @@ export default function PrikazSvihPregleda({ pacijentId }: Props) {
 
         <TableBody>
           {pregledi.map((p: Pregled) => (
-            <PregledRow key={p.id} p={p} refetch={refetch} />
+            <PregledRow
+              key={p.id}
+              p={p}
+              refetch={refetch}
+              showUnesiDetalje={showUnesiDetalje}
+            />
           ))}
         </TableBody>
       </Table>
