@@ -5,7 +5,7 @@ namespace API.Services.Interfaces
 {
     public interface IUputnicaService
     {
-        Task<List<Uputnica>> GetUputniceZaPacijentaAsync(int pacijentId);
+        Task<List<Uputnica>> GetUputniceZaPacijentaAsync(int pacijentId, Guid userId);
         Task<Uputnica> CreateUputnicaAsync(int pacijentId, UputnicaDto dto);
         Task<byte[]> GeneratePdfAsync(int uputnicaId);
     }

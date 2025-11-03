@@ -3,14 +3,22 @@ using API.DTO;
 using API.Entities;
 using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace API.Services.Implementations
 {
-    public class VakcinacijaService(DomZdravljaContext context) : IVakcinacijaService
+    public class VakcinacijaService : IVakcinacijaService
     {
+        private readonly DomZdravljaContext _context;
+
+        public VakcinacijaService(DomZdravljaContext context)
+        {
+            _context = context;
+        }
+
         public async Task<List<VakcinacijaDto>> GetAllVakcineAsync()
         {
-            return await context.Vakcinacije
+            return await _context.Vakcinacije
                 .Include(v => v.Pacijent)
                 .Select(v => new VakcinacijaDto
                 {
@@ -25,9 +33,21 @@ namespace API.Services.Implementations
                 .ToListAsync();
         }
 
-        public async Task<List<VakcinacijaDto>> GetVakcineZaPacijentaAsync(int pacijentId)
+        public async Task<List<VakcinacijaDto>> GetVakcineZaPacijentaAsync(Guid userId, int pacijentId)
         {
-            return await context.Vakcinacije
+            // 🔹 Dohvati korisnika iz baze
+            var korisnik = await _context.Korisnici
+                .FirstOrDefaultAsync(k => k.Id == userId);
+
+            if (korisnik == null)
+                throw new UnauthorizedAccessException();
+
+            // 🔹 Ako je pacijent, može pristupiti samo svom PacijentId
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup"); // kontroler može mapirati na 403
+
+            // 🔹 Dohvati vakcinacije
+            return await _context.Vakcinacije
                 .Where(v => v.PacijentId == pacijentId)
                 .Include(v => v.Pacijent)
                 .Select(v => new VakcinacijaDto

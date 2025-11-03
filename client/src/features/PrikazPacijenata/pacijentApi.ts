@@ -109,6 +109,12 @@ export const pacijentApi = createApi({
         body: data,
       }),
     }),
+    getMojPacijentId: builder.query<number | null, void>({
+      query: () => ({
+        url: "pacijenti/moj-id",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -127,4 +133,5 @@ export const {
   useUpdateKrvnaGrupaMutation,
   useFetchKrvnaGrupaQuery,
   useFetchDoktoriQuery,
+  useGetMojPacijentIdQuery
 } = pacijentApi;

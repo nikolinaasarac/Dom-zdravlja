@@ -8,9 +8,17 @@ namespace API.Services.Implementations
 {
     public class NalazService(DomZdravljaContext context) : INalazService
     {
-        public async Task<ActionResult<List<NalazDto>>> GetNalaziZaPacijenta(int pacijentId)
+        public async Task<List<NalazDto>> GetNalaziZaPacijentaAsync(int pacijentId, Guid userId)
         {
-            var nalazi = await context.Nalazi
+            var korisnik = await context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+            if (korisnik == null)
+                throw new UnauthorizedAccessException();
+
+            // Pacijent može vidjeti samo svoje nalaze
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup");
+
+            return await context.Nalazi
                 .Include(n => n.Pacijent)
                 .Include(n => n.Tehnicar)
                 .Where(n => n.PacijentId == pacijentId)
@@ -27,12 +35,8 @@ namespace API.Services.Implementations
                     TehnicarPrezime = n.Tehnicar != null ? n.Tehnicar.Prezime : null
                 })
                 .ToListAsync();
-
-            if (nalazi.Count == 0)
-                return new NotFoundObjectResult("Nema nalaza za izabranog pacijenta.");
-
-            return new OkObjectResult(nalazi);
         }
+
 
         public async Task<ActionResult<List<NalazDto>>> GetSviNalazi()
         {

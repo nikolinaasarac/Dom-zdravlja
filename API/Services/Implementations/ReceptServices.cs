@@ -8,15 +8,21 @@ namespace API.Services.Implementations
 {
     public class ReceptService(DomZdravljaContext context) : IReceptService
     {
-        public async Task<List<Recept>> GetReceptiZaPacijentaAsync(int pacijentId)
+        public async Task<List<Recept>> GetReceptiZaPacijentaAsync(int pacijentId, Guid userId)
         {
-            var recepti = await context.Recepti
+            var korisnik = await context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+            if (korisnik == null)
+                throw new UnauthorizedAccessException();
+
+            // Pacijent može vidjeti samo svoje recepte
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup");
+
+            return await context.Recepti
                 .Where(r => r.PacijentId == pacijentId)
                 .Include(r => r.Pacijent)
                 .Include(r => r.Doktor)
                 .ToListAsync();
-
-            return recepti;
         }
 
         public async Task<Recept> CreateReceptAsync(int pacijentId, ReceptDto dto, Guid doktorUserId)

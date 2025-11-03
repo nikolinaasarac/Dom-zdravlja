@@ -7,16 +7,23 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Link, useParams, useLocation } from "react-router-dom";
+import { useAppSelector } from "../store/store";
+import type { JSX } from "react";
 
 const drawerWidth = 240;
 
 export default function Sidebar() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const userRole = useAppSelector((state) => state.auth.user?.role);
 
   if (!id) return null;
 
-  const navItems = [
+  const navItems: Array<{
+    label: string;
+    to: string;
+    icon: JSX.Element;
+  } | null> = [
     {
       label: "Svi pacijenti",
       to: "/pacijenti",
@@ -62,15 +69,17 @@ export default function Sidebar() {
         </svg>
       ),
     },
-    {
-      label: "Zahtjevi za analize",
-      to: `/pacijenti/${id}/zahtjevi-analiza`,
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24">
-          <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z" />
-        </svg>
-      ),
-    },
+    userRole === "Doktor"
+      ? {
+          label: "Zahtjevi za analize",
+          to: `/pacijenti/${id}/zahtjevi-analiza`,
+          icon: (
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z" />
+            </svg>
+          ),
+        }
+      : null,
     {
       label: "Nalazi",
       to: `/pacijenti/${id}/nalazi`,
@@ -89,7 +98,7 @@ export default function Sidebar() {
         </svg>
       ),
     },
-  ];
+  ].filter(Boolean); // uklanja null vrijednosti
 
   return (
     <Drawer
@@ -113,20 +122,20 @@ export default function Sidebar() {
     >
       <List>
         {navItems.map((item) => (
-          <ListItem key={item.label} disablePadding>
+          <ListItem key={item!.label} disablePadding>
             <ListItemButton
               component={Link}
-              to={item.to}
+              to={item!.to}
               sx={{
                 borderRadius: 2,
                 mb: 0.5,
                 backgroundColor:
-                  location.pathname === item.to
+                  location.pathname === item!.to
                     ? "rgba(127,212,212,0.4)"
                     : "transparent",
                 "&:hover": {
                   backgroundColor:
-                    location.pathname === item.to
+                    location.pathname === item!.to
                       ? "rgba(127,212,212,0.5)"
                       : "rgba(127,212,212,0.25)",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
@@ -136,9 +145,9 @@ export default function Sidebar() {
                 transition: "all 0.2s ease-in-out",
               }}
             >
-              <ListItemIcon sx={{ color: "#333" }}>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ color: "#333" }}>{item!.icon}</ListItemIcon>
               <ListItemText
-                primary={item.label}
+                primary={item!.label}
                 sx={{ color: "#333", fontWeight: 500 }}
               />
             </ListItemButton>

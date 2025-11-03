@@ -11,37 +11,49 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.Implementations
 {
-    public class ZdravstvenoStanjeService(DomZdravljaContext context, IMapper mapper) : IZdravstvenoStanjeService
+    public class ZdravstvenoStanjeService : IZdravstvenoStanjeService
     {
-        public async Task<ZdravstvenoStanjeDto?> CreateZdravstvenoStanjeAsync(int pacijentId, KreirajZdravstvenoStanjeDto dto)
-{
-    var pacijent = await context.Pacijenti.FindAsync(pacijentId);
-    if (pacijent == null) return null;
+        private readonly DomZdravljaContext _context;
+        private readonly IMapper _mapper;
 
-    var stanje = mapper.Map<ZdravstvenoStanje>(dto);
-    stanje.PacijentId = pacijentId;
-
-    context.ZdravstvenaStanja.Add(stanje);
-    var result = await context.SaveChangesAsync() > 0;
-
-    if (!result) return null;
-
-    // vraćamo DTO, bez navigacionih propertyja
-    return new ZdravstvenoStanjeDto
-    {
-        Id = stanje.Id,
-        Naziv = stanje.Naziv,
-        Tip = stanje.Tip,
-        DatumDijagnoze = stanje.DatumDijagnoze,
-        Napomena = stanje.Napomena
-    };
-}
-
-
-        // GET ručno mapiran
-        public async Task<List<ZdravstvenoStanjeDto>> GetStanjaByPacijentIdAsync(int pacijentId)
+        public ZdravstvenoStanjeService(DomZdravljaContext context, IMapper mapper)
         {
-            var stanja = await context.ZdravstvenaStanja
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<ZdravstvenoStanjeDto?> CreateZdravstvenoStanjeAsync(int pacijentId, KreirajZdravstvenoStanjeDto dto)
+        {
+            var pacijent = await _context.Pacijenti.FindAsync(pacijentId);
+            if (pacijent == null) return null;
+
+            var stanje = _mapper.Map<ZdravstvenoStanje>(dto);
+            stanje.PacijentId = pacijentId;
+
+            _context.ZdravstvenaStanja.Add(stanje);
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if (!result) return null;
+
+            return new ZdravstvenoStanjeDto
+            {
+                Id = stanje.Id,
+                Naziv = stanje.Naziv,
+                Tip = stanje.Tip,
+                DatumDijagnoze = stanje.DatumDijagnoze,
+                Napomena = stanje.Napomena
+            };
+        }
+
+        public async Task<List<ZdravstvenoStanjeDto>> GetStanjaByPacijentIdAsync(int pacijentId, Guid userId)
+        {
+            var korisnik = await _context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+            if (korisnik == null) throw new UnauthorizedAccessException();
+
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup");
+
+            return await _context.ZdravstvenaStanja
                 .Where(z => z.PacijentId == pacijentId)
                 .Select(z => new ZdravstvenoStanjeDto
                 {
@@ -52,19 +64,17 @@ namespace API.Services.Implementations
                     Napomena = z.Napomena
                 })
                 .ToListAsync();
-
-            return stanja;
         }
 
         public async Task<List<ZdravstvenoStanjeDto>> GetStanjaPacijentaByUserIdAsync(Guid userId)
         {
-            var korisnik = await context.Korisnici
+            var korisnik = await _context.Korisnici
                 .Include(k => k.Pacijent)
                 .FirstOrDefaultAsync(k => k.Id == userId);
 
             if (korisnik?.Pacijent == null) return new List<ZdravstvenoStanjeDto>();
 
-            return await GetStanjaByPacijentIdAsync(korisnik.Pacijent.Id);
+            return await GetStanjaByPacijentIdAsync(korisnik.Pacijent.Id, userId);
         }
     }
 }

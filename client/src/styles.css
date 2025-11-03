@@ -1,9 +1,13 @@
+html {
+  height: 100%;
+}
+
 body {
-  /* Svijetloplavi gradijent */
-  background: linear-gradient(to bottom right, #d4b8d8, #7fd4d4);
   margin: 0;
   font-family: sans-serif;
-  min-height: 100vh;
+  min-height: 100%;
+  background: linear-gradient(to bottom right, #d4b8d8, #7fd4d4);
+  background-attachment: fixed; /* ovo je ključno */
 }
 
 .homepage {

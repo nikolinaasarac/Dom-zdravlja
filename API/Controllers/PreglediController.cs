@@ -15,8 +15,28 @@ namespace API.Controllers
         [HttpGet("{pacijentId}")]
         public async Task<ActionResult<List<PregledDto>>> GetPregledi(int pacijentId)
         {
-            var pregledi = await pregledService.GetPreglediByPacijentIdAsync(pacijentId);
-            return Ok(pregledi);
+            try
+            {
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdStr)) return BadRequest("Neispravan token.");
+
+                var userId = Guid.Parse(userIdStr);
+
+                var pregledi = await pregledService.GetPreglediByPacijentIdAsync(pacijentId, userId);
+
+                if (pregledi == null || !pregledi.Any())
+                    return NotFound("Pacijent nema evidentirane preglede.");
+
+                return Ok(pregledi);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (InvalidOperationException)
+            {
+                return Forbid();
+            }
         }
 
         [Authorize(Roles = "Doktor")]
