@@ -27,6 +27,7 @@ export default function TabelaUputnica() {
   const { id } = useParams<{ id: string }>();
   const { data: uputnice, isLoading } = useFetchUputniceQuery(id ? +id : 0);
   const [getUputnicaPdf] = useLazyGetUputnicaPdfQuery();
+  
 
   const userRole = useAppSelector((state) => state.auth.user?.role);
 
@@ -81,7 +82,8 @@ export default function TabelaUputnica() {
         )}
       </Box>
 
-      {isLoading ? (
+      {!uputnice ? (<Typography align="center">Nema uputnica za izabranog pacijenta.</Typography>) :
+      isLoading ? (
         <Typography align="center">Učitavanje uputnica...</Typography>
       ) : (
         <TableContainer
