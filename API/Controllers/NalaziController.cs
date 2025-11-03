@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.DTO;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,31 @@ namespace API.Controllers
         [Authorize(Roles = "Doktor,Pacijent")]
         [HttpGet("pacijent/{pacijentId}")]
         public async Task<ActionResult<List<NalazDto>>> GetNalaziZaPacijenta(int pacijentId)
-            => await service.GetNalaziZaPacijenta(pacijentId);
+        {
+            try
+            {
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdStr))
+                    return BadRequest("Neispravan token.");
+
+                var userId = Guid.Parse(userIdStr);
+
+                var nalazi = await service.GetNalaziZaPacijentaAsync(pacijentId, userId);
+
+                if (nalazi == null || nalazi.Count == 0)
+                    return NotFound("Nema nalaza za izabranog pacijenta.");
+
+                return Ok(nalazi);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (InvalidOperationException)
+            {
+                return Forbid();
+            }
+        }
 
         [Authorize(Roles = "Doktor")]
         [HttpGet]

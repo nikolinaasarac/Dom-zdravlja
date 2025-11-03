@@ -11,12 +11,20 @@ namespace API.Services.Implementations
     public class PregledService(DomZdravljaContext context, IMapper mapper)
         : IPregledService
     {
-        public async Task<List<PregledDto>> GetPreglediByPacijentIdAsync(int pacijentId)
+        public async Task<List<PregledDto>> GetPreglediByPacijentIdAsync(int pacijentId, Guid userId)
         {
+            var korisnik = await context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+            if (korisnik == null)
+                throw new UnauthorizedAccessException();
+
+            // Pacijent može vidjeti samo svoje preglede
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup");
+
             return await context.Pregledi
+                .Where(p => p.PacijentId == pacijentId)
                 .Include(p => p.Pacijent)
                 .Include(p => p.Doktor)
-                .Where(p => p.PacijentId == pacijentId)
                 .Select(p => new PregledDto
                 {
                     Id = p.Id,

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using API.Data;
 using API.DTO;
 using API.Entities;
 using API.RequestHelpers;
@@ -5,6 +7,7 @@ using API.Services;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -12,7 +15,7 @@ namespace API.Controllers
     [ApiController]
     public class PacijentiController(IPacijentService pacijentService) : ControllerBase
     {
-        [Authorize(Roles ="Doktor,Tehnicar,Pacijent,Admin")]
+        [Authorize(Roles = "Doktor,Tehnicar,Pacijent,Admin")]
         [HttpGet]
         public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery] Params pacijentiParams)
         {
@@ -20,16 +23,37 @@ namespace API.Controllers
             return Ok(pacijenti);
         }
 
-        [Authorize(Roles ="Doktor,Tehnicar,Pacijent")]
+        [Authorize(Roles = "Doktor,Tehnicar,Pacijent")]
         [HttpGet("{id}")]
         public async Task<ActionResult<pacijentDto>> GetPacijent(int id)
         {
-            var pacijent = await pacijentService.GetPacijentByIdAsync(id);
-            if (pacijent == null) return NotFound();
-            return Ok(pacijent);
+            try
+            {
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdStr))
+                    return BadRequest("Neispravan token.");
+
+                var userId = Guid.Parse(userIdStr);
+                var pacijent = await pacijentService.GetPacijentByIdAsync(userId, id);
+
+                if (pacijent == null)
+                    return NotFound();
+
+                return Ok(pacijent);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (InvalidOperationException)
+            {
+                return Forbid();
+            }
         }
 
-        [Authorize(Roles ="Doktor,Pacijent")]
+
+
+        [Authorize(Roles = "Doktor,Pacijent")]
         [HttpGet("{id}/vakcinacije")]
         public async Task<ActionResult<List<Vakcinacija>>> GetVakcinacijePoPacijentu(int id)
         {
@@ -63,6 +87,18 @@ namespace API.Controllers
             var success = await pacijentService.DeletePacijentAsync(id);
             if (!success) return NotFound();
             return Ok();
+        }
+
+        [HttpGet("moj-id")]
+        public async Task<ActionResult<int?>> GetPacijentId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            var pacijentId = await pacijentService.GetPacijentIdByKorisnikIdAsync(Guid.Parse(userId));
+            if (pacijentId == null) return NotFound();
+
+            return Ok(pacijentId);
         }
     }
 }

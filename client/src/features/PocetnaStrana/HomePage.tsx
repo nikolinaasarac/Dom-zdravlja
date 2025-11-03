@@ -1,10 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Link, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import Kartica from "./Kartica";
 import "../../styles.css";
 import NavBar from "../../components/NavBar";
 import { useAppSelector } from "../../store/store";
 import { useGetMyAccountQuery } from "../korisnik/korisnikApi";
+import { AccessTime, Email, Facebook, Instagram, LinkedIn, LocationOn, Phone } from "@mui/icons-material";
+import slide3 from "./../../../public/images/slide3.png";
+
 
 const opcije = [
   {
@@ -26,20 +29,20 @@ const opcije = [
     opis: "Pregledaj evidenciju svih pregleda",
     putanja: "/pregledi",
     slika: `./../../../images/pregled.png`,
-    allowedRoles: ["Pacijent", "Doktor"],
+    allowedRoles: ["Doktor"],
   },
   {
     naziv: "Zahtjev za pregled", // nova opcija
     opis: "Kreiraj novi zahtjev za pregled",
     putanja: "/zahtjev",
     slika: `./../../../images/zahtjevPregled.png`, // dodaj odgovarajuću ikonicu
-    allowedRoles: ["Pacijent", "Doktor"],
+    allowedRoles: ["Pacijent"],
   },
   {
     naziv: "Moji zahtjevi", // nova opcija
     opis: "Prikaz svih vaših zahtjeva",
     putanja: "/moji-zahtjevi",
-    slika: `./../../../images/mojiZahtjevi.png`, // dodaj ikonicu
+    slika: `./../../../images/zahtjevPregled.png`, // dodaj ikonicu
     allowedRoles: ["Pacijent"],
   },
   {
@@ -47,7 +50,7 @@ const opcije = [
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-analize",
     slika: `./../../../images/ZahtjeviZaAnalize.png`, // dodaj odgovarajuću ikonicu
-    allowedRoles: ["Pacijent", "Doktor", "Tehnicar"],
+    allowedRoles: ["Doktor", "Tehnicar"],
   },
 
   {
@@ -55,7 +58,7 @@ const opcije = [
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-na-cekanju",
     slika: `./../../../images/zahtjeviNaCekanju.png`, // dodaj odgovarajuću ikonicu
-    allowedRoles: ["Doktor", "Tehnicar"],
+    allowedRoles: ["Tehnicar"],
   },
 
   {
@@ -66,7 +69,7 @@ const opcije = [
     allowedRoles: ["Admin"],
   },
   {
-    naziv: "Tehnicari",
+    naziv: "Tehničari",
     opis: "Prikaz statističkih podataka",
     putanja: "/tehnicari",
     slika: "./../../../images/tehnicar.png",
@@ -102,8 +105,7 @@ const sliderItems = [
     opis: "Povežite pacijente i ljekare uz samo nekoliko klikova.",
   },
   {
-    slika:
-      "https://images.unsplash.com/photo-1588774069163-64c238faadb3?auto=format&fit=crop&w=1500&q=80",
+    slika: slide3,
     naslov: "Savremeno rješenje za zdravstvene ustanove",
     opis: "Digitalizujte svakodnevne procese i olakšajte rad osoblju.",
   },
@@ -113,30 +115,28 @@ export default function HomePage() {
   const { isLoading } = useGetMyAccountQuery();
   const userRole = useAppSelector((state) => state.auth.user?.role);
 
-  if (isLoading) {
-    console.log("Ucitavanje");
-  }
+  if (isLoading) return <Typography>Učitavanje...</Typography>;
+
   return (
-    <div className="homepage">
+    <Box className="homepage">
       {/* Navbar */}
       <NavBar opcije={opcije} />
 
       {/* Carousel */}
-      <Box sx={{ mt: 8, width: "100%" }}>
-        <Carousel indicators interval={4000}>
+      <Box sx={{ width: "100%" }}>
+        <Carousel indicators interval={4000} animation="slide">
           {sliderItems.map((item, i) => (
             <Box
               key={i}
               sx={{
                 position: "relative",
-                height: 400,
+                height: 500,
                 backgroundImage: `url(${item.slika})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "white",
                 borderRadius: 2,
                 mx: 3,
               }}
@@ -146,24 +146,31 @@ export default function HomePage() {
                   position: "absolute",
                   width: "100%",
                   height: "100%",
-                  backgroundColor: "rgba(0,0,0,0.4)",
+                  backgroundColor: "rgba(0,0,0,0.25)",
                   borderRadius: 2,
                 }}
               />
-              <Box
-                sx={{ zIndex: 1, textAlign: "center", maxWidth: 700, px: 2 }}
-              >
-                <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
-                  {item.naslov}
-                </Typography>
-                <Typography variant="h6">{item.opis}</Typography>
-              </Box>
+              {item.naslov && (
+                <Box
+                  sx={{ zIndex: 1, textAlign: "center", maxWidth: 700, px: 2 }}
+                >
+                  <Typography
+                    variant="h4"
+                    sx={{ fontWeight: "bold", mb: 1, color: "#fff" }}
+                  >
+                    {item.naslov}
+                  </Typography>
+                  <Typography variant="h6" sx={{ color: "#fff" }}>
+                    {item.opis}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           ))}
         </Carousel>
       </Box>
 
-      {/* Brzi pristup kartice */}
+      {/* Brzi pristup kartice (ostavljamo sve tvoje kartice) */}
       <Box
         sx={{
           py: 6,
@@ -173,17 +180,6 @@ export default function HomePage() {
           alignItems: "center",
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{
-            textAlign: "center",
-            mb: 4,
-            fontWeight: "bold",
-            color: "#0d47a1",
-          }}
-        >
-          Brzi pristup
-        </Typography>
         <div className="cards-container">
           {opcije
             .filter((opcija) => opcija.allowedRoles.includes(userRole!))
@@ -192,6 +188,101 @@ export default function HomePage() {
             ))}
         </div>
       </Box>
-    </div>
+
+      {/* Footer / osnovne informacije */}
+
+      <Box
+        sx={{
+          background: "linear-gradient(135deg, #e0f7fa, #b2ebf2)",
+          py: 8,
+          mt: 6,
+          borderRadius: "15px 15px 0 0",
+        }}
+      >
+        <Grid container spacing={4} justifyContent="center" textAlign="center">
+
+          {/* Kontakt */}
+          <Grid size={12}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Kontakt
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 1 }}>
+              <LocationOn sx={{ mr: 1, color: "#00796b" }} />
+              <Typography>Ulica 123, Grad</Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 1 }}>
+              <Email sx={{ mr: 1, color: "#00796b" }} />
+              <Typography>info@digitalna-ambulanta.com</Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Phone sx={{ mr: 1, color: "#00796b" }} />
+              <Typography>+387 65 123 456</Typography>
+            </Box>
+          </Grid>
+
+          {/* Radno vrijeme */}
+          <Grid size={12}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Radno vrijeme
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 1 }}>
+              <AccessTime sx={{ mr: 1, color: "#00796b" }} />
+              <Typography>Pon-Pet: 08:00 - 20:00</Typography>
+            </Box>
+            <Typography>Sub: 08:00 - 14:00</Typography>
+            <Typography>Ned: Zatvoreno</Typography>
+          </Grid>
+
+          {/* Društvene mreže */}
+          <Grid size={12}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Društvene mreže
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+              <IconButton
+                component={Link}
+                href="#"
+                target="_blank"
+                sx={{
+                  color: "#00796b",
+                  backgroundColor: "white",
+                  "&:hover": { backgroundColor: "#b2ebf2", transform: "scale(1.1)" },
+                  transition: "all 0.2s",
+                }}
+              >
+                <Facebook />
+              </IconButton>
+              <IconButton
+                component={Link}
+                href="#"
+                target="_blank"
+                sx={{
+                  color: "#00796b",
+                  backgroundColor: "white",
+                  "&:hover": { backgroundColor: "#b2ebf2", transform: "scale(1.1)" },
+                  transition: "all 0.2s",
+                }}
+              >
+                <Instagram />
+              </IconButton>
+              <IconButton
+                component={Link}
+                href="#"
+                target="_blank"
+                sx={{
+                  color: "#00796b",
+                  backgroundColor: "white",
+                  "&:hover": { backgroundColor: "#b2ebf2", transform: "scale(1.1)" },
+                  transition: "all 0.2s",
+                }}
+              >
+                <LinkedIn />
+              </IconButton>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 }
+
