@@ -24,6 +24,8 @@ export default function Sidebar() {
     to: string;
     icon: JSX.Element;
   } | null> = [
+   userRole === "Doktor"
+      ?
     {
       label: "Svi pacijenti",
       to: "/pacijenti",
@@ -32,7 +34,7 @@ export default function Sidebar() {
           <path d="M19 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H19v-2z" />
         </svg>
       ),
-    },
+    } : null,
     {
       label: "Lični podaci",
       to: `/pacijenti/${id}`,

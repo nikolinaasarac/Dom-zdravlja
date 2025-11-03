@@ -15,7 +15,7 @@ namespace API.Controllers
     [ApiController]
     public class PacijentiController(IPacijentService pacijentService) : ControllerBase
     {
-        [Authorize(Roles = "Doktor,Tehnicar,Pacijent,Admin")]
+        [Authorize(Roles = "Doktor,Admin")]
         [HttpGet]
         public async Task<ActionResult<List<Pacijent>>> GetPacijenti([FromQuery] Params pacijentiParams)
         {

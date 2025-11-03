@@ -50,7 +50,7 @@ const opcije = [
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-analize",
     slika: `./../../../images/ZahtjeviZaAnalize.png`, // dodaj odgovarajuću ikonicu
-    allowedRoles: ["Doktor", "Tehnicar"],
+    allowedRoles: ["Tehnicar"],
   },
 
   {

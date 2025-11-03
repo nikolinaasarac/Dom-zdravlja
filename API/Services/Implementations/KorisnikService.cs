@@ -15,6 +15,7 @@ namespace API.Services.Implementations
             var korisnik = await context.Korisnici
                 .Include(k => k.Doktor)
                 .Include(k => k.Pacijent)
+                .Include(k => k.Tehnicar)
                 .FirstOrDefaultAsync(k => k.Username == username);
 
             if (korisnik == null) return new NotFoundResult();
@@ -41,7 +42,15 @@ namespace API.Services.Implementations
                     korisnik.Pacijent.MaticniBroj,
                     korisnik.Pacijent.DatumRodjenja,
                     korisnik.Pacijent.Adresa
-                } : null
+                } : null,
+                Tehnicar = korisnik.Tehnicar != null ? new
+                {
+                    korisnik.Tehnicar.Ime,
+                    korisnik.Tehnicar.Prezime,
+                    korisnik.Tehnicar.Telefon,
+                    korisnik.Tehnicar.Email,
+                    korisnik.Tehnicar.Adresa,
+                } : null,
             };
         }
 

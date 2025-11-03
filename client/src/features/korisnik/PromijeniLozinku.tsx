@@ -62,11 +62,11 @@ export default function PromijeniLozinku() {
 
   return (
     <Paper
-      elevation={3} // senka
+      elevation={3}
       sx={{
         maxWidth: 400,
         margin: "auto",
-        p: 4, // unutrašnji padding
+        p: 4,
       }}
     >
       <Box
@@ -84,6 +84,26 @@ export default function PromijeniLozinku() {
         <Typography variant="h5" align="center">
           Promjena lozinke
         </Typography>
+
+        {/* INFO PORUKA */}
+        {userId ? (
+          <Typography
+            variant="body2"
+            color="warning.main"
+            sx={{ textAlign: "center", mb: 1 }}
+          >
+            Nakon promjene lozinka za korisnika će biti resetovana.
+          </Typography>
+        ) : (
+          <Typography
+            variant="body2"
+            color="info.main"
+            sx={{ textAlign: "center", mb: 1 }}
+          >
+            Unesite novu lozinku. Nakon promjene bićete odjavljeni
+            i moraćete se prijaviti sa novom lozinkom.
+          </Typography>
+        )}
 
         <AppTextInput<PromjenaLozinkeForm>
           label="Nova lozinka"
@@ -109,5 +129,6 @@ export default function PromijeniLozinku() {
         </Button>
       </Box>
     </Paper>
+
   );
 }

@@ -86,7 +86,7 @@ public class ZahtjevZaAnalizuController(IZahtjevAnalizeService service) : Contro
     }
 
     [HttpGet]
-    [Authorize(Roles = "Doktor,Tehnicar,Admin")]
+    [Authorize(Roles = "Tehnicar")]
     public async Task<IActionResult> GetAllZahtjevi()
     {
         var zahtjevi = await service.GetAllZahtjeviAsync();

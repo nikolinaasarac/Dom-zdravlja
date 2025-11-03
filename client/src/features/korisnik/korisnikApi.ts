@@ -13,7 +13,7 @@ export const korisnikApi = createApi({
       { username: string },
       { username: string }
     >({
-    query: (body) => ({
+      query: (body) => ({
         url: "korisnici/promijeniUsername",
         method: "PUT",
         body,

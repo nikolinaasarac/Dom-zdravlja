@@ -87,7 +87,7 @@ export default function TabelaPacijenata({
               <TableCell>{pacijent.telefon}</TableCell>
               <TableCell>
                 <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                  <Button
+                  {userRole! !== "Admin" && (<Button
                     component={Link}
                     to={`/pacijenti/${pacijent.id}`}
                     size="small"
@@ -97,7 +97,7 @@ export default function TabelaPacijenata({
                     sx={{ borderRadius: 2, textTransform: "none" }}
                   >
                     Pregled
-                  </Button>
+                  </Button>)}
                   {userRole! === "Admin" && (
                     <>
                       <Button
