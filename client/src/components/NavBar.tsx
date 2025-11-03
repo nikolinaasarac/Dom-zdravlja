@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   AppBar,
   Toolbar,
-  Typography,
   IconButton,
   Menu,
   MenuItem,
@@ -71,9 +70,13 @@ export default function Navbar({ opcije }: NavbarProps) {
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Dom Zdravlja App
-        </Typography>
+        <Box
+          component="img"
+          src="./../../images/logo.png"
+          alt="Dom Zdravlja Logo"
+          sx={{ height: 60 }}
+        />
+
         <Box sx={{ display: "flex", gap: 2 }}>
           {opcije.map((opcija, i) => (
             <Button
