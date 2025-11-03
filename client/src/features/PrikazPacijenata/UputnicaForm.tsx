@@ -12,7 +12,7 @@ export default function UputnicaForm() {
     dijagnoza: "",
     opis: "",
     upucujeSe: "",
-    doktorId: 1, // privremeno
+    doktorId: 0,
   });
 
   const [createUputnica, { isLoading }] = useCreateUputnicaMutation();
@@ -22,7 +22,10 @@ export default function UputnicaForm() {
     if (!pacijentId) return;
 
     try {
-      await createUputnica({ pacijentId: Number(pacijentId), data: form }).unwrap();
+      await createUputnica({
+        pacijentId: Number(pacijentId),
+        data: form,
+      }).unwrap();
       alert("Uputnica kreirana!");
       navigate(`/pacijenti/${pacijentId}/uputnice`); // vrati na listu uputnica
     } catch (err) {

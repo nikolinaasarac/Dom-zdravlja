@@ -25,7 +25,7 @@ export const store = configureStore({
     [nalazApi.reducerPath]: nalazApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware({ serializableCheck: false }).concat(
       pacijentApi.middleware,
       adminApi.middleware,
       doktorApi.middleware,
