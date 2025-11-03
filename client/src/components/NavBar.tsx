@@ -71,9 +71,24 @@ export default function Navbar({ opcije }: NavbarProps) {
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Dom Zdravlja App
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 0 }}>
+          {/* Logo */}
+          <Box sx={{ height: 50 }}>
+            <img
+              src="/images/logo.png" // stavi putanju do svog logotipa
+              alt="Logo"
+              style={{ height: "100%", objectFit: "contain" }}
+            />
+          </Box>
+
+          {/* Ime aplikacije */}
+          <Typography
+            variant="subtitle1" // manji tekst
+            sx={{ fontWeight: "bold", color: "#ffffffff", letterSpacing: 0.5 }}
+          >
+            eAmbulanta
+          </Typography>
+        </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
           {opcije.map((opcija, i) => (
             <Button

@@ -21,11 +21,14 @@ import {
   useFetchUputniceQuery,
   useLazyGetUputnicaPdfQuery,
 } from "./pacijentApi";
+import { useAppSelector } from "../../store/store";
 
 export default function TabelaUputnica() {
   const { id } = useParams<{ id: string }>();
   const { data: uputnice, isLoading } = useFetchUputniceQuery(id ? +id : 0);
   const [getUputnicaPdf] = useLazyGetUputnicaPdfQuery();
+
+  const userRole = useAppSelector((state) => state.auth.user?.role);
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -65,15 +68,17 @@ export default function TabelaUputnica() {
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button
-          component={Link}
-          to={`/pacijenti/${id}/uputnice/dodaj`}
-          variant="contained"
-          color="success"
-          sx={{ borderRadius: 2, textTransform: "none" }}
-        >
-          Nova uputnica
-        </Button>
+        {userRole === "Doktor" && (
+          <Button
+            component={Link}
+            to={`/pacijenti/${id}/uputnice/dodaj`}
+            variant="contained"
+            color="success"
+            sx={{ borderRadius: 2, textTransform: "none" }}
+          >
+            Nova uputnica
+          </Button>
+        )}
       </Box>
 
       {isLoading ? (

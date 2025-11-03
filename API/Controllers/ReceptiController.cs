@@ -19,11 +19,29 @@ namespace API.Controllers
         [HttpGet("{pacijentId}")]
         public async Task<ActionResult<List<Recept>>> GetReceptiZaPacijenta(int pacijentId)
         {
-            var recepti = await receptService.GetReceptiZaPacijentaAsync(pacijentId);
-            if (recepti == null || !recepti.Any())
-                return NotFound("Nema recepata za ovog pacijenta.");
+            try
+            {
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdStr))
+                    return BadRequest("Neispravan token.");
 
-            return Ok(recepti);
+                var userId = Guid.Parse(userIdStr);
+
+                var recepti = await receptService.GetReceptiZaPacijentaAsync(pacijentId, userId);
+
+                if (recepti == null || recepti.Count == 0)
+                    return NotFound("Nema recepata za ovog pacijenta.");
+
+                return Ok(recepti);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (InvalidOperationException)
+            {
+                return Forbid();
+            }
         }
 
         [Authorize(Roles = "Doktor")]

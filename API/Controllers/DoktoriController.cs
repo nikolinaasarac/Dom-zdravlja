@@ -12,7 +12,7 @@ namespace API.Controllers
     [ApiController]
     public class DoktoriController(IDoktorService doktorService) : ControllerBase
     {
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Pacijent")]
         [HttpGet]
         public async Task<ActionResult<List<Doktor>>> GetDoktori([FromQuery] Params doktoriParams)
         {

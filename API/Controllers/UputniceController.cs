@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
 using API.Services;
@@ -12,13 +13,32 @@ namespace API.Controllers
     public class UputniceController(IUputnicaService uputnicaService) : ControllerBase
     {
         [HttpGet("{pacijentId}")]
-        [Authorize(Roles="Doktor,Pacijent")]
+        [Authorize(Roles = "Doktor,Pacijent")]
         public async Task<ActionResult<List<Uputnica>>> GetUputniceZaPacijenta(int pacijentId)
         {
-            var uputnice = await uputnicaService.GetUputniceZaPacijentaAsync(pacijentId);
-            if (uputnice == null || !uputnice.Any())
-                return NotFound("Nema uputnica za ovog pacijenta.");
-            return Ok(uputnice);
+            try
+            {
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdStr))
+                    return BadRequest("Neispravan token.");
+
+                var userId = Guid.Parse(userIdStr);
+
+                var uputnice = await uputnicaService.GetUputniceZaPacijentaAsync(pacijentId, userId);
+
+                if (uputnice == null || !uputnice.Any())
+                    return NotFound("Nema uputnica za ovog pacijenta.");
+
+                return Ok(uputnice);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (InvalidOperationException)
+            {
+                return Forbid();
+            }
         }
 
         [Authorize(Roles = "Doktor")]
@@ -31,7 +51,7 @@ namespace API.Controllers
             return Ok(uputnica);
         }
 
-        [Authorize(Roles ="Doktor,Pacijent")]
+        [Authorize(Roles = "Doktor,Pacijent")]
         [HttpGet("{id}/pdf")]
         public async Task<IActionResult> GetUputnicaPdf(int id)
         {

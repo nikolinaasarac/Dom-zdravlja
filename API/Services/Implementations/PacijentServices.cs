@@ -14,6 +14,7 @@ namespace API.Services.Implementations
     {
         public async Task<PagedList<Pacijent>> GetPacijentiAsync(Params pacijentiParams, HttpResponse response)
         {
+
             var query = context.Pacijenti
                 .Sort(pacijentiParams.OrderBy)
                 .Filter(pacijentiParams.Pol)
@@ -27,10 +28,22 @@ namespace API.Services.Implementations
             return pacijenti;
         }
 
-        public async Task<pacijentDto?> GetPacijentByIdAsync(int id)
+        public async Task<pacijentDto?> GetPacijentByIdAsync(Guid userId, int pacijentId)
         {
+            // 🔹 Dohvati korisnika
+            var korisnik = await context.Korisnici
+                .FirstOrDefaultAsync(k => k.Id == userId);
+
+            if (korisnik == null)
+                throw new UnauthorizedAccessException();
+
+            // 🔹 Ako je pacijent, može pristupiti samo svom PacijentId
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup");
+
+            // 🔹 Dohvati pacijenta
             return await context.Pacijenti
-                .Where(p => p.Id == id)
+                .Where(p => p.Id == pacijentId)
                 .Select(p => new pacijentDto
                 {
                     Ime = p.Ime,
@@ -43,6 +56,7 @@ namespace API.Services.Implementations
                 })
                 .FirstOrDefaultAsync();
         }
+
 
         public async Task<List<Vakcinacija>> GetVakcinacijeByPacijentIdAsync(int id)
         {
@@ -76,6 +90,16 @@ namespace API.Services.Implementations
 
             context.Pacijenti.Remove(pacijent);
             return await context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<int?> GetPacijentIdByKorisnikIdAsync(Guid korisnikId)
+        {
+            var korisnik = await context.Korisnici
+                            .Where(k => k.Id == korisnikId)
+                            .Select(k => new { k.PacijentId })
+                            .FirstOrDefaultAsync();
+
+            return korisnik?.PacijentId;
         }
     }
 }

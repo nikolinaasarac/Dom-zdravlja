@@ -11,15 +11,21 @@ namespace API.Services.Implementations
 {
     public class UputnicaService(DomZdravljaContext context) : IUputnicaService
     {
-        public async Task<List<Uputnica>> GetUputniceZaPacijentaAsync(int pacijentId)
+        public async Task<List<Uputnica>> GetUputniceZaPacijentaAsync(int pacijentId, Guid userId)
         {
-            var uputnice = await context.Uputnice
+            var korisnik = await context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+            if (korisnik == null)
+                throw new UnauthorizedAccessException();
+
+            // Pacijent može pristupiti samo svojim uputnicama
+            if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
+                throw new InvalidOperationException("Nedozvoljen pristup");
+
+            return await context.Uputnice
                 .Where(u => u.PacijentId == pacijentId)
                 .Include(u => u.Pacijent)
                 .Include(u => u.Doktor)
                 .ToListAsync();
-
-            return uputnice;
         }
 
         public async Task<Uputnica> CreateUputnicaAsync(int pacijentId, UputnicaDto dto)
