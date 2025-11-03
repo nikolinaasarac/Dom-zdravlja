@@ -112,7 +112,10 @@ export default function PrikazPregleda() {
     id ? +id : 0
   );
 
-  if (isLoading || !pregledi)
+  if (!pregledi)
+    return <Typography align="center">Nema pregleda za izabranog pacijenta.</Typography>;
+
+  if (isLoading)
     return <Typography align="center">Učitavanje...</Typography>;
 
   return (

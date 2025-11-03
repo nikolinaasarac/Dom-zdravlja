@@ -81,7 +81,10 @@ export default function TabelaRecepata() {
         )}
       </Box>
 
-      {isLoading ? (
+      {
+      !recepti ? <Typography align="center">Nema uputnica za izabranog pacijenta.</Typography>
+      :
+      isLoading ? (
         <Typography align="center">Učitavanje recepata...</Typography>
       ) : (
         <TableContainer

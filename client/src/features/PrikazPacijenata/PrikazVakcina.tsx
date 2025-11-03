@@ -6,6 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useFetchPacijentVakcineQuery } from "./pacijentApi";
@@ -17,7 +18,10 @@ export default function PrikazVakcinacija() {
     id ? +id : 0
   );
 
-  if (isLoading || !vakcinacije) return <div>Loading...</div>;
+  if(!vakcinacije) 
+    return <Typography align="center">Nema vakcinacija za izabranog pacijenta.</Typography>;
+
+  if (isLoading) return <div>Učitavanje...</div>;
 
   return (
     <TableContainer component={Paper} >

@@ -182,7 +182,10 @@ export default function PrikazSvihPregleda({ pacijentId }: Props) {
   const isLoading = pacijentId ? loadingPacijent : loadingSvi;
   const refetch = pacijentId ? refetchPacijent : refetchSvi;
 
-  if (isLoading || !pregledi)
+  if (!pregledi)
+    return <Typography align="center">Nema pregleda.</Typography>;
+
+  if (isLoading)
     return <Typography align="center">Učitavanje...</Typography>;
 
   return (

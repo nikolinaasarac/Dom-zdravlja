@@ -53,7 +53,9 @@ export default function PrikazNalaza() {
   return (
     <Box>
 
-      {isLoading ? (
+      {!nalazi ? <Typography align="center">Nema nalaza za izabranog pacijenta.</Typography>
+      :
+      isLoading ? (
         <Typography align="center">Učitavanje nalaza...</Typography>
       ) : nalazi && nalazi.length > 0 ? (
         <TableContainer component={Paper} sx={{ background: "transparent", boxShadow: "none" }}>

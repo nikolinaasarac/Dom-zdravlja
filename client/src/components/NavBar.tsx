@@ -7,6 +7,7 @@ import {
   MenuItem,
   Box,
   Button,
+  Typography,
 } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
