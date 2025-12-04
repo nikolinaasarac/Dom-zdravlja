@@ -1,26 +1,38 @@
-Health Center Management System
-Project Overview
+# **Health Center Management System**
 
-This is a Health Center Management System developed with .NET for the backend and React for the frontend. The system allows patients, doctors, technicians, and administrators to manage medical records, appointments, lab results, and prescriptions efficiently.
+## **Project Overview**
+The **Health Center Management System** is developed using **.NET (backend)** and **React (frontend)**. It allows **patients, doctors, technicians, and administrators** to efficiently manage **medical records, appointments, lab results, and prescriptions** in a secure and organized way.
 
-Key Features
+---
 
-Patients: Login, view personal and medical records, schedule appointments, download reports in PDF.
+## **Key Features**
 
-Doctors: Access patient data, enter diagnoses, create prescriptions, request lab tests, schedule follow-ups.
+**Patients**
+- **Login** to the system  
+- View **personal and medical records**  
+- **Schedule appointments**  
+- **Download reports** (PDF)  
 
-Technicians: Process lab requests, update analysis status, enter lab results, download reports.
+**Doctors**
+- Access **patient data and medical history**  
+- **Enter diagnoses** and **create prescriptions**  
+- **Request lab tests**  
+- **Schedule follow-up appointments**  
 
-Administrators: Manage users (patients, doctors, technicians), maintain system access.
+**Technicians**
+- **Process lab requests** and **update analysis status**  
+- **Enter lab results**  
+- **Download lab reports**  
 
-Technologies
+**Administrators**
+- **Manage users** (patients, doctors, technicians)  
+- Maintain **system access and permissions**
 
-Backend: .NET 9, C#
+---
 
-Frontend: React, JavaScript/TypeScript
-
-Database: SQLite / Local storage (for demo purposes)
-
-Architecture: MVC / REST APIs
-
-Version Control: Git / GitHub
+## **Technologies Used**
+- **Backend:** .NET 9, C#  
+- **Frontend:** React, JavaScript/TypeScript  
+- **Database:** SQL / Local storage (demo version)  
+- **Architecture:** MVC, REST APIs  
+- **Version Control:** Git / GitHub
