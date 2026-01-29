@@ -16,7 +16,7 @@ import { useCreateZdravstvenoStanjeMutation } from "./doktorApi";
 type Props = {
   pacijentId: number;
   refetch: () => void;
-  onClose: () => void; // <-- promenjeno sa setEditMode
+  onClose: () => void; 
 };
 
 export default function ZdravstvenoStanjeForm({
@@ -44,8 +44,8 @@ export default function ZdravstvenoStanjeForm({
   const onSubmit = async (data: CreateZdravstvenoStanjeSchema) => {
     try {
       await createStanje({ pacijentId, data }).unwrap();
-      refetch(); // osveži listu stanja
-      onClose(); // zatvori modal
+      refetch(); 
+      onClose(); 
     } catch (error) {
       console.error(error);
     }

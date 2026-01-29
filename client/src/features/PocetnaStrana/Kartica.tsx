@@ -22,11 +22,11 @@ export default function Kartica({ kartica }: Props) {
         borderRadius: 5,
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // centriranje horizontalno
-        justifyContent: "center", // centriranje vertikalno
+        alignItems: "center", 
+        justifyContent: "center", 
         background: "#ffffff",
         padding: 2,
-        margin: 1, // smanjen razmak između kartica
+        margin: 1, 
         textDecoration: "none",
         transition: "transform 0.3s ease",
         "&:hover": {
@@ -38,8 +38,8 @@ export default function Kartica({ kartica }: Props) {
       <CardMedia
         component="img"
         sx={{
-          width: 80, // smanjena širina
-          height: 80, // fiksna visina, ne 100%
+          width: 80, 
+          height: 80, 
           objectFit: "contain",
           borderRadius: 2,
         }}
@@ -52,7 +52,7 @@ export default function Kartica({ kartica }: Props) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 4, // malo razmaka do naziv
+          marginTop: 4, 
         }}
       >
         <Typography

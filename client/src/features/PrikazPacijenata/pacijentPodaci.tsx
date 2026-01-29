@@ -1,4 +1,4 @@
-import { useState } from "react"; // <--- Dodaj useState
+import { useState } from "react"; 
 import { useNavigate, useParams } from "react-router-dom";
 import { useFetchPacijentByIdQuery } from "./pacijentApi";
 import Grid from "@mui/material/Grid";
@@ -26,7 +26,7 @@ export default function PacijentPodaci() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [openForm, setOpenForm] = useState(false); // <-- ovo rešava greške openForm/setOpenForm
+  const [openForm, setOpenForm] = useState(false); 
 
   const {
     data: pacijent,
@@ -85,7 +85,6 @@ export default function PacijentPodaci() {
     <Box sx={{ maxWidth: 800, mx: "auto", mt: 6, px: 2 }}>
       <Card sx={{ borderRadius: 3, boxShadow: 4, p: 3 }}>
         <Grid container spacing={3}>
-          {/* Avatar */}
           <Grid
             size={4}
             sx={{
@@ -106,7 +105,6 @@ export default function PacijentPodaci() {
             </Avatar>
           </Grid>
 
-          {/* Osnovni podaci */}
           <Grid size={8}>
             <Typography variant="h5" fontWeight="bold" gutterBottom>
               {pacijent.ime} {pacijent.prezime}
@@ -130,7 +128,6 @@ export default function PacijentPodaci() {
         </Grid>
       </Card>
 
-      {/* Modal */}
       <Dialog
         open={openForm}
         onClose={() => setOpenForm(false)}
@@ -141,8 +138,8 @@ export default function PacijentPodaci() {
         <DialogContent>
           <ZdravstvenoStanjeForm
             pacijentId={Number(id)}
-            onClose={() => setOpenForm(false)} // <-- Dodaj ovu funkciju u Props ZdravstvenoStanjeForm
-            refetch={refetch} // <-- Proveri da li ZdravstvenoStanjeForm prima refetch u Props
+            onClose={() => setOpenForm(false)} 
+            refetch={refetch} 
           />
         </DialogContent>
       </Dialog>

@@ -34,7 +34,6 @@ export default function PromijeniLozinku() {
       if (userId) {
         console.log("ADMIN mijenja lozinku za:", userId, data);
 
-        // Admin mijenja lozinku drugom korisniku
         await promijeniLozinkuAdmin({
           userId,
           novaLozinka: data.novaLozinka,
@@ -43,9 +42,7 @@ export default function PromijeniLozinku() {
 
         alert("Lozinka korisnika uspješno promijenjena!");
         navigate("/nalozi", { replace: true });
-        // NE radimo logout niti redirect
       } else {
-        // Obični korisnik mijenja svoju lozinku
         await promijeniLozinku({
           novaLozinka: data.novaLozinka,
           potvrdiLozinku: data.potvrdiLozinku,
@@ -85,7 +82,6 @@ export default function PromijeniLozinku() {
           Promjena lozinke
         </Typography>
 
-        {/* INFO PORUKA */}
         {userId ? (
           <Typography
             variant="body2"

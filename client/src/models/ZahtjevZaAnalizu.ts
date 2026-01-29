@@ -1,4 +1,3 @@
-// models/ZahtjevZaAnalizu.ts
 export type ZahtjevZaAnalizu = {
   id: number;
   pacijentId: number;
@@ -15,5 +14,5 @@ export type ZahtjevZaAnalizu = {
 
   opis: string;
   status: string;
-  datumZahtjeva: string; // koristimo string za ISO datum
+  datumZahtjeva: string; 
 };

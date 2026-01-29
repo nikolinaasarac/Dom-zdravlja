@@ -17,5 +17,5 @@ public class ZahtjevZaAnalizu
 
   public required string Opis { get; set; }
 
-  public string Status { get; set; } = "Na čekanju"; // Na čekanju / Prihvaćen / Odbijen
+  public string Status { get; set; } = "Na čekanju";
 }

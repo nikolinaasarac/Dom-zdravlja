@@ -31,7 +31,7 @@ export default function LoginPage() {
         dispatch(
           setUser({
             id: decoded.userId,
-            email: "", // nemaš email u tokenu, možeš dodati ako želiš
+            email: "", 
             role: decoded.role,
           })
         );
@@ -60,7 +60,7 @@ export default function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         fontFamily: "'Poppins', sans-serif",
-        color: "#fff", // sva defaultna boja teksta bijela
+        color: "#fff", 
       }}
     >
       <Box
@@ -78,10 +78,9 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
-        {/* Logo iznad naslova */}
         <Box
           component="img"
-          src="../../../images/logo.png" // stavi putanju do svog loga
+          src="../../../images/logo.png" 
           alt="Logo"
           sx={{ width: 200, height: 150, mb: 2 }}
         />

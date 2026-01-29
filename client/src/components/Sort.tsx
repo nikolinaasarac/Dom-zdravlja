@@ -14,7 +14,7 @@ export default function Sort() {
       select
       slotProps={{ select: { native: true } }}
       sx={{ width: 200 }}
-      value={orderBy} // controlled input
+      value={orderBy} 
       onChange={(e) => dispatch(setOrderBy(e.target.value))}
     >
       <option value="datum">Po datumu</option>

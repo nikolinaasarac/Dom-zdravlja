@@ -17,7 +17,7 @@ export const createPacijentSchema = z.object({
     .superRefine((val, ctx) => {
       if (!val) {
         ctx.addIssue({
-          code: "custom", // umesto ZodIssueCode.custom
+          code: "custom", 
           message: "Datum rođenja je obavezan.",
         });
         return;

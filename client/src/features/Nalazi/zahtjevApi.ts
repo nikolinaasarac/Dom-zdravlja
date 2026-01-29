@@ -9,25 +9,21 @@ export const zahtjevApi = createApi({
   tagTypes: ["ZahtjeviAnalize"],
 
   endpoints: (builder) => ({
-    // GET: svi zahtjevi
     getZahtjevi: builder.query<ZahtjevZaAnalizu[], void>({
       query: () => "ZahtjevZaAnalizu",
       providesTags: ["ZahtjeviAnalize"],
     }),
 
-    // GET: zahtjevi doktora (iz tokena)
     getZahtjeviDoktora: builder.query<ZahtjevZaAnalizu[], void>({
       query: () => "ZahtjevZaAnalizu/doktor",
       providesTags: ["ZahtjeviAnalize"],
     }),
 
-    // GET: zahtjevi određenog pacijenta
     getZahtjeviPacijenta: builder.query<ZahtjevZaAnalizu[], number>({
       query: (pacijentId) => `ZahtjevZaAnalizu/pacijent/${pacijentId}`,
       providesTags: ["ZahtjeviAnalize"],
     }),
 
-    // GET: zahtjevi na čekanju
     getZahtjeviNaCekanju: builder.query<ZahtjevZaAnalizu[], void>({
       query: () => "ZahtjevZaAnalizu/na-cekanju",
       providesTags: ["ZahtjeviAnalize"],
@@ -45,7 +41,6 @@ export const zahtjevApi = createApi({
       invalidatesTags: ["ZahtjeviAnalize"],
     }),
 
-    // PUT: promijeni status zahtjeva
     promijeniStatus: builder.mutation<
       void,
       { id: number; noviStatus: string }
@@ -59,7 +54,6 @@ export const zahtjevApi = createApi({
       invalidatesTags: ["ZahtjeviAnalize"],
     }),
 
-    // POST: završi obradu + upload nalaza
     zavrsiObradu: builder.mutation<
       { message: string; zahtjevId: number; nalazFilePath: string },
       { zahtjevId: number; formData: FormData }

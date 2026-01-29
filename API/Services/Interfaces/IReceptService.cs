@@ -6,7 +6,7 @@ namespace API.Services.Interfaces
     public interface IReceptService
     {
         Task<List<Recept>> GetReceptiZaPacijentaAsync(int pacijentId, Guid userId);
-        Task<Recept> CreateReceptAsync(int pacijentId, ReceptDto dto, Guid doktorUserId);
-        Task<Recept> GetReceptPdfAsync(int id);
+        Task<Recept?> CreateReceptAsync(int pacijentId, ReceptDto dto, Guid doktorUserId);
+        Task<Recept?> GetReceptPdfAsync(int id);
     }
 }

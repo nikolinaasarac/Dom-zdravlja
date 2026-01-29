@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import type { RootState } from "../store/store"; // tip Redux store-a
+import type { RootState } from "../store/store";
 
 interface SearchProps {
-  selector: (state: RootState) => string | undefined; // state selector vraća string
-  setAction: (value: string) => { type: string; payload: string }; // tip Redux akcije
+  selector: (state: RootState) => string | undefined; 
+  setAction: (value: string) => { type: string; payload: string }; 
   label?: string;
 }
 

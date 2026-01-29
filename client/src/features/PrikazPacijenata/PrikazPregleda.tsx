@@ -22,12 +22,11 @@ function PregledRow({ p }: { p: Pregled }) {
 
   return (
     <>
-      {/* Glavni red */}
       <TableRow
         hover
         sx={{
           transition: "transform 0.25s ease, box-shadow 0.25s ease",
-          backgroundColor: "#fff", // čvrsto bijela pozadina
+          backgroundColor: "#fff",
           boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
           borderRadius: "12px",
           "& td:first-of-type": {
@@ -39,12 +38,12 @@ function PregledRow({ p }: { p: Pregled }) {
             borderBottomRightRadius: 12,
           },
           "&:hover": {
-            transform: "scale(1.01)", // blago povećanje
-            boxShadow: "0 6px 16px rgba(0,0,0,0.15)", // malo jača sjena
-            backgroundColor: "#fff", // ostaje bijelo
+            transform: "scale(1.01)", 
+            boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+            backgroundColor: "#fff", 
           },
           "&.MuiTableRow-hover:hover": {
-            backgroundColor: "#fff !important", // poništava MUI default hover overlay
+            backgroundColor: "#fff !important",
           },
         }}
       >
@@ -67,7 +66,6 @@ function PregledRow({ p }: { p: Pregled }) {
         </TableCell>
       </TableRow>
 
-      {/* Red za collapse */}
       <TableRow>
         <TableCell colSpan={5} sx={{ p: 0, border: "none" }}>
           <Collapse in={open} timeout="auto" unmountOnExit>

@@ -11,7 +11,7 @@ export type ZahtjevZaPregled = {
   doktorPrezime: string;
   pacijentIme: string;
   pacijentPrezime: string;
-  datumZahtjeva: string; // DateTime se obično prima kao ISO string na frontendu
+  datumZahtjeva: string; 
   opis: string;
-  status: "Na čekanju" | "Prihvaćen" | "Odbijen"; // precizno ograničenje tipa
+  status: "Na čekanju" | "Prihvaćen" | "Odbijen"; 
 };

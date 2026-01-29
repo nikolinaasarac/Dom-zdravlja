@@ -17,7 +17,6 @@ namespace API.Services.Implementations
             if (korisnik == null)
                 throw new UnauthorizedAccessException();
 
-            // Pacijent može vidjeti samo svoje preglede
             if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
                 throw new InvalidOperationException("Nedozvoljen pristup");
 

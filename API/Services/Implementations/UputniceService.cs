@@ -17,7 +17,6 @@ namespace API.Services.Implementations
             if (korisnik == null)
                 throw new UnauthorizedAccessException();
 
-            // Pacijent može pristupiti samo svojim uputnicama
             if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
                 throw new InvalidOperationException("Nedozvoljen pristup");
 
@@ -28,7 +27,7 @@ namespace API.Services.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Uputnica> CreateUputnicaAsync(int pacijentId, UputnicaDto dto, Guid userId)
+        public async Task<Uputnica?> CreateUputnicaAsync(int pacijentId, UputnicaDto dto, Guid userId)
         {
             var korisnik = await context.Korisnici
                 .Include(k => k.Doktor)
@@ -55,7 +54,7 @@ namespace API.Services.Implementations
             return uputnica;
         }
 
-        public async Task<byte[]> GeneratePdfAsync(int uputnicaId)
+        public async Task<byte[]?> GeneratePdfAsync(int uputnicaId)
         {
             var uputnica = await context.Uputnice
                 .Include(u => u.Pacijent)

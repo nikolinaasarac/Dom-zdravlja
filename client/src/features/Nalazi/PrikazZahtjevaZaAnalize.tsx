@@ -35,7 +35,6 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
 import { useAppSelector } from "../../store/store";
 
-// ---------- Red (row) komponenta ----------
 function ZahtjevRow({
   z,
   refetch,
@@ -51,7 +50,6 @@ function ZahtjevRow({
   const [promijeniStatus] = usePromijeniStatusMutation();
   const userRole = useAppSelector((state) => state.auth.user?.role);
 
-  // Odredi dozvoljene opcije za prelaz statusa
   const getAllowedStatuses = (trenutni: string) => {
     switch (trenutni) {
       case "Na čekanju":
@@ -59,22 +57,18 @@ function ZahtjevRow({
       case "U obradi":
         return ["Obrađen"];
       default:
-        return []; // ako je već obrađen/odbijen – nema više promjena
+        return []; 
     }
   };
 
   const allowedStatuses = getAllowedStatuses(z.status);
 
   const handleSaveStatus = async () => {
-    if (status === z.status) return; // nije ništa promijenjeno
-
-    // ako ide na "Obrađen", prvo traži upload nalaza
+    if (status === z.status) return;
     if (status === "Obrađen") {
       setOpenDialog(true);
       return;
     }
-
-    // sve ostalo – normalno mijenja status
     try {
       await promijeniStatus({ id: z.id, noviStatus: status }).unwrap();
       refetch();
@@ -139,7 +133,6 @@ function ZahtjevRow({
         </TableCell>
       </TableRow>
 
-      {/* Collapse detalji */}
       <TableRow>
         <TableCell colSpan={7} sx={{ p: 0, border: "none" }}>
           <Collapse in={openCollapse} timeout="auto" unmountOnExit>
@@ -197,7 +190,6 @@ function ZahtjevRow({
           <UploadNalazForm
             zahtjev={z}
             onSuccess={async () => {
-              // nakon uspješnog uploada – promijeni status na "Obrađen"
               await promijeniStatus({
                 id: z.id,
                 noviStatus: "Obrađen",
@@ -216,7 +208,6 @@ function ZahtjevRow({
   );
 }
 
-// ---------- Forma za novi zahtjev ----------
 function NoviZahtjevForm({
   pacijentId,
   onSuccess,
@@ -275,7 +266,6 @@ function NoviZahtjevForm({
   );
 }
 
-// ---------- Glavna komponenta ----------
 export default function PrikazZahtjevaZaAnalize({
   filterStatus,
 }: {
@@ -287,7 +277,6 @@ export default function PrikazZahtjevaZaAnalize({
 
   const [openNoviDialog, setOpenNoviDialog] = useState(false);
 
-  // odabir hook-a
   const {
     data: sviZahtjevi,
     isLoading: loadingSvi,

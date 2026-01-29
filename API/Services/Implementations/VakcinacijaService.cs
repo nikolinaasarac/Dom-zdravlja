@@ -35,18 +35,15 @@ namespace API.Services.Implementations
 
         public async Task<List<VakcinacijaDto>> GetVakcineZaPacijentaAsync(Guid userId, int pacijentId)
         {
-            // 🔹 Dohvati korisnika iz baze
             var korisnik = await _context.Korisnici
                 .FirstOrDefaultAsync(k => k.Id == userId);
 
             if (korisnik == null)
                 throw new UnauthorizedAccessException();
 
-            // 🔹 Ako je pacijent, može pristupiti samo svom PacijentId
             if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
-                throw new InvalidOperationException("Nedozvoljen pristup"); // kontroler može mapirati na 403
+                throw new InvalidOperationException("Nedozvoljen pristup"); 
 
-            // 🔹 Dohvati vakcinacije
             return await _context.Vakcinacije
                 .Where(v => v.PacijentId == pacijentId)
                 .Include(v => v.Pacijent)

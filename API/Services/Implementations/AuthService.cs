@@ -29,7 +29,7 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
         }
 
         var tokenResponse = await CreateTokenResponse(user);
-        tokenResponse.MustChangePassword = user.MustChangePassword; // ✅ dodano
+        tokenResponse.MustChangePassword = user.MustChangePassword; 
 
         return tokenResponse;
     }
@@ -74,11 +74,10 @@ public class AuthService(DomZdravljaContext context, IConfiguration configuratio
     if (token is null || token.ExpiresAt <= DateTime.UtcNow)
         return null;
 
-    // NE opozivamo stari token i NE generišemo novi
     return new TokenResponseDto
     {
         AccessToken = CreateToken(token.Korisnik),
-        RefreshToken = token.Token, // isti token
+        RefreshToken = token.Token, 
         UserId = token.KorisnikId.ToString()
     };
 }

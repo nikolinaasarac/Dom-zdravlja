@@ -12,11 +12,9 @@ type Props = {
 export default function Pregledi({ tip }: Props) {
   const params = useParams<{ id: string }>();
   const pacijentId = params.id ? +params.id : undefined;
-  // Hookovi se uvijek pozivaju
   const { data: preglediDoktor, isLoading: loadingDoktor, refetch: refetchDoktor } = useFetchPreglediQuery();
   const { data: preglediPacijent, isLoading: loadingPacijent, refetch: refetchPacijent } = useFetchPacijentPreglediQuery(pacijentId ?? 0);
 
-  // Odaberi koji podaci da se koriste
   const pregledi: Pregled[] = tip === "doktor" ? preglediDoktor ?? [] : preglediPacijent ?? [];
   const isLoading = tip === "doktor" ? loadingDoktor : loadingPacijent;
   const refetch = tip === "doktor" ? refetchDoktor : refetchPacijent;

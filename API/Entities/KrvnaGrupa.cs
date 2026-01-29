@@ -9,8 +9,8 @@ namespace API.Entities
         public int PacijentId { get; set; }  
          public Pacijent Pacijent { get; set; } = null!;
         [MaxLength(2)]
-        public required string Grupa { get; set; } // A, B, AB, O
+        public required string Grupa { get; set; } 
         [MaxLength(1)]
-        public required string Faktor { get; set; } // + ili -
+        public required string Faktor { get; set; } 
     }
 }

@@ -6,7 +6,6 @@ import NavBar from "../../components/NavBar";
 import { useAppSelector } from "../../store/store";
 import { useGetMyAccountQuery } from "../korisnik/korisnikApi";
 import { AccessTime, Email, Facebook, Instagram, LinkedIn, LocationOn, Phone } from "@mui/icons-material";
-import slide3 from "./../../../public/images/slide3.png";
 
 
 const opcije = [
@@ -32,24 +31,24 @@ const opcije = [
     allowedRoles: ["Doktor"],
   },
   {
-    naziv: "Zahtjev za pregled", // nova opcija
+    naziv: "Zahtjev za pregled", 
     opis: "Kreiraj novi zahtjev za pregled",
     putanja: "/zahtjev",
-    slika: `./../../../images/zahtjevPregled.png`, // dodaj odgovarajuću ikonicu
+    slika: `./../../../images/zahtjevPregled.png`, 
     allowedRoles: ["Pacijent"],
   },
   {
-    naziv: "Moji zahtjevi", // nova opcija
+    naziv: "Moji zahtjevi", 
     opis: "Prikaz svih vaših zahtjeva",
     putanja: "/moji-zahtjevi",
-    slika: `./../../../images/zahtjevPregled.png`, // dodaj ikonicu
+    slika: `./../../../images/zahtjevPregled.png`, 
     allowedRoles: ["Pacijent"],
   },
   {
     naziv: "Zahtjevi za analize",
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-analize",
-    slika: `./../../../images/ZahtjeviZaAnalize.png`, // dodaj odgovarajuću ikonicu
+    slika: `./../../../images/ZahtjeviZaAnalize.png`,
     allowedRoles: ["Tehnicar"],
   },
 
@@ -57,7 +56,7 @@ const opcije = [
     naziv: "Zahtjevi na čekanju",
     opis: "Prikaži i upravljaj zahtjevima za laboratorijske analize",
     putanja: "/zahtjevi-na-cekanju",
-    slika: `./../../../images/zahtjeviNaCekanju.png`, // dodaj odgovarajuću ikonicu
+    slika: `./../../../images/zahtjeviNaCekanju.png`, 
     allowedRoles: ["Tehnicar"],
   },
 
@@ -105,7 +104,7 @@ const sliderItems = [
     opis: "Povežite pacijente i ljekare uz samo nekoliko klikova.",
   },
   {
-    slika: slide3,
+    slika: "./../../../images/slide3.png",
     naslov: "Savremeno rješenje za zdravstvene ustanove",
     opis: "Digitalizujte svakodnevne procese i olakšajte rad osoblju.",
   },
@@ -119,10 +118,8 @@ export default function HomePage() {
 
   return (
     <Box className="homepage">
-      {/* Navbar */}
       <NavBar opcije={opcije} />
 
-      {/* Carousel */}
       <Box sx={{ width: "100%" }}>
         <Carousel indicators interval={4000} animation="slide">
           {sliderItems.map((item, i) => (
@@ -170,7 +167,6 @@ export default function HomePage() {
         </Carousel>
       </Box>
 
-      {/* Brzi pristup kartice (ostavljamo sve tvoje kartice) */}
       <Box
         sx={{
           py: 6,
@@ -189,8 +185,6 @@ export default function HomePage() {
         </div>
       </Box>
 
-      {/* Footer / osnovne informacije */}
-
       <Box
         sx={{
           background: "linear-gradient(135deg, #e0f7fa, #b2ebf2)",
@@ -201,7 +195,6 @@ export default function HomePage() {
       >
         <Grid container spacing={4} justifyContent="center" textAlign="center">
 
-          {/* Kontakt */}
           <Grid size={12}>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
               Kontakt
@@ -220,7 +213,6 @@ export default function HomePage() {
             </Box>
           </Grid>
 
-          {/* Radno vrijeme */}
           <Grid size={12}>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
               Radno vrijeme
@@ -233,7 +225,6 @@ export default function HomePage() {
             <Typography>Ned: Zatvoreno</Typography>
           </Grid>
 
-          {/* Društvene mreže */}
           <Grid size={12}>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
               Društvene mreže

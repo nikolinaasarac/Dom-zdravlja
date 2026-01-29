@@ -100,7 +100,7 @@ export default function Sidebar() {
         </svg>
       ),
     },
-  ].filter(Boolean); // uklanja null vrijednosti
+  ].filter(Boolean);
 
   return (
     <Drawer

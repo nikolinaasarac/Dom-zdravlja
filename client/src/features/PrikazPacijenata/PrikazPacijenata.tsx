@@ -72,7 +72,6 @@ export default function PrikazPacijenata() {
         borderRadius: 3,
       }}
     >
-      {/* Gornji bar: pretraga + filteri + dugmad */}
       <Paper
         elevation={0}
         sx={{
@@ -88,14 +87,12 @@ export default function PrikazPacijenata() {
           gap: 2,
         }}
       >
-        {/* ✅ Moderno Search polje */}
         <Search
           selector={(state: RootState) => state.pacijent.searchTerm}
           setAction={setSearchTerm}
           label="Pretraži pacijente"
         />
 
-        {/* Desna strana: filteri + dugmad */}
         <Box
           sx={{
             display: "flex",
@@ -144,7 +141,6 @@ export default function PrikazPacijenata() {
 
       {pacijenti.pacijenti && pacijenti.pacijenti.length > 0 ? (
         <>
-          {/* Tabela */}
           <TabelaPacijenata
             handleSelectPacijent={handleSelectPacijent}
             handleDeletePacijent={handleDeletePacijent}

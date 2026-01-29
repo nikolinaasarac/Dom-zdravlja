@@ -30,18 +30,15 @@ namespace API.Services.Implementations
 
         public async Task<pacijentDto?> GetPacijentByIdAsync(Guid userId, int pacijentId)
         {
-            // 🔹 Dohvati korisnika
             var korisnik = await context.Korisnici
                 .FirstOrDefaultAsync(k => k.Id == userId);
 
             if (korisnik == null)
                 throw new UnauthorizedAccessException();
 
-            // 🔹 Ako je pacijent, može pristupiti samo svom PacijentId
             if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
                 throw new InvalidOperationException("Nedozvoljen pristup");
 
-            // 🔹 Dohvati pacijenta
             return await context.Pacijenti
                 .Where(p => p.Id == pacijentId)
                 .Select(p => new pacijentDto

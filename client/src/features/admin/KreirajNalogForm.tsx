@@ -39,7 +39,7 @@ export default function KreirajNalogForm() {
       setSuccessMsg(`Korisnik "${result.username}" uspješno kreiran!`);
       reset();
       setTimeout(() => {
-        navigate("/nalozi"); // ili tvoja ruta za listu naloga
+        navigate("/nalozi"); 
       }, 1500);
     } catch (err) {
       const message =
