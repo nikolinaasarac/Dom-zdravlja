@@ -7,7 +7,7 @@ body {
   font-family: sans-serif;
   min-height: 100%;
   background: linear-gradient(to bottom right, #d4b8d8, #7fd4d4);
-  background-attachment: fixed; /* ovo je ključno */
+  background-attachment: fixed; 
 }
 
 .homepage {
@@ -17,10 +17,9 @@ body {
   align-items: center;
   position: relative;
   z-index: 1;
-  padding-top: 64px; /* da navbar ne pokriva sadržaj */
+  padding-top: 64px; 
 }
 
-/* Kartice */
 .cards-container {
   display: flex;
   flex-wrap: wrap;

@@ -4,11 +4,10 @@ namespace API.Entities;
 
 public class RefreshToken
 {
-    public int Id { get; set; }               // Primarni ključ
-    public Guid KorisnikId { get; set; }      // FK prema korisniku
-    public string Token { get; set; } = string.Empty; // Nasumični refresh token
-    public DateTime ExpiresAt { get; set; }   // Vrijeme isteka
-    public bool Revoked { get; set; } = false; // Ako je token opozvan
-    // Navigaciona svojstva
+    public int Id { get; set; }             
+    public Guid KorisnikId { get; set; }     
+    public string Token { get; set; } = string.Empty; 
+    public DateTime ExpiresAt { get; set; } 
+    public bool Revoked { get; set; } = false; 
     public Korisnik Korisnik { get; set; } = null!;
 }

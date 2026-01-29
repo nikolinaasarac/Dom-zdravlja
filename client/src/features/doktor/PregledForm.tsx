@@ -58,8 +58,8 @@ export default function PregledForm({
         } catch (error) {
             console.error(error);
         } finally {
-            setEditMode(false); // ✅ sigurno zatvori dijalog
-            await refetch();    // ✅ sigurno osvježi tabelu
+            setEditMode(false); 
+            await refetch();    
         }
     };
 

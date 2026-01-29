@@ -160,7 +160,6 @@ export default function MojNalog() {
                 );
               })}
 
-            {/* Polja pacijenta */}
             {data.pacijent &&
               Object.entries(data.pacijent).map(([key, value]) => {
                 if (value === null || value === undefined) return null;
@@ -178,7 +177,6 @@ export default function MojNalog() {
                 );
               })}
 
-            {/* Polja tehničara */}
             {data.tehnicar &&
               Object.entries(data.tehnicar).map(([key, value]) => {
                 if (value === null || value === undefined) return null;
@@ -214,7 +212,6 @@ export default function MojNalog() {
               <Button
                 variant="contained"
                 color="success"
-                //disabled={isSaving}
                 onClick={handleSave}
               >
                 Sačuvaj
@@ -236,7 +233,7 @@ export default function MojNalog() {
                 setEditMode(true);
               }}
             >
-              Uredi nalog
+              Promijeni korisničko ime
             </Button>
           )}
         </Stack>

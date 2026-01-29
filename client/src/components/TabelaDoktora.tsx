@@ -71,8 +71,8 @@ export default function TabelaDoktora({
                 },
 
                 "&:hover": {
-                  transform: "scale(1.01)", // manje zumiranje
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)", // suptilniji shadow
+                  transform: "scale(1.01)", 
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)", 
                 },
               }}
             >

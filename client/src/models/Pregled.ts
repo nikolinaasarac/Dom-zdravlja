@@ -1,12 +1,12 @@
 export type Pregled = {
   id: number;
-  datumPregleda: string; // ISO format (npr. "2025-10-20T09:00:00")
+  datumPregleda: string; 
   vrstaPregleda: string;
   opisSimptoma?: string;
   dijagnoza?: string;
   terapija?: string;
   napomena?: string;
-  status: string; // "zakazan", "obavljen", "otkazan"
+  status: string; 
 
   pacijentIme: string;
   pacijentPrezime: string;

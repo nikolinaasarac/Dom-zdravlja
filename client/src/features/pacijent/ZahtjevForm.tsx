@@ -21,14 +21,13 @@ export default function ZahtjevForm({ onSuccess }: Props) {
   const { control, handleSubmit, reset } = useForm<CreateZahtjevSchema>({
     resolver: zodResolver(createZahtjevSchema),
     defaultValues: {
-      doktorId: "", // string zbog selecta
+      doktorId: "", 
       opis: "",
     },
   });
 
   const onSubmit = async (data: CreateZahtjevSchema) => {
     try {
-      // konvertujemo doktorId u number prije slanja na backend
       await createZahtjev({ ...data, doktorId: data.doktorId }).unwrap();
       reset();
       if (onSuccess) onSuccess();
@@ -52,7 +51,7 @@ export default function ZahtjevForm({ onSuccess }: Props) {
           <Grid size={12}>
             <AppSelect
               name="doktorId"
-              control={control} // obavezno proslijedi
+              control={control} 
               label="Izaberite doktora"
               options={
                 doktori?.map((d) => ({
@@ -66,7 +65,7 @@ export default function ZahtjevForm({ onSuccess }: Props) {
           <Grid size={12}>
             <AppTextInput
               name="opis"
-              control={control} // obavezno proslijedi
+              control={control} 
               label="Opis zahtjeva"
               multiline
               rows={4}

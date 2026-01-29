@@ -16,7 +16,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Download, Search, Close } from "@mui/icons-material";
-import { useParams } from "react-router-dom";// tvoj RTK query za nalaze
+import { useParams } from "react-router-dom";
 import { useGetNalaziPacijentaQuery } from "./nalazApi";
 
 export default function PrikazNalaza() {
@@ -35,7 +35,7 @@ export default function PrikazNalaza() {
   const closeDialog = () => {
     setOpenDialog(false);
     if (previewUrl) {
-      window.URL.revokeObjectURL(previewUrl); // oslobodi memoriju
+      window.URL.revokeObjectURL(previewUrl); 
     }
     setPreviewUrl(null);
   };
@@ -115,8 +115,7 @@ export default function PrikazNalaza() {
       ) : (
         <Typography align="center">Nema nalaza za izabranog pacijenta.</Typography>
       )}
-
-      {/* Modalni PDF pregled */}
+      
       <Dialog open={openDialog} onClose={closeDialog} maxWidth="lg" fullWidth>
         <DialogTitle>
           Pregled nalaza

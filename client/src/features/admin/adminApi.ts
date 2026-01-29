@@ -20,7 +20,7 @@ export const adminApi = createApi({
       query: (data) => ({
         url: "pacijenti",
         method: "POST",
-        body: data, // sada šalješ JSON
+        body: data,
       }),
     }),
     updatePacijent: builder.mutation<
@@ -30,7 +30,7 @@ export const adminApi = createApi({
       query: ({ id, data }) => ({
         url: `pacijenti`,
         method: "PUT",
-        body: { id, ...data }, // JSON
+        body: { id, ...data }, 
       }),
     }),
     deletePacijent: builder.mutation<void, number>({
@@ -43,7 +43,7 @@ export const adminApi = createApi({
       query: (data) => ({
         url: "doktori",
         method: "POST",
-        body: data, // sada šalješ JSON
+        body: data, 
       }),
     }),
     updateDoktor: builder.mutation<
@@ -53,7 +53,7 @@ export const adminApi = createApi({
       query: ({ id, data }) => ({
         url: `doktori`,
         method: "PUT",
-        body: { id, ...data }, // JSON
+        body: { id, ...data },
       }),
     }),
     deleteDoktor: builder.mutation<void, number>({
@@ -84,7 +84,7 @@ export const adminApi = createApi({
       query: (data) => ({
         url: "tehnicari",
         method: "POST",
-        body: data, // sada šalješ JSON
+        body: data, 
       }),
     }),
     updateTehnicar: builder.mutation<
@@ -94,7 +94,7 @@ export const adminApi = createApi({
       query: ({ id, data }) => ({
         url: `tehnicari`,
         method: "PUT",
-        body: { id, ...data }, // JSON
+        body: { id, ...data },
       }),
     }),
     deleteTehnicar: builder.mutation<void, number>({
@@ -111,7 +111,7 @@ export const adminApi = createApi({
       query: (data) => ({
         url: "korisnici/kreiraj-nalog",
         method: "POST",
-        body: data, // sada šalješ JSON
+        body: data, 
       }),
       invalidatesTags: ["Korisnici"],
     }),

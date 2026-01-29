@@ -12,8 +12,6 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class KrvneGrupeController(IKrvnaGrupaService krvnaGrupaService) : ControllerBase
     {
-
-        // GET: api/krvnegrupe/pacijent/5
         [Authorize(Roles = "Doktor,Pacijent")]
         [HttpGet("pacijent/{pacijentId}")]
         public async Task<ActionResult<KrvnaGrupaDto>> GetKrvnaGrupa(int pacijentId)
@@ -23,7 +21,6 @@ namespace API.Controllers
             return Ok(grupa);
         }
 
-        // POST: api/krvnegrupe/pacijent/5
         [Authorize(Roles="Doktor")]
         [HttpPost("pacijent/{pacijentId}")]
         public async Task<ActionResult<KrvnaGrupaDto>> CreateKrvnaGrupa(
@@ -47,8 +44,6 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
-        // DELETE: api/krvnegrupe/5
         [Authorize(Roles="Doktor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteKrvnaGrupa(int id)

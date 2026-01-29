@@ -19,8 +19,7 @@ public class Doktor
     public required string Email { get; set; }
 
     public required string Adresa { get; set; }
-
-    //svi pregledi koje je doktor obavio
+    
     public ICollection<Pregled>? Pregledi { get; set; }
     public ICollection<ZahtjevZaPregled>? ZahtjeviZaPregled { get; set; }
     public ICollection<ZahtjevZaAnalizu>? ZahtjeviZaAnalize { get; set; }

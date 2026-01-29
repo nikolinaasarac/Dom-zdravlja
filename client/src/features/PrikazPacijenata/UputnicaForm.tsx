@@ -27,7 +27,7 @@ export default function UputnicaForm() {
         data: form,
       }).unwrap();
       alert("Uputnica kreirana!");
-      navigate(`/pacijenti/${pacijentId}/uputnice`); // vrati na listu uputnica
+      navigate(`/pacijenti/${pacijentId}/uputnice`); 
     } catch (err) {
       console.error(err);
       alert("Greška prilikom kreiranja uputnice");

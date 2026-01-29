@@ -18,7 +18,7 @@ public class Pregled
 
     public string? Napomena { get; set; }
 
-    public string Status { get; set; } = "zakazan"; // zakazan, obavljen, otkazan
+    public string Status { get; set; } = "zakazan";
 
     public int PacijentId { get; set; }
     public Pacijent Pacijent { get; set; } = null!;

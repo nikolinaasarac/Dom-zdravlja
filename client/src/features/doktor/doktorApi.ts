@@ -13,8 +13,6 @@ import { type CreateZdravstvenoStanjeSchema } from "../../lib/schemas/createZdra
 export const doktorApi = createApi({
   reducerPath: "doktorApi",
   baseQuery: customBaseQuery,
-
-  // ✅ Dodaj tagTypes
   tagTypes: ["Zahtjevi"],
 
   endpoints: (builder) => ({
@@ -54,19 +52,18 @@ export const doktorApi = createApi({
         },
       }),
     }),
-    // ✅ Ovdje dodaj invalidatesTags
     createZahtjev: builder.mutation<ZahtjevZaPregled, CreateZahtjevSchema>({
       query: (body) => ({
         url: "ZahtjevZaPregled",
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Zahtjevi"], // ✅ Osvježava sve zahtjeve
+      invalidatesTags: ["Zahtjevi"], 
     }),
 
     getMojiZahtjevi: builder.query<ZahtjevZaPregled[], void>({
       query: () => `ZahtjevZaPregled/moji-zahtjevi`,
-      providesTags: ["Zahtjevi"], // ✅ Označava da koristi te podatke
+      providesTags: ["Zahtjevi"], 
     }),
 
     odobriZahtjev: builder.mutation<
@@ -79,7 +76,7 @@ export const doktorApi = createApi({
         headers: { "Content-Type": "application/json" },
         body: `"${datumPregleda}"`,
       }),
-      invalidatesTags: ["Zahtjevi"], // ✅ Osvježi prikaz zahtjeva nakon odobravanja
+      invalidatesTags: ["Zahtjevi"], 
     }),
 
     odbijZahtjev: builder.mutation<void, number>({
@@ -87,7 +84,7 @@ export const doktorApi = createApi({
         url: `ZahtjevZaPregled/odbij/${id}`,
         method: "PUT",
       }),
-      invalidatesTags: ["Zahtjevi"], // ✅ I ovdje
+      invalidatesTags: ["Zahtjevi"], 
     }),
     fetchPacijentZdravstvenaStanja: builder.query<ZdravstvenoStanje[], number>({
       query: (pacijentId) => `zdravstvenastanja/pacijent/${pacijentId}`,

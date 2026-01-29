@@ -30,16 +30,15 @@ namespace API.Controllers
             return Ok(new TokenResponseDto
             {
                 AccessToken = result.AccessToken,
-                RefreshToken = "", // ne vraćamo ga na front
+                RefreshToken = "", 
                 UserId = result.UserId,
-                MustChangePassword = result.MustChangePassword // ✅ proslijedimo
+                MustChangePassword = result.MustChangePassword 
             });
         }
 
         [HttpPost("refresh-token")]
         public async Task<ActionResult<TokenResponseDto>> RefreshToken()
         {
-            // ✅ Uzimamo refresh token iz cookie-a
             var refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized("No refresh token found.");
@@ -49,7 +48,6 @@ namespace API.Controllers
                 return Unauthorized("Invalid refresh token.");
 
             Console.WriteLine("RefreshToken endpoint - new access token: " + result.AccessToken);
-            // ✅ Osveži cookie sa novim tokenom
             Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
@@ -77,7 +75,6 @@ namespace API.Controllers
             if (!success)
                 return NotFound("Refresh token not found.");
 
-            // 🔹 Obriši cookie
             Response.Cookies.Delete("refreshToken", new CookieOptions
             {
                 HttpOnly = true,

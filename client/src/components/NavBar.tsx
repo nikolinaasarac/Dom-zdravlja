@@ -47,7 +47,6 @@ export default function Navbar({ opcije }: NavbarProps) {
       setAccessToken(null);
       dispatch(logoutRedux());
 
-      // 🔹 resetuje sve keširane podatke iz RTK Query
       dispatch(doktorApi.util.resetApiState());
       dispatch(pacijentApi.util.resetApiState());
       dispatch(adminApi.util.resetApiState());
@@ -72,18 +71,16 @@ export default function Navbar({ opcije }: NavbarProps) {
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 0 }}>
-          {/* Logo */}
           <Box sx={{ height: 50 }}>
             <img
-              src="/images/logo.png" // stavi putanju do svog logotipa
+              src="/images/logo.png" 
               alt="Logo"
               style={{ height: "100%", objectFit: "contain" }}
             />
           </Box>
 
-          {/* Ime aplikacije */}
           <Typography
-            variant="subtitle1" // manji tekst
+            variant="subtitle1" 
             sx={{ fontWeight: "bold", color: "#ffffffff", letterSpacing: 0.5 }}
           >
             eAmbulanta

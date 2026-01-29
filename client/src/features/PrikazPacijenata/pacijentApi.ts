@@ -14,6 +14,7 @@ import type { Doktor } from "../../models/Doktor";
 export const pacijentApi = createApi({
   reducerPath: "pacijentApi",
   baseQuery: customBaseQuery,
+  tagTypes: ["Recepti"],
   endpoints: (builder) => ({
     fetchPacijenti: builder.query<
       { pacijenti: Pacijent[]; pagination: Pagination },
@@ -61,6 +62,7 @@ export const pacijentApi = createApi({
     }),
     fetchRecepti: builder.query<Recept[], number | void>({
       query: (id) => `recepti/${id}`,
+      providesTags: ["Recepti"],
     }),
 
     createRecepti: builder.mutation<
@@ -72,6 +74,7 @@ export const pacijentApi = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Recepti"],
     }),
 
     getReceptPdf: builder.query<Blob, number>({

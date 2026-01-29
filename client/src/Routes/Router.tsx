@@ -21,6 +21,8 @@ import PrikazTehnicara from "../features/PrikaziTehnicare/PrikazTehnicara";
 import TabelaRecepata from "../features/Recepti/TabelaRecepata";
 import ReceptForm from "../features/Recepti/ReceptiForm";
 import PreglediRoute from "./PreglediRoute";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { PublicRoute } from "./PublicRoute";
 //import PacijentForm from "../features/admin/PacijentForm";
 
 export const router = createBrowserRouter(
@@ -29,51 +31,54 @@ export const router = createBrowserRouter(
       path: "/",
       element: <App />,
       children: [
-        { path: "/", element: <LoginPage /> },
-        { path: "/homepage", element: <HomePage /> },
-        { path: "/pacijenti", element: <PrikazPacijenata /> },
-        { path: "/pacijenti/:id", element: <PacijentPodaci /> },
-        { path: "/vakcine", element: <PrikazVakcinacija /> },
-        { path: "/pacijenti/:id/vakcine", element: <PrikazVakcinacija /> },
-        { path: "/pregledi/:id", element: <PreglediRoute /> },
-        { path: "/pacijenti/:id/uputnice", element: <TabelaUputnica /> },
-        { path: "/pacijenti/:id/uputnice/dodaj", element: <UputnicaForm /> },
-        //{ path: "/pregledi", element: <Pregledi tip={"doktor"} /> },
-        { path: "/pregledi", element: <PrikazSvihPregleda /> },
-        { path: "/zahtjev", element: <ZahtjevForm /> },
-        { path: "/moji-zahtjevi", element: <PrikazZahtjeva /> },
-        { path: "/moj-nalog", element: <MojNalog /> },
-        //{ path: "/nalozi", element: <Korisnici /> },
-        //{ path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
-        { path: "/promijeni-lozinku", element: <PromijeniLozinku /> },
-        { path: "/promijeni-lozinku/:userId", element: <PromijeniLozinku /> },
         {
-          path: "/pacijenti/:id/zahtjevi-analiza",
-          element: <PrikazZahtjevaZaAnalize />,
+          element: <PublicRoute />,
+          children: [{ path: "/", element: <LoginPage /> },
+          
+            { path: "/promijeni-lozinku", element: <PromijeniLozinku /> },]
         },
-        { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
-        { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },
-        //{ path: "doktori", element: <PrikazDoktora /> },
-        //{ path: "tehnicari", element: <PrikazTehnicara /> },
-        { path: "/pacijenti/:id/recepti", element: <TabelaRecepata /> },
-        { path: "/pacijenti/:id/recepti/dodaj", element: <ReceptForm /> },
         {
-          path: "zahtjevi-na-cekanju",
-          element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" />,
-        },
-        { path: "/nalozi", element: <Korisnici /> },
+          element: <ProtectedRoute />,
+          children: [
+            { path: "/homepage", element: <HomePage /> },
+            { path: "/pacijenti", element: <PrikazPacijenata /> },
+            { path: "/pacijenti/:id", element: <PacijentPodaci /> },
+            { path: "/vakcine", element: <PrikazVakcinacija /> },
+            { path: "/pacijenti/:id/vakcine", element: <PrikazVakcinacija /> },
+            { path: "/pregledi/:id", element: <PreglediRoute /> },
+            { path: "/pacijenti/:id/uputnice", element: <TabelaUputnica /> },
+            {
+              path: "/pacijenti/:id/uputnice/dodaj",
+              element: <UputnicaForm />,
+            },
+            { path: "/pregledi", element: <PrikazSvihPregleda /> },
+            { path: "/zahtjev", element: <ZahtjevForm /> },
+            { path: "/moji-zahtjevi", element: <PrikazZahtjeva /> },
+            { path: "/moj-nalog", element: <MojNalog /> },
+            {
+              path: "/promijeni-lozinku/:userId",
+              element: <PromijeniLozinku />,
+            },
+            {
+              path: "/pacijenti/:id/zahtjevi-analiza",
+              element: <PrikazZahtjevaZaAnalize />,
+            },
+            { path: "/pacijenti/:id/nalazi", element: <PrikazNalaza /> },
+            { path: "zahtjevi-analize", element: <PrikazZahtjevaZaAnalize /> },
+            { path: "/pacijenti/:id/recepti", element: <TabelaRecepata /> },
+            { path: "/pacijenti/:id/recepti/dodaj", element: <ReceptForm /> },
+            {
+              path: "zahtjevi-na-cekanju",
+              element: <PrikazZahtjevaZaAnalize filterStatus="na-cekanju" />,
+            },
+            { path: "/nalozi", element: <Korisnici /> },
 
-        { path: "/nalozi", element: <Korisnici /> },
-        { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
-        { path: "/doktori", element: <PrikazDoktora /> },
-        { path: "/tehnicari", element: <PrikazTehnicara /> },
-        /*{ path: "/pacijenti/dodaj", element: <PacijentForm setEditMode={function (value: boolean): void {
-          throw new Error("Function not implemented.");
-        } } pacijent={null} refetch={function (): void {
-          throw new Error("Function not implemented.");
-        } } setSelectedPacijent={function (value: { id?: number; ime: string; prezime: string; datumRodjenja: Date; pol: string; adresa: string; telefon: string; maticniBroj: string; } | null): void {
-          throw new Error("Function not implemented.");
-        } } /> },*/
+            { path: "/nalozi", element: <Korisnici /> },
+            { path: "/kreiraj-nalog", element: <KreirajNalogForm /> },
+            { path: "/doktori", element: <PrikazDoktora /> },
+            { path: "/tehnicari", element: <PrikazTehnicara /> },
+          ],
+        },
       ],
     },
   ],

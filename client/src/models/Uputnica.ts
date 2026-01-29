@@ -1,4 +1,4 @@
-// Tip za podatke koje dobijamo iz backend-a
+
 export type Uputnica = {
   id: number;
   pacijentId: number;
@@ -25,5 +25,5 @@ export type UputnicaDto = {
   dijagnoza: string;
   opis: string;
   upucujeSe: string;
-  doktorId: number; // privremeno dok ne dohvatimo iz tokena
+  doktorId: number; 
 }

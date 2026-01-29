@@ -14,7 +14,6 @@ namespace API.Services.Implementations
             if (korisnik == null)
                 throw new UnauthorizedAccessException();
 
-            // Pacijent može vidjeti samo svoje recepte
             if (korisnik.Role == "Pacijent" && korisnik.PacijentId != pacijentId)
                 throw new InvalidOperationException("Nedozvoljen pristup");
 
@@ -25,7 +24,7 @@ namespace API.Services.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Recept> CreateReceptAsync(int pacijentId, ReceptDto dto, Guid doktorUserId)
+        public async Task<Recept?> CreateReceptAsync(int pacijentId, ReceptDto dto, Guid doktorUserId)
         {
             var korisnik = await context.Korisnici
                 .Include(k => k.Doktor)
@@ -57,7 +56,7 @@ namespace API.Services.Implementations
             return recept;
         }
 
-        public async Task<Recept> GetReceptPdfAsync(int id)
+        public async Task<Recept?> GetReceptPdfAsync(int id)
         {
             var recept = await context.Recepti
                 .Include(r => r.Pacijent)

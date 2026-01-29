@@ -39,7 +39,6 @@ function PregledRow({
 
   return (
     <>
-      {/* Glavni red */}
       <TableRow
         hover
         sx={{
@@ -84,7 +83,6 @@ function PregledRow({
         </TableCell>
       </TableRow>
 
-      {/* Collapse red */}
       <TableRow>
         <TableCell colSpan={6} sx={{ p: 0, border: "none" }}>
           <Collapse in={open} timeout="auto" unmountOnExit>
@@ -118,7 +116,6 @@ function PregledRow({
                 <b>Napomena:</b> {p.napomena ?? "-"}
               </Typography>
 
-              {/* ✅ Prikaži dugme samo ako je ulogovani doktor i ako prikaz nije za pacijenta */}
               {userRole === "Doktor" && showUnesiDetalje && (
                 <Button
                   variant="outlined"
@@ -150,7 +147,6 @@ function PregledRow({
         </TableCell>
       </TableRow>
 
-      {/* Modal forma */}
       <Dialog
         key={p.id}
         open={openDialog}
@@ -192,7 +188,6 @@ export default function PrikazSvihPregleda({ pacijentId }: Props) {
   const isLoading = pacijentId ? loadingPacijent : loadingSvi;
   const refetch = pacijentId ? refetchPacijent : refetchSvi;
 
-  // ✅ Ako je pozvan API za pacijenta, ne prikazujemo dugme "Unesi detalje"
   const showUnesiDetalje = !pacijentId;
 
   if (isLoading)

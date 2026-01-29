@@ -11,6 +11,6 @@ public class Nalaz
   public int? TehnicarId { get; set; }
   public Tehnicar? Tehnicar { get; set; }
 
-  public string? FilePath { get; set; }   // npr. "uploads/nalozi/nalaz_1234.pdf"
+  public string? FilePath { get; set; }   
   public DateTime DatumDodavanja { get; set; } = DateTime.Now;
 }
