@@ -32,7 +32,11 @@ The **Health Center Management System** is developed using **.NET (backend)** an
 
 ## **Technologies Used**
 - **Backend:** .NET 9, C#  
-- **Frontend:** React, JavaScript/TypeScript  
-- **Database:** SQL / Local storage (demo version)  
-- **Architecture:** MVC, REST APIs  
-- **Version Control:** Git / GitHub
+- **Frontend:** React, JavaScript / TypeScript  
+- **State Management:** Redux  
+- **Authentication:** JWT (JSON Web Tokens)  
+- **Database:** SQLite / Local storage (demo version)  
+- **HTTP Requests:** RTK Query  
+- **Forms:** React Hook Form  
+- **UI / Styling:** Material-UI  
+- **Version Control:** Git / GitHub  
