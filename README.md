@@ -31,12 +31,14 @@ Each role has specific functionalities and access rights.
 - User login system.
 - Unique identification of patients using a national identification number (JMBG).
 - Role-based access control (RBAC).
+- 
 <img width="1904" height="924" alt="login" src="https://github.com/user-attachments/assets/c75e02e2-bf63-4ca7-ba64-aef04300162b" />
----
+
 ## 🧑‍⚕️ Patient Features
 
 ### 1️⃣ Personal Profile Overview
 Patients can view their personal information.
+
 <img width="1904" height="924" alt="karton" src="https://github.com/user-attachments/assets/ffcb2bc5-e3d8-48db-abdc-a6e1d05f24ef" />
 
 ### 2️⃣ Medical Record Overview
@@ -47,6 +49,7 @@ Patients can access their digital medical records, including:
 - Laboratory results
 - Prescriptions
 - Referrals
+
 <img width="1920" height="911" alt="nalazi" src="https://github.com/user-attachments/assets/01c3af53-975d-43d4-948c-a04e4637f33a" />
 <img width="1920" height="919" alt="pregledi" src="https://github.com/user-attachments/assets/4eedeba1-fc1b-4a4f-b8a3-947ebd2b0615" />
 
@@ -57,18 +60,21 @@ Patients can:
 
 - View history of medical examinations and diseases.
 - Download laboratory reports, prescriptions, and referrals in PDF format.
+  
 <img width="1920" height="916" alt="recepti" src="https://github.com/user-attachments/assets/943773ac-9268-4dd0-ad82-1dc9146a9be3" />
 <img width="1920" height="916" alt="receptpdf" src="https://github.com/user-attachments/assets/fc29be2f-1f5a-45c7-ace8-9f74357bc01c" />
 
 
 ### 4️⃣ Appointment Requests
 Patients can send requests for medical examinations and schedule appointments.
+
 <img width="1920" height="924" alt="zahtjevzapregled" src="https://github.com/user-attachments/assets/1df0abf4-e332-4f70-bd2e-7e02e7c8720e" />
 
 ## 👨‍⚕️ Doctor Features
 
 ### 1️⃣ Doctor Login
 Doctors can securely access the system.
+
 <img width="1920" height="919" alt="doktor-nalog" src="https://github.com/user-attachments/assets/5090fc36-38ea-4ae8-8422-28cef12596bb" />
 
 ### 2️⃣ Patient Data Access
@@ -79,10 +85,12 @@ Doctors can:
 
 ### 3️⃣ Data Filtering and Search
 Doctors can filter patient data using various criteria.
+
 <img width="1898" height="855" alt="svipacijenti" src="https://github.com/user-attachments/assets/78ef3453-1dbb-483d-b9fb-f19a66162994" />
 
 ### 4️⃣ Laboratory Analysis Requests
 Doctors can send requests for laboratory analyses for specific patients.
+
 <img width="1920" height="856" alt="zahtjevzaanalizu" src="https://github.com/user-attachments/assets/2361e4a9-7d3e-4202-88d0-7bf206a54581" />
 
 ### 5️⃣ Review of Laboratory Results
@@ -93,10 +101,12 @@ Doctors can enter diagnoses into the system.
 
 ### 7️⃣ Prescription Management
 Doctors can create and manage prescriptions.
+
 <img width="1920" height="916" alt="recepti" src="https://github.com/user-attachments/assets/aec6e0ea-ded4-4ee2-b13d-09c8c0b6322b" />
 
 ### 8️⃣ Referral Management
 Doctors can issue referrals to specialists.
+
 <img width="1920" height="916" alt="novauputnica" src="https://github.com/user-attachments/assets/dbb4482c-acc2-4fe2-a509-219017e3802b" />
 
 
@@ -134,6 +144,7 @@ In this system, all user accounts are created and managed exclusively by the Sys
 - Role-based access control ensures that each user can access only the functionalities related to their role.
 
 This approach reflects real-world healthcare information systems, where access to medical data must be strictly controlled and managed by authorized personnel to ensure security, privacy, and data integrity.
+
 <img width="1920" height="924" alt="dodajpacijenta" src="https://github.com/user-attachments/assets/99c84d83-9875-42bc-9457-a7f7334e307d" />
 
 ## 🚀 Technologies Used
