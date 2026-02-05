@@ -164,3 +164,8 @@ npm install
 npm start
 ```
 
+## Authors
+- **Natasa Elez** – [GitHub](https://github.com/elez-n) 
+- **Nikolina Sarac** – [GitHub](https://github.com/nikolinaasarac) 
+
+
